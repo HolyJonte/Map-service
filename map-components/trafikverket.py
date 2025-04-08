@@ -1,0 +1,1 @@
+#Funktioner för att hämta data från API: Trafikverket

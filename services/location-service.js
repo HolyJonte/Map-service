@@ -1,1 +1,0 @@
-// Funktion för att användarens plats

@@ -1,1 +1,0 @@
-// Innehåller län och koordinater
