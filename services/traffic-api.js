@@ -1,0 +1,1 @@
+// Hämta data från Trafikverket API eller Mockdata
