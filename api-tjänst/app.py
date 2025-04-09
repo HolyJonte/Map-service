@@ -5,7 +5,7 @@ from flask import Flask, send_from_directory
 # Lägg till projektroten så att Python hittar andra mappar
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from användardata.api import trafik_bp  # ← nu fungerar denna!
+from routes import trafik_bp  # ← nu fungerar denna!
 
 # Pekar på din frontend/static-mapp
 frontend_path = os.path.join(os.path.dirname(__file__), '../frontend/static')
