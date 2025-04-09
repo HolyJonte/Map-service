@@ -1,25 +1,23 @@
-// Importera fartkameralagret
-import { CameraLayer } from './CameraLayer.js';
+import { CameraLayer } from './CameraLayer.js';  // Se till att sökvägen är korrekt
 
 class MapComponent extends HTMLElement {
   constructor() {
     super();
-    this.map = null;         // Här sparas Leaflet-kartan
-    this.cameraLayer = null; // Här sparas kameralagret
+    this.map = null;
+    this.cameraLayer = null;
   }
 
-  // Körs automatiskt när <map-component> läggs in i DOM
   connectedCallback() {
-    this.innerHTML = `<div id="map" style="height: 80vh;"></div>`; // Kartan tar upp 80% av höjden
-    this.initMap();  // Starta kartan
+    this.innerHTML = `<div id="map" style="height: 80vh;"></div>`;
+    this.initMap();
   }
 
-  // Initierar Leaflet-kartan och laddar fartkamerorna
   initMap() {
-    // Skapa Leaflet-karta centrerad över Sverige
-    this.map = L.map('map').setView([62.0, 15.0], 5);
+    this.map = L.map('map', {
+      center: [62.0, 15.0],  // Centrera kartan på Sverige
+      zoom: 6                // Zoomnivå för att visa Sverige
+    });
 
-    // Lägg till OpenStreetMap-kaklayer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors',
       maxZoom: 18
@@ -31,5 +29,4 @@ class MapComponent extends HTMLElement {
   }
 }
 
-// Registrera komponenten så <map-component> fungerar i HTML
 customElements.define('map-component', MapComponent);
