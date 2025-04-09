@@ -12,6 +12,7 @@ export class CameraLayer {
         const cameras = await response.json();
   
         console.log(`Antal kameror som hämtades: ${cameras.length}`);
+        console.log(cameras[0]); // Första kameran
         
         // Kontrollera koordinater för att säkerställa att de ligger inom Sverige
         cameras.forEach(camera => {
@@ -23,7 +24,7 @@ export class CameraLayer {
   
           // Kontrollera om latitud och longitud är giltiga
           if (!isNaN(camera.lat) && !isNaN(camera.lng)) {
-            const marker = L.marker([camera.lat, camera.lng]);
+            const marker = L.marker([camera.lng, camera.lat]);
             marker.bindPopup(`<strong>${camera.name}</strong>`);
             this.clusterGroup.addLayer(marker);  // Lägg till markören i klustret
           } else {

@@ -12,11 +12,11 @@ def cameras():
         for cam in data["RESPONSE"]["RESULT"][0]["TrafficSafetyCamera"]:
             if "Geometry" in cam and cam["Geometry"]:
                 geom = cam["Geometry"]["WGS84"]
-                lat, lng = map(float, geom.replace("POINT (", "").replace(")", "").split())
+                lon, lat = map(float, geom.replace("POINT (", "").replace(")", "").split())
 
                 cameras.append({
                     "lat": lat,
-                    "lng": lng,
+                    "lng": lon,
                     "name": cam.get("Name", "Okänd kamera"),
                     "active": cam.get("Active", False)
                 })
