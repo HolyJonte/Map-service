@@ -43,29 +43,37 @@ class MapComponent extends HTMLElement {
     this.cameraLayer.loadData();
 
 
-
-// =============================================================
-// Kod som inte är testat än:
-// =============================================================
 // Lägg till "hitta min plats"-knapp
 const locateButton = L.control({ position: 'bottomright' });
 
+// Skapa knappen och lägg till den i kartan
 locateButton.onAdd = function () {
+  // Skapa en div för knappen
   const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+
+  // Lägger till iconen för knappen
   div.innerHTML = `<a href="#" title="Hitta min plats" id="locateMeBtn" class="locate-button">
                      <i class="bi bi-geo-alt-fill"></i>
                    </a>`;
+  // Returnerar knappen så att det kan läggas till i kartan
   return div;
 };
 
+// Lägg till knappen i kartan
 locateButton.addTo(this.map);
 
-// Eventlistener för att hitta användarens plats
+// Väntar en kort stund så att kanppen hinner laddas innan vi lägger till eventlyssnaren
 setTimeout(() => {
+  // Hämtar knappen med id "locateMeBtn" och lägger till en eventlyssnare för klick
   const btn = document.getElementById('locateMeBtn');
+
+  // Om knappen finns, lägg till en eventlyssnare för att hämta användarens plats
   if (btn) {
     btn.addEventListener('click', (e) => {
+      // Förhindra standardbeteendet för länken (t.ex. att sidan laddas om)
       e.preventDefault();
+
+      // Anropar Leaflet-funktionen för att hämta användarens plats
       this.map.locate({ setView: true, maxZoom: 14 });
     });
   }
@@ -78,22 +86,12 @@ this.map.on('locationfound', (e) => {
     .openPopup();
 });
 
-// Om platsen inte kan hittas
+// Om platsen inte kan hittas (tex om användaren nekar åtkomst)
 this.map.on('locationerror', (e) => {
   alert("Kunde inte hitta din plats: " + e.message);
 });
   }
-
-
-
-
-
 }
-
-
-
-
-
 
 
 // Registrerar komponenten så att map-component kan användas i HTML
