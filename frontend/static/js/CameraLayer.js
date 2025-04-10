@@ -53,7 +53,13 @@ export class CameraLayer {
           // Kontrollera om latitud och longitud är giltiga
           if (!isNaN(camera.lat) && !isNaN(camera.lng)) {
             const marker = L.marker([camera.lng, camera.lat], { icon: cameraIcon });
-            marker.bindPopup(`<strong>${camera.name}</strong>`);  // Visa namnet i en popup
+
+            // Visa namnet och vägnummer i en popup
+            marker.bindPopup(`
+              <strong>${camera.name}</strong><br>
+              Vägnummer: ${camera.road}
+            `);
+
             this.clusterGroup.addLayer(marker);                   // Lägg till markören i klustret
           } else {
             // Om koordinater saknas eller är ogiltiga, logga ett fel

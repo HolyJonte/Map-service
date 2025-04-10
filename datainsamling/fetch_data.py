@@ -23,6 +23,7 @@ def fetch_cameras():
             <INCLUDE>Id</INCLUDE>
             <INCLUDE>Name</INCLUDE>
             <INCLUDE>Geometry</INCLUDE>
+            <INCLUDE>RoadNumber</INCLUDE>
         </QUERY>
     </REQUEST>
     """

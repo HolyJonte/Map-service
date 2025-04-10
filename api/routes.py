@@ -56,7 +56,7 @@ def get_cameras():
                     "lat": lat,
                     "lng": lng,
                     "name": cam.get("Name", "Okänd kamera"),
-                    "active": cam.get("Active", False)
+                    "road": cam.get("RoadNumber", "Okänt vägnummer")
                 })
 
         return jsonify(cameras) # Skickar tillbaka kamerorna i JSON-format
