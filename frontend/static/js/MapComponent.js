@@ -41,8 +41,60 @@ class MapComponent extends HTMLElement {
     this.cameraLayer = new CameraLayer(this.map);
     // Laddar data för fartkamerorna
     this.cameraLayer.loadData();
+
+
+
+// =============================================================
+// Kod som inte är testat än:
+// =============================================================
+// Lägg till "hitta min plats"-knapp
+const locateButton = L.control({ position: 'bottomright' });
+
+locateButton.onAdd = function () {
+  const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+  div.innerHTML = `<a href="#" title="Hitta min plats" id="locateMeBtn" class="locate-button">
+                     <i class="bi bi-geo-alt-fill"></i>
+                   </a>`;
+  return div;
+};
+
+locateButton.addTo(this.map);
+
+// Eventlistener för att hitta användarens plats
+setTimeout(() => {
+  const btn = document.getElementById('locateMeBtn');
+  if (btn) {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.map.locate({ setView: true, maxZoom: 14 });
+    });
   }
+}, 0);
+
+// När platsen hittas, lägg till markör
+this.map.on('locationfound', (e) => {
+  const userMarker = L.marker(e.latlng).addTo(this.map)
+    .bindPopup("Du är här")
+    .openPopup();
+});
+
+// Om platsen inte kan hittas
+this.map.on('locationerror', (e) => {
+  alert("Kunde inte hitta din plats: " + e.message);
+});
+  }
+
+
+
+
+
 }
+
+
+
+
+
+
 
 // Registrerar komponenten så att map-component kan användas i HTML
 customElements.define('map-component', MapComponent);

@@ -50,3 +50,71 @@ Utseende för kameror och kluster
   font-weight: bold;
 }
 
+/* ---------------------------------------------------
+Utseende för Header
+--------------------------------------------------- */
+.navbar {
+  background-color: #222;
+  color: white;
+  padding: 10px;
+}
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.menu-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+.menu-items {
+  display: none;
+  flex-direction: column;
+  background-color: #333;
+  padding: 10px;
+  position: absolute;
+  top: 60px;
+  left: 10px;
+  z-index: 999;
+}
+
+.menu-items a {
+  color: white;
+  text-decoration: none;
+  margin-bottom: 10px;
+}
+
+.menu-items a:hover {
+  text-decoration: underline;
+}
+
+.menu-items.show {
+  display: flex;
+}
+
+
+
+/* ---------------------------------------------------
+Styling för hitta min plats knapp
+--------------------------------------------------- */
+.locate-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 26px;
+  height: 26px;
+  font-size: 16px;
+  background-color: white;
+  color: black;
+  text-decoration: none;
+}
+
+.locate-button:hover {
+  background-color: #f0f0f0;
+}

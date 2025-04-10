@@ -16,6 +16,23 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
 </head>
 <body>
+  <header class="navbar">
+    <div class="navbar-container">
+      <button class="menu-button" id="menuToggle">
+        <i class="bi bi-list"></i> Meny
+      </button>
+      <nav class="menu-items" id="menuItems">
+        <a href="#" id="subscribeBtn">Prenumerera</a>
+        <a href="#" id="adminLoginBtn">Admin Inlogg</a>
+      </nav>
+    </div>
+    <div>
+        <!-- Huvudrubrik som visas över kartan -->
+        <h1>Karta över Sverige</h1>
+    </div>
+  </header>
+
+
 
   <!-- Visa meddelande om JavaScript är inaktiverat -->
   <noscript>
@@ -29,11 +46,22 @@
     Din webbläsare verkar inte stödja HTML5 fullt ut. Vänligen uppdatera till en modern webbläsare.
   </div>
 
-  <!-- Huvudrubrik som visas över kartan -->
-  <h1>Karta över Sverige</h1>
+
 
   <!-- Här placeras kartan -->
   <map-component></map-component>
+
+
+  <!-- Lägg till Bootstrap CSS för meny i header -->
+  <script>
+    const menuToggle = document.getElementById('menuToggle');
+    const menuItems = document.getElementById('menuItems');
+
+    menuToggle.addEventListener('click', () => {
+      menuItems.classList.toggle('show');
+    });
+  </script>
+
 
   <!-- Lägg till Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
