@@ -5,7 +5,7 @@
 # ---------------------------------------------
 
 from flask import Blueprint, jsonify
-from datainsamling.fetch_data import fetch_accidents, fetch_cameras, fetch_roadworks
+from datainsamling.fetch_data import fetch_cameras, fetch_roadworks
 
 
 # Skapar en "Blueprint" för API-rutter som kan kopplas till Flask-appen
@@ -52,62 +52,20 @@ def get_roadworks():
         roadworks = []
 
         for situation in data["RESPONSE"]["RESULT"][0]["Situation"]:
-            if "Geometry" in situation and situation["Geometry"]:
-                geom = situation["Geometry"].get("WGS84")
-                if geom:
-                    lat, lng = map(float, geom.replace("POINT (", "").replace(")", "").split())
+            deviation = situation["Deviation"][0]
+            geom = deviation.get("Geometry", {}).get("Point", {}).get("WGS84")
 
-                    deviation = situation.get("Deviation", [{}])[0]  # säkert sätt att hämta första objektet
+            if geom:
+                lat, lng = map(float, geom.replace("POINT (", "").replace(")", "").split())
+                message = deviation.get("Message", "Inget meddelande")
 
-                    roadworks.append({
-                        "lat": lat,
-                        "lng": lng,
-                        "road": situation.get("RoadNumber", "Okänt vägnummer"),
-                        "description": situation.get("Message", "Ingen beskrivning"),
-                        "location": situation.get("LocationDescriptor", "Okänd plats"),
-                        "severity": situation.get("SeverityText", "Okänd påverkan"),
-                        "restrictions": [
-                            deviation.get("TrafficRestrictionType", "Ingen information"),
-                            deviation.get("TemporaryLimit", "Inga begränsningar"),
-                            deviation.get("AffectedDirection", "Okänd riktning")
-                        ],
-                        "start": situation.get("StartTime"),
-                        "end": situation.get("EndTime")
-                    })
+                roadworks.append({
+                    "lat": lat,
+                    "lng": lng,
+                    "message": message
+                })
 
         return jsonify(roadworks)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-
-
-
-
-
-"""
-@trafik_bp.route('/api/olyckor')
-def get_olyckor():
-    try:
-        data = fetch_accidents()
-        accidents = []
-
-        for situation in data["RESPONSE"]["RESULT"][0]["Situation"]:
-            if "Geometry" in situation and situation["Geometry"]:
-                geom = situation["Geometry"]["WGS84"]
-                lat, lng = map(float, geom.replace("POINT (", "").replace(")", "").split())
-
-                accidents.append({
-                    "lat": lat,
-                    "lng": lng,
-                    "location": situation.get("LocationDescriptor", "Okänd plats"),
-                    "description": situation.get("Description", "Ingen beskrivning"),
-                    "road": situation.get("Deviation", [{}])[0].get("LocationText", "Okänd väg"),
-                    "impact": situation.get("Deviation", [{}])[0].get("Message", "Okänd påverkan")
-                })
-
-        return jsonify(accidents)
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-"""
