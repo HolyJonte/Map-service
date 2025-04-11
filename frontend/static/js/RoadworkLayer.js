@@ -11,7 +11,7 @@ export class RoadworkLayer {
               <span>${count}</span>
             </div>
           `,
-          className: 'camera-cluster', // Kan anpassas med egen klass
+          className: 'roadwork-cluster',
           iconSize: null
         });
       }
