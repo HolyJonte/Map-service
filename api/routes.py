@@ -59,6 +59,7 @@ def get_roadworks():
                 lat, lng = map(float, geom.replace("POINT (", "").replace(")", "").split())
                 message = deviation.get("Message", "Inget meddelande")
 
+
                 roadworks.append({
                     "lat": lat,
                     "lng": lng,

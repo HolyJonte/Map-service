@@ -56,12 +56,6 @@ class MapComponent extends HTMLElement {
     this.cameraLayer = new CameraLayer(this.map);
     this.roadworkLayer = new RoadworkLayer(this.map);
 
-    // Laddar data för fartkamerorna och vägarbeten
-    this.cameraLayer.loadData();
-    this.roadworkLayer.loadData();
-
-
-
 // Lägg till "hitta min plats"-knapp
 const locateButton = L.control({ position: 'bottomright' });
 

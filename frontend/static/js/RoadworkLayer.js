@@ -33,10 +33,13 @@ export class RoadworkLayer {
       roadworks.forEach(item => {
         if (!isNaN(item.lat) && !isNaN(item.lng)) {
           const marker = L.marker([item.lng, item.lat], { icon: roadworkIcon });
+          
+          
           marker.bindPopup(`
-            <strong>Vägarbete</strong><br>
-            ${item.message}
+            <strong>Vägarbete</strong><br>${item.message}
           `);
+
+
           this.clusterGroup.addLayer(marker);
         }
       });

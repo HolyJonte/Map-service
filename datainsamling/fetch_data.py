@@ -47,9 +47,6 @@ def fetch_roadworks():
     </REQUEST>
     """
     response = requests.post(BASE_URL, headers=HEADERS, data=body.strip())
-    print("STATUSKOD:", response.status_code)
-    print("SVAR FRÅN API:")
-    print(response.text)
     response.raise_for_status()
     return response.json()
 
