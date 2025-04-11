@@ -38,6 +38,42 @@ def fetch_cameras():
 
 
 
+
+
+def fetch_roadworks():
+    body = f"""
+    <REQUEST>
+        <LOGIN authenticationkey="{API_KEY}" />
+        <QUERY objecttype="Situation" schemaversion="1.5">
+            <FILTER>
+                <EQ name="MessageType" value="Vägarbete"/>
+            </FILTER>
+            <INCLUDE>Id</INCLUDE>
+            <INCLUDE>Geometry</INCLUDE>
+            <INCLUDE>LocationDescriptor</INCLUDE>
+            <INCLUDE>Message</INCLUDE>
+            <INCLUDE>RoadNumber</INCLUDE>
+            <INCLUDE>SeverityText</INCLUDE>
+            <INCLUDE>StartTime</INCLUDE>
+            <INCLUDE>EndTime</INCLUDE>
+
+            <INCLUDE>Deviation.TrafficRestrictionType</INCLUDE>
+            <INCLUDE>Deviation.TemporaryLimit</INCLUDE>
+            <INCLUDE>Deviation.AffectedDirection</INCLUDE>
+        </QUERY>
+    </REQUEST>
+
+    """
+
+    response = requests.post(BASE_URL, headers=HEADERS, data=body.strip())
+    response.raise_for_status()
+    return response.json()
+
+
+
+
+
+
 # Funktion för att hämta olyckor
 def fetch_accidents():
     #XML.body för att hämta olyckor med typ "Accident"
@@ -59,3 +95,9 @@ def fetch_accidents():
     print(response.text)
     response.raise_for_status()
     return response.json()
+
+
+
+
+
+

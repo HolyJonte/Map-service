@@ -10,7 +10,7 @@ Utseende för kartan
 
 
 /* ---------------------------------------------------
-Utseende för kameror och kluster
+Utseende för enskilda kameror och kluster av kameror
 --------------------------------------------------- */
 
 /* För enskilda kameror */
@@ -49,6 +49,33 @@ Utseende för kameror och kluster
 .camera-cluster span {
   font-weight: bold;
 }
+
+/* ---------------------------------------------------
+Utseende för enskilda vägarbeten och kluster av vägarbeten
+--------------------------------------------------- */
+.roadwork-icon {
+  background: white;
+  border: 2px solid orange;
+  border-radius: 50%;
+  padding: 6px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.roadwork-popup h5 {
+  margin: 0 0 5px 0;
+  font-size: 16px;
+}
+
+.roadwork-popup ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+
 
 /* ---------------------------------------------------
 Utseende för Header
@@ -118,3 +145,4 @@ Styling för hitta min plats knapp
 .locate-button:hover {
   background-color: #f0f0f0;
 }
+
