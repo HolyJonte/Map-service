@@ -58,12 +58,16 @@ def get_roadworks():
             if geom:
                 lat, lng = map(float, geom.replace("POINT (", "").replace(")", "").split())
                 message = deviation.get("Message", "Inget meddelande")
+                location = deviation.get("LocationDescriptor", "Okänd plats")
+
 
 
                 roadworks.append({
                     "lat": lat,
                     "lng": lng,
-                    "message": message
+                    "message": message,
+                    "location": location
+
                 })
 
         return jsonify(roadworks)
