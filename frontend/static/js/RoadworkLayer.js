@@ -36,11 +36,15 @@ export class RoadworkLayer {
 
 
           marker.bindPopup(`
-            <p><strong>${item.location}</strong></p>
-            <strong>Vägarbete</strong><br>${item.message}
+            <div class="roadwork-popup">
+              <p><strong>${item.location || "Okänd plats"}</strong></p>
+              <strong>Vägarbete</strong><br>
+              ${item.message || "Ingen beskrivning"}<br><br>
+              <strong>Påverkan:</strong> ${item.severity || "Okänd påverkan"}<br>
+              <strong>Starttid:</strong> ${item.start ? new Date(item.start).toLocaleString() : "Okänt"}<br>
+              <strong>Sluttid:</strong> ${item.end ? new Date(item.end).toLocaleString() : "Okänt"}<br>
+            </div>
           `);
-
-
           this.clusterGroup.addLayer(marker);
         }
       });

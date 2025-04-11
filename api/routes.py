@@ -5,8 +5,7 @@
 # ---------------------------------------------
 
 from flask import Blueprint, jsonify
-from datainsamling.fetch_data import fetch_cameras, fetch_roadworks
-
+from datainsamling.fetch_data import fetch_cameras, fetch_situations
 
 # Skapar en "Blueprint" för API-rutter som kan kopplas till Flask-appen
 trafik_bp = Blueprint('api', __name__)
@@ -48,29 +47,64 @@ def get_cameras():
 @trafik_bp.route('/roadworks')
 def get_roadworks():
     try:
-        data = fetch_roadworks()
+        data = fetch_situations()
         roadworks = []
 
         for situation in data["RESPONSE"]["RESULT"][0]["Situation"]:
             deviation = situation["Deviation"][0]
+
+            # Hoppa över allt som inte är vägarbete
+            if deviation.get("MessageType") != "Vägarbete":
+                continue
+
             geom = deviation.get("Geometry", {}).get("Point", {}).get("WGS84")
 
             if geom:
                 lat, lng = map(float, geom.replace("POINT (", "").replace(")", "").split())
-                message = deviation.get("Message", "Inget meddelande")
-                location = deviation.get("LocationDescriptor", "Okänd plats")
-
-
 
                 roadworks.append({
                     "lat": lat,
                     "lng": lng,
-                    "message": message,
-                    "location": location
-
+                    "message": deviation.get("Message", "Inget meddelande"),
+                    "location": deviation.get("LocationDescriptor", "Okänd plats"),
+                    "severity": deviation.get("SeverityText", "Okänd påverkan"),
+                    "start": deviation.get("StartTime"),
+                    "end": deviation.get("EndTime")
                 })
 
         return jsonify(roadworks)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+
+@trafik_bp.route('/accidents')
+def get_accidents():
+    try:
+        data = fetch_situations()
+        accidents = []
+
+        for situation in data["RESPONSE"]["RESULT"][0]["Situation"]:
+            deviation = situation["Deviation"][0]
+            if deviation.get("MessageType") != "Olycka":
+                continue  # Hoppar över annat än olyckor
+
+            geom = deviation.get("Geometry", {}).get("Point", {}).get("WGS84")
+            if geom:
+                lat, lng = map(float, geom.replace("POINT (", "").replace(")", "").split())
+                accidents.append({
+                    "lat": lat,
+                    "lng": lng,
+                    "message": deviation.get("Message", "Ingen beskrivning"),
+                    "start": deviation.get("StartTime"),
+                    "end": deviation.get("EndTime"),
+                    "severity": deviation.get("SeverityText", "Okänd påverkan"),
+                    "location": deviation.get("LocationDescriptor", "Okänd plats")
+                })
+
+        return jsonify(accidents)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+

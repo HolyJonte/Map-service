@@ -37,7 +37,7 @@ def fetch_cameras():
 
 
 
-def fetch_roadworks():
+def fetch_situations():
     body = f"""
     <REQUEST>
         <LOGIN authenticationkey="{API_KEY}" />
@@ -49,6 +49,7 @@ def fetch_roadworks():
     response = requests.post(BASE_URL, headers=HEADERS, data=body.strip())
     response.raise_for_status()
     return response.json()
+
 
 
 

@@ -18,6 +18,8 @@
 //Importerar fartkameralagret som är definierat i CameraLayer.js
 import { CameraLayer } from './CameraLayer.js';
 import { RoadworkLayer } from './RoadworkLayer.js';
+import { AccidentLayer } from './AccidentLayer.js';
+
 
 
 // Definierar en ny klass för komponenten map-component
@@ -31,6 +33,8 @@ class MapComponent extends HTMLElement {
     this.map = null;
     // Här lagras fartkameralagret
     this.cameraLayer = null;
+    this.roadworkLayer = null;
+    this.accidentLayer = null;
   }
 
   // Denna metod anropas när komponenten läggs till i DOM
@@ -55,6 +59,8 @@ class MapComponent extends HTMLElement {
     // Skapar ett nytt lager för fartkameror och vägarbeten och kopplar det till kartan
     this.cameraLayer = new CameraLayer(this.map);
     this.roadworkLayer = new RoadworkLayer(this.map);
+    this.accidentLayer = new AccidentLayer(this.map);
+
 
 // Lägg till "hitta min plats"-knapp
 const locateButton = L.control({ position: 'bottomright' });
