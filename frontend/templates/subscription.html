@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <title>Prenumerera</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<style>
+    /* Styling för Prenumerera-knappen */
+    .subscribe-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 1000; /* Över kartan */
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .subscribe-btn:hover {
+      background-color: #45a049;
+    }
+
+    /* Styling för modalen */
+    .modal {
+      display: none; /* Dold som standard */
+      position: fixed;
+      z-index: 1001; /* Över kartan */
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5); /* Dimmad bakgrund */
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 5px;
+      width: 400px;
+      max-width: 90%;
+      position: relative;
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #333;
+    }
+    .error {
+      color: red;
+    }
+    .success {
+      color: green;
+    }
+  </style>
+</head>
+<body onload="openModal()">
+  <h1>Starta din SMS-prennumeration</h1>
+
+
+  <!-- Modal för prenumerationsformulär -->
+  <div id="subscription-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <h2>Starta Prenumeration</h2>
+      <form id="subscription-form">
+        <label for="phone_number">Telefonnummer:</label><br>
+        <input type="text" id="phone_number" name="phone_number" required><br><br>
+
+        <label for="county">Län (ange ett nummer, t.ex. 1 för Stockholm):</label><br>
+        <input type="number" id="county" name="county" required><br><br>
+
+        <button type="submit">Starta Prenumeration</button>
+      </form>
+      <div id="response" style="margin-top: 20px;"></div>
+    </div>
+  </div>
+  <!-- JavaScript för modal och formulär -->
+  <script>
+    // Funktioner för att visa/dölja modalen
+    function openModal() {
+      document.getElementById('subscription-modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('subscription-modal').style.display = 'none';
+      document.getElementById('response').innerHTML = ''; // Rensa tidigare svar
+    }
+
+    // Hantera formulärinskick
+    document.getElementById('subscription-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const phoneNumber = document.getElementById('phone_number').value;
+      const county = document.getElementById('county').value;
+      const responseDiv = document.getElementById('response');
+
+      try {
+        const response = await fetch('/subscriptions/start-subscription', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            phone_number: phoneNumber,
+            county: parseInt(county),
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          responseDiv.innerHTML = `<p class="success">Prenumeration startad! Session ID: ${data.session_id}, Client Token: ${data.client_token}</p>`;
+        } else {
+          responseDiv.innerHTML = `<p class="error">Fel: ${data.error}</p>`;
+        }
+      } catch (error) {
+        responseDiv.innerHTML = `<p class="error">Något gick fel: ${error.message}</p>`;
+      }
+    });
+
+    // Stäng modalen om användaren klickar utanför
+    window.onclick = function(event) {
+      const modal = document.getElementById('subscription-modal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    };
+  </script>
+</body>
+</html>

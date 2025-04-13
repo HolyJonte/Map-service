@@ -10,12 +10,17 @@ import os
 from flask import Flask, render_template, send_from_directory
 # Importerar trafik_bp från routes-modulen, som innehåller kameror-endpointen
 from api.routes import trafik_bp
+# Importerar subscription_routes
+from prenumerationsmodul.subscription_routes import subscription_routes
 
 # Lägg till projektroten så att Python hittar andra moduler/mappar
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Anger sökvägen till frontend-mappen där statiska filer finns (tex index, JS och CSS)
 frontend_path = os.path.join(os.path.dirname(__file__), '../frontend/static')
+
+### KANSKE BEHÖVER ÄNDRA FÖR DE LIGGER UNDER FRONTEND
+templates_path = os.path.join(os.path.dirname(__file__), 'templates')
 
 # Skapar en Flask-applikation och anger sökvägen till frontend-mappen som statisk mapp
 app = Flask(
@@ -27,6 +32,8 @@ app = Flask(
 
 # Registrerar trafik_bp (kameror-endpointen) som en blueprint i Flask-applikationen
 app.register_blueprint(trafik_bp)
+# Registrerar prenumerationsmodulens routes (subscription_routes) som en blueprint
+app.register_blueprint(subscription_routes, url_prefix='/subscriptions')
 
 # Definierar en route för att servera index.html-filen från frontend-mappen
 @app.route('/')
