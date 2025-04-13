@@ -3,8 +3,6 @@ from flask import Blueprint, request, jsonify
 from flask import render_template
 from datetime import datetime, timedelta
 from betalningsmodul.klarna_integration import initiate_payment, verify_payment, cancel_token
-### KOMMER BEHÖVA HÄMTA FRÅN ANNAN MAPP än användardata
-### USER_DATABASE nytt namn till user_repository
 from prenumerationsmodul.user_repository import (initialize_database, add_pending_subscriber, get_pending_subscriber, 
                                         delete_pending_subscriber, subscriber_exists, add_subscriber, 
                                         update_subscriber, get_subscriber_klarna_token, deactivate_subscriber, 
