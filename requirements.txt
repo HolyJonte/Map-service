@@ -3,3 +3,5 @@ Flask-Mail
 pyotp
 qrcode[pil]
 pillow
+
+# pip install --user -r requirements.txt
