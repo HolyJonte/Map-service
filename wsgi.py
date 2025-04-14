@@ -1,13 +1,14 @@
 import sys
 import os
 
-# Lägg till din projektmapp i sökvägen
-path = '/home/holyjonte/Map-service'
-if path not in sys.path:
-    sys.path.append(path)
+# Lägg till din projektmapp i systemets sökväg
+project_home = '/home/MaMaJoViDa/Map-service'
+if project_home not in sys.path:
+    sys.path.append(project_home)
 
-# Sätt rätt miljö (valfritt men bra)
+# Sätt rätt miljövariabler om du vill (valfritt)
 os.environ['FLASK_ENV'] = 'production'
 
-# Importera din Flask-app
-from app import app as application  # app är Flask-objektet i app.py
+# Importera din app från app.py
+from app import app as application
+
