@@ -1,3 +1,5 @@
+# Denna modul innehåller API-rutter för att hämta trafikdata från Trafikverket.
+
 # Importerar nödvändiga moduler
 from flask import Blueprint, jsonify
 from api.logic import get_all_cameras, get_all_roadworks, get_all_accidents
