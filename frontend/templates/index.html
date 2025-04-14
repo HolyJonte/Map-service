@@ -15,14 +15,22 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
 </head>
+
 <body>
+  <!-- Sidebar -->
   <header class="navbar">
     <div class="navbar-container">
+
+      <!-- Menyknapp -->
       <button class="menu-button" id="menuToggle">
         <i class="bi bi-list"></i> Meny
       </button>
+
+      <!-- Menyval som visas vid klick -->
       <nav class="menu-items" id="menuItems">
+        <!-- Länk till prenumarationssida -->
         <a onclick="window.location.href='/subscriptions/subscription'" id="subscribeBtn" class="subscribe-btn">Prenumerera</a>
+        <!-- Länk för admininloggning -->
         <a href="#" id="adminLoginBtn">Admin Inlogg</a>
       </nav>
     </div>
