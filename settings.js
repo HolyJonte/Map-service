@@ -1,7 +1,7 @@
 // Byt dessa variabler för att ändra storlek på kartan
 
 // TEST AV FÖRÄNDRING
-
+// TEST 2 av förndring
 
 // Byt dessa variabler för att ändra ikoner på kartan
 
