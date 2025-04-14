@@ -2,3 +2,4 @@ Flask
 Flask-Mail
 pyotp
 qrcode[pil]
+pillow
