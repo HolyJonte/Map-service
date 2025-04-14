@@ -1,17 +1,13 @@
-# Den här koden skapar ett API med Flask:
-# /cameras – returnerar en lista med fartkameror från Trafikverket.
-# /roadworks – returnerar en lista med vägarbeten från Trafikverket.
-# /accidents – returnerar en lista med olyckor från Trafikverket.
-# Alla använder funktioner från modulen 'fetch_data' för att hämta aktuell data.
-# Informationen formateras och skickas ut i JSON-format till användare (t.ex. en karta).
-# ---------------------------------------------
-
 # Importerar nödvändiga moduler
 from flask import Blueprint, jsonify
 from api.logic import get_all_cameras, get_all_roadworks, get_all_accidents
 
+# Skapar en Blueprint för att definiera API-rutter som kan användas i Flask-applikationen
 trafik_bp = Blueprint('api', __name__)
 
+# ==============================================================================
+# Route för att hämta fartkameror
+# ==============================================================================
 @trafik_bp.route('/cameras')
 def get_cameras():
     try:
@@ -19,7 +15,9 @@ def get_cameras():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
+# ==============================================================================
+# Route för att hämta vägarbeten
+# ==============================================================================
 @trafik_bp.route('/roadworks')
 def get_roadworks():
     try:
@@ -27,7 +25,9 @@ def get_roadworks():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
+# ==============================================================================
+# Route för att hämta trafikolyckor
+# ==============================================================================
 @trafik_bp.route('/accidents')
 def get_accidents():
     try:
