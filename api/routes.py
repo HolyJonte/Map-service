@@ -51,31 +51,29 @@ def get_roadworks():
         roadworks = []
 
         for situation in data["RESPONSE"]["RESULT"][0]["Situation"]:
-            deviation = situation["Deviation"][0]
+            for deviation in situation.get("Deviation", []):  # ✅ Gå igenom alla deviation-objekt
+                if deviation.get("MessageType") != "Vägarbete":
+                    continue
 
-            # Hoppa över allt som inte är vägarbete
-            if deviation.get("MessageType") != "Vägarbete":
-                continue
+                geom = deviation.get("Geometry", {}).get("Point", {}).get("WGS84")
+                if geom:
+                    lat, lng = map(float, geom.replace("POINT (", "").replace(")", "").split())
 
-            geom = deviation.get("Geometry", {}).get("Point", {}).get("WGS84")
-
-            if geom:
-                lat, lng = map(float, geom.replace("POINT (", "").replace(")", "").split())
-
-                roadworks.append({
-                    "lat": lat,
-                    "lng": lng,
-                    "message": deviation.get("Message", "Inget meddelande"),
-                    "location": deviation.get("LocationDescriptor", "Okänd plats"),
-                    "severity": deviation.get("SeverityText", "Okänd påverkan"),
-                    "start": deviation.get("StartTime"),
-                    "end": deviation.get("EndTime")
-                })
+                    roadworks.append({
+                        "lat": lat,
+                        "lng": lng,
+                        "message": deviation.get("Message", "Inget meddelande"),
+                        "location": deviation.get("LocationDescriptor", "Okänd plats"),
+                        "severity": deviation.get("SeverityText", "Okänd påverkan"),
+                        "start": deviation.get("StartTime"),
+                        "end": deviation.get("EndTime")
+                    })
 
         return jsonify(roadworks)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 
 
@@ -86,22 +84,22 @@ def get_accidents():
         accidents = []
 
         for situation in data["RESPONSE"]["RESULT"][0]["Situation"]:
-            deviation = situation["Deviation"][0]
-            if deviation.get("MessageType") != "Olycka":
-                continue  # Hoppar över annat än olyckor
+            for deviation in situation.get("Deviation", []):  # ✅ Samma här – iterera över alla
+                if deviation.get("MessageType") != "Olycka":
+                    continue
 
-            geom = deviation.get("Geometry", {}).get("Point", {}).get("WGS84")
-            if geom:
-                lat, lng = map(float, geom.replace("POINT (", "").replace(")", "").split())
-                accidents.append({
-                    "lat": lat,
-                    "lng": lng,
-                    "message": deviation.get("Message", "Ingen beskrivning"),
-                    "start": deviation.get("StartTime"),
-                    "end": deviation.get("EndTime"),
-                    "severity": deviation.get("SeverityText", "Okänd påverkan"),
-                    "location": deviation.get("LocationDescriptor", "Okänd plats")
-                })
+                geom = deviation.get("Geometry", {}).get("Point", {}).get("WGS84")
+                if geom:
+                    lat, lng = map(float, geom.replace("POINT (", "").replace(")", "").split())
+                    accidents.append({
+                        "lat": lat,
+                        "lng": lng,
+                        "message": deviation.get("Message", "Ingen beskrivning"),
+                        "start": deviation.get("StartTime"),
+                        "end": deviation.get("EndTime"),
+                        "severity": deviation.get("SeverityText", "Okänd påverkan"),
+                        "location": deviation.get("LocationDescriptor", "Okänd plats")
+                    })
 
         return jsonify(accidents)
     except Exception as e:
