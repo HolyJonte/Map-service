@@ -68,6 +68,14 @@
     menuToggle.addEventListener('click', () => {
       menuItems.classList.toggle('show');
     });
+
+    const adminBtn = document.getElementById('adminLoginBtn');
+    if (adminBtn) {
+      adminBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        window.location.href = "/admin/login";
+      });
+    }
   </script>
 
 
