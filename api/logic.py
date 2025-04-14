@@ -48,18 +48,27 @@ def get_all_accidents():
         for deviation in situation.get("Deviation", []):
             if deviation.get("MessageType") != "Olycka":
                 continue
+
             geom = deviation.get("Geometry", {}).get("Point", {}).get("WGS84")
-            if geom:
+            if not geom:
+                continue
+
+            try:
                 lat, lng = map(float, geom.replace("POINT (", "").replace(")", "").split())
-                accidents.append({
-                    "lat": lat,
-                    "lng": lng,
-                    "message": deviation.get("Message", "Ingen beskrivning"),
-                    "start": deviation.get("StartTime"),
-                    "end": deviation.get("EndTime"),
-                    "severity": deviation.get("SeverityText", "Okänd påverkan"),
-                    "location": deviation.get("LocationDescriptor", "Okänd plats")
-                })
+            except ValueError:
+                continue
+
+            accidents.append({
+                "lat": lat,
+                "lng": lng,
+                "message": deviation.get("Message", "Ingen beskrivning"),
+                "start": deviation.get("StartTime"),
+                "end": deviation.get("EndTime"),
+                "severity": deviation.get("SeverityText", "Okänd påverkan"),
+                "location": deviation.get("LocationDescriptor", "Okänd plats"),
+                "county": deviation.get("CountyNo", None)
+            })
+
     return accidents
 
 # Här har vi en funktion som hämtar olycksdata MED länsfiltrering som borde fungera i stället
