@@ -1,17 +1,29 @@
+# Denna modul innehåller logik för admin-funktioner: autentisering, QR-kod, 2FA och hantering av tidningar.
+
 import os
 import json
 import pyotp
 import qrcode
 
-# Hårdkodat lösenord
-ADMIN_PASSWORD = "hemligt123"
+# ================================
+# Konfiguration
+# ================================
 
-# Sökväg till newspapers.json
+ADMIN_PASSWORD = "hemligt123"
+TOTP_SECRET = "JBSWY3DPEHPK3PXP"
 BASE_DIR = os.path.dirname(__file__)
 JSON_PATH = os.path.join(BASE_DIR, 'newspapers.json')
 
+# ================================
+# Lösenordshantering
+# ================================
+
 def get_admin_password():
     return ADMIN_PASSWORD
+
+# ================================
+# Tidningshantering
+# ================================
 
 def load_newspapers():
     if not os.path.exists(JSON_PATH):
@@ -23,23 +35,25 @@ def save_newspapers(papers):
     with open(JSON_PATH, 'w', encoding='utf-8') as f:
         json.dump(papers, f, ensure_ascii=False, indent=2)
 
-# Hemlig nyckel för TOTP – denna måste alltid vara samma
-TOTP_SECRET = "JBSWY3DPEHPK3PXP"  # Du kan byta till annan base32-sträng
+# ================================
+# TOTP och QR-kodshantering
+# ================================
 
-# Skapar URI som scannas av Authenticator-appar
 def get_totp_uri():
-    return pyotp.totp.TOTP(TOTP_SECRET).provisioning_uri(
+    return pyotp.TOTP(TOTP_SECRET).provisioning_uri(
         name="admin@trafikvida",
         issuer_name="TrafikVida"
     )
 
-# Skapar QR-kod som kan skannas av användare
-def generate_qr(path="admin/admin_qr.png"):
+def generate_qr_image_base64():
     uri = get_totp_uri()
     img = qrcode.make(uri)
-    img.save(path)
-    print(f"[QR-KOD] Sparad som {path}. Skanna med Authenticator.")
+    from io import BytesIO
+    import base64
+    buffer = BytesIO()
+    img.save(buffer, format='PNG')
+    buffer.seek(0)
+    return base64.b64encode(buffer.getvalue()).decode('utf-8')
 
-# Verifierar kod som användaren skriver in
 def verify_totp_code(code):
     return pyotp.TOTP(TOTP_SECRET).verify(code)

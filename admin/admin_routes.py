@@ -14,6 +14,8 @@ import qrcode
 admin_routes = Blueprint('admin', __name__, template_folder='../frontend/templates')
 
 # ===============================
+# Inloggning
+# ===============================
 @admin_routes.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
     if request.method == 'POST':
@@ -26,6 +28,8 @@ def admin_login():
     return render_template('admin_login.html')
 
 
+# ===============================
+# Tvåfaktorsautentisering (2FA)
 # ===============================
 @admin_routes.route('/admin/2fa', methods=['GET', 'POST'])
 def two_factor():
@@ -43,6 +47,8 @@ def two_factor():
 
     return render_template('two_factor.html')
 
+# ===============================
+# Adminpanel för tidningar
 # ===============================
 @admin_routes.route('/admin/dashboard', methods=['GET', 'POST'])
 def admin_dashboard():
@@ -65,11 +71,7 @@ def admin_dashboard():
     return render_template('admin_dashboard.html', newspapers=newspapers)
 
 # ===============================
-@admin_routes.route('/admin/logout')
-def admin_logout():
-    session.pop('admin_logged_in', None)
-    return redirect(url_for('admin.admin_login'))
-
+# Visa QR-kod för 2FA
 # ===============================
 @admin_routes.route('/admin/show-qr')
 def show_qr():
@@ -89,3 +91,10 @@ def show_qr():
 
     return render_template('show_qr.html', qr_data=img_base64)
 
+# ===============================
+# Logga ut
+# ===============================
+@admin_routes.route('/admin/logout')
+def admin_logout():
+    session.pop('admin_logged_in', None)
+    return redirect(url_for('admin.admin_login'))
