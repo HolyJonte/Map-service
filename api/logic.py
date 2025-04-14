@@ -84,48 +84,16 @@ def get_all_accidents():
         for deviation in situation.get("Deviation", []):
             if deviation.get("MessageType") != "Olycka":
                 continue
-            geom = deviation.get("Geometry", {}).get("Point", {}).get("WGS84")
-            if geom:
-                lat, lng = map(float, geom.replace("POINT (", "").replace(")", "").split())
-                accidents.append({
-                    "lat": lat,
-                    "lng": lng,
-                    "message": deviation.get("Message", "Ingen beskrivning"),
-                    "start": deviation.get("StartTime"),
-                    "end": deviation.get("EndTime"),
-                    "severity": deviation.get("SeverityText", "Okänd påverkan"),
-                    "location": deviation.get("LocationDescriptor", "Okänd plats")
-                })
-    return accidents
 
-# Här har vi en funktion som hämtar olycksdata MED länsfiltrering som borde fungera i stället
-# för ovanstående get_all_accidents-funktionen?
-
-""" def get_accidents_data():
-    data = fetch_situations()  # Hämtar all data från Trafikverket
-    accidents = []
-    for situation in data["RESPONSE"]["RESULT"][0]["Situation"]:
-
-        # Loopa över alla deviation-objekt i situationen
-        for deviation in situation.get("Deviation", []):
-            if deviation.get("MessageType") != "Olycka":
-                continue
-
-            # Hämtar länsnummer (CountyNo) från deviation
-            county = deviation.get("CountyNo", None)
-
-            # Om länsnumret inte finns, hoppa över denna deviation
             geom = deviation.get("Geometry", {}).get("Point", {}).get("WGS84")
             if not geom:
                 continue
+
             try:
-                # Konverterar strängformatet till latitud och longitud
                 lat, lng = map(float, geom.replace("POINT (", "").replace(")", "").split())
-            # Om det inte går att konvertera, hoppa över denna deviation
             except ValueError:
                 continue
 
-            # Lägger till olyckan i listan med nödvändig information
             accidents.append({
                 "lat": lat,
                 "lng": lng,
@@ -134,7 +102,8 @@ def get_all_accidents():
                 "end": deviation.get("EndTime"),
                 "severity": deviation.get("SeverityText", "Okänd påverkan"),
                 "location": deviation.get("LocationDescriptor", "Okänd plats"),
-                "county": county
+                "county": deviation.get("CountyNo", None)
             })
-    # Returnerar listan med olyckor
+
     return accidents
+
