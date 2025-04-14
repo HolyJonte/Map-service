@@ -2,7 +2,9 @@
 #Tar reda på county och matchar mot prenumeranter (via user_repository.py).
 
 #Kallar smsmodul/ för att skicka SMS.
-
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from smsmodul.send_sms import send_sms
 from api.logic import get_all_accidents
 
@@ -54,41 +56,39 @@ def notify_accidents():
 
     
     if not accidents:
+        #Här borde vi kanske inte skriva ut meddelande.
         print("Inga olyckor hittades.")
         return
 
     for accident in accidents:
-        counties = accident.get("county", [])
-
-        # Om det inte är en lista, konvertera till lista
-        if not isinstance(counties, list):
-            counties = [counties]
-
-        if not counties:
+        county = accident.get("county")
+        
+        # Om county saknas i olycksdata, skriv ut ett meddelande och hoppa över
+        if not county:
             print("County saknas för en olycka vid plats:", accident.get("location"))
             continue
 
-        for county in counties:
-            county_str = str(county)
-            subscribers = get_subscribers_by_county(county_str)
+        county = str(county) 
 
-            if not subscribers:
-                print(f"Inga prenumeranter hittades för county: {county_str}")
-                continue
+        # Använd simulerad funktion för att hämta prenumeranter
+        subscribers = get_subscribers_by_county(county)
+        if not subscribers:
+            print(f"Inga prenumeranter hittades för county: {county}")
+            continue
 
-            message = (f"Olycka i län {county_str}:\n"
-                       f"Plats: {accident.get('location')}\n"
-                       f"Beskrivning: {accident.get('message')}\n"
-                       f"Start: {accident.get('start')}")
-
-            print("Meddelande som skickas:", message)
-
-            for phone in subscribers:
-                try:
-                    send_sms(to=phone, message=message)
-                    print(f"SMS skickat till {phone}")
-                except Exception as e:
-                    print(f"Fel vid SMS till {phone}: {e}")
+        message = (f"Olycka i {county}:\n"
+                   f"Plats: {accident.get('location')}\n"
+                   f"Beskrivning: {accident.get('message')}\n"
+                   f"Start: {accident.get('start')}")
+        # Skicka SMS till varje prenumerant
+        print("Meddelande som skickas:", message)
+                
+        for phone in subscribers:
+            try:
+                send_sms(to=phone, message=message)
+                print(f"SMS skickat till {phone}")
+            except Exception as e:
+                print(f"Fel vid SMS till {phone}: {e}")
 
 # Kör direkt om filen körs
 if __name__ == "__main__":
