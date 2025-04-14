@@ -22,8 +22,10 @@ export class AccidentLayer {
 
   async loadData() {
     try {
+      console.log("🚨 Hämtar olyckor...");
       const response = await fetch('/accidents');
       const accidents = await response.json();
+      console.log("🚨 Antal olyckor hämtade:", accidents.length);
 
       const accidentIcon = L.divIcon({
         className: 'accident-icon',
@@ -32,8 +34,10 @@ export class AccidentLayer {
       });
 
       accidents.forEach(item => {
+        console.log("👉 Bearbetar olycka:", item);
         if (!isNaN(item.lat) && !isNaN(item.lng)) {
-          const marker = L.marker([item.lat, item.lng], { icon: accidentIcon });
+          const marker = L.marker([item.lng, item.lat], { icon: accidentIcon });
+          console.log("✅ Marker lagd på:", item.lat, item.lng);
 
           marker.bindPopup(`
             <div class="accident-popup">

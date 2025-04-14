@@ -59,7 +59,9 @@ class MapComponent extends HTMLElement {
     // Skapar ett nytt lager för fartkameror och vägarbeten och kopplar det till kartan
     this.cameraLayer = new CameraLayer(this.map);
     this.roadworkLayer = new RoadworkLayer(this.map);
-    this.accidentLayer = new AccidentLayer(this.map);
+    setTimeout(() => {
+      this.accidentLayer = new AccidentLayer(this.map);
+    }, 300); //
 
 
 // Lägg till "hitta min plats"-knapp
