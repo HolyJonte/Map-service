@@ -156,3 +156,12 @@ def remove_inactive_subscribers():
     cursor.execute('DELETE FROM subscribers WHERE active = 0 AND last_payment < ?', (one_year_ago,))
     conn.commit()
     conn.close()
+    
+    #Hämtar prenumeranter per län
+""" def get_subscribers_by_county(county):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT phone_number FROM subscribers WHERE county = ? AND active = 1', (county,))
+    rows = cursor.fetchall()
+    conn.close()
+    return [row[0] for row in rows] """
