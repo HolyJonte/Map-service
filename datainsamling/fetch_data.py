@@ -36,7 +36,7 @@ def fetch_cameras():
 
 
 
-
+# Funktion som hämtar alla trafikrelaterade situationer (vägarbeten, olyckor m.m.) från Trafikverkets API
 def fetch_situations():
     body = f"""
     <REQUEST>
@@ -46,8 +46,12 @@ def fetch_situations():
         </QUERY>
     </REQUEST>
     """
+
+    # Skickar POST-förfrågan till Trafikverkets API med XML-bodyn och rätt headers
     response = requests.post(BASE_URL, headers=HEADERS, data=body.strip())
+    # Om API-anropet inte lyckas (t.ex. fel API-nyckel eller nätverksfel) kastas ett fel
     response.raise_for_status()
+    # Returnerar svaret från API:et i JSON-format
     return response.json()
 
 

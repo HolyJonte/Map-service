@@ -1,6 +1,9 @@
+// Denna klass hanterar visning av olyckor på Leaflet-kartan
 export class AccidentLayer {
   constructor(map) {
     this.map = map;
+
+    // Skapar kluster för olyckor
     this.clusterGroup = L.markerClusterGroup({
       iconCreateFunction: function (cluster) {
         const count = cluster.getChildCount();
@@ -17,24 +20,28 @@ export class AccidentLayer {
       }
     });
 
-    this.loadData();
+    this.loadData(); // Laddar olycksdata direkt
   }
 
+  // Hämtar och visar olyckor på kartan
   async loadData() {
     try {
       const response = await fetch('/accidents');
       const accidents = await response.json();
 
+      // Definierar ikon för olycka
       const accidentIcon = L.divIcon({
         className: 'accident-icon',
         html: '<i class="bi bi-exclamation-triangle-fill"></i>',
         iconSize: null
       });
 
+      // Går igenom varje olycka och lägger till markör
       accidents.forEach(item => {
         if (!isNaN(item.lat) && !isNaN(item.lng)) {
-          const marker = L.marker([item.lat, item.lng], { icon: accidentIcon });
+          const marker = L.marker([item.lng, item.lat], { icon: accidentIcon });
 
+          // Skapar popup med information om olyckan
           marker.bindPopup(`
             <div class="accident-popup">
               <h5><i class="bi bi-exclamation-triangle-fill"></i> Olycka</h5>
@@ -52,6 +59,7 @@ export class AccidentLayer {
         }
       });
 
+      // Lägger till alla markörer på kartan
       this.map.addLayer(this.clusterGroup);
     } catch (error) {
       console.error("Kunde inte hämta olyckor:", error);
