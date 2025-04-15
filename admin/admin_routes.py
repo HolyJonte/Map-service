@@ -45,7 +45,7 @@ def two_factor():
         else:
             return render_template('two_factor.html', error="Fel kod")
 
-    return render_template('two_factor.html')
+    return render_template('admin_two_factor.html')
 
 # ===============================
 # Adminpanel för tidningar
@@ -89,7 +89,7 @@ def show_qr():
     # Efter visning rensar vi show_qr-flaggan
     session.pop('show_qr', None)
 
-    return render_template('show_qr.html', qr_data=img_base64)
+    return render_template('admin_show_qr.html', qr_data=img_base64)
 
 # ===============================
 # Logga ut
