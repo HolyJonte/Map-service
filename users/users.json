@@ -13,5 +13,10 @@
     "email": "123@du.se",
     "password": "scrypt:32768:8:1$BvSRhsvW0ln0JveS$450c6bc736286e307ba46fe03a60831e8d1c627a846b2b7a68a3602199b62e870fd30af9126502df1dabb10e508d2a934c59d29f491cf5068845d41aebb5fa24",
     "totp_secret": "R5CRWXQEN7COA5EXSKUUTQCSXLI6PRZZ"
+  },
+  {
+    "email": "madla@du.se",
+    "password": "scrypt:32768:8:1$xnxAGnyWJpnSVi0C$ee2fa356472242335914b8d96317baff6030160f0407762c4cf1a8b226b88c07bd7811397c27a33ae6cb7a081758bedc233772a64309dd977f4b759f0f8471ce",
+    "totp_secret": "P2SAEKBN3LA27FUWUGNO3FA4GHCNSCDJ"
   }
 ]

@@ -30,10 +30,16 @@
       <nav class="menu-items" id="menuItems">
         <!-- Länk till prenumarationssida -->
         <a onclick="window.location.href='/subscriptions/subscription'" id="subscribeBtn" class="subscribe-btn">Prenumerera</a>
-        <!-- Länk för admininloggning -->
-        <a href="#" id="LoginBtn">Logga in</a>
+
+        <!-- Logga in / Logga ut beroende på session -->
+        {% if session.user_logged_in %}
+          <a href="/users/logout" id="LogoutBtn">Logga ut</a>
+        {% else %}
+          <a href="/login" id="LoginBtn">Logga in</a>
+        {% endif %}
       </nav>
     </div>
+
     <div>
         <!-- Huvudrubrik som visas över kartan -->
         <h1>Karta över Sverige</h1>
