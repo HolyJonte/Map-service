@@ -2,6 +2,7 @@
 
 # Importerar funktioner för att hämta data från Trafikverket
 from api.fetch_data import fetch_cameras, fetch_situations
+from datetime import datetime, timezone
 
 #===========================================================================================================
 # Hämtar och returnerar fartkameror
@@ -93,6 +94,17 @@ def get_all_accidents():
                 lat, lng = map(float, geom.replace("POINT (", "").replace(")", "").split())
             except ValueError:
                 continue
+
+            # Tidsfilter: Ta bara med olyckor som inte har passerat sluttiden
+            end_time_str = deviation.get("EndTime")
+            if end_time_str:
+                try:
+                    end_time = datetime.fromisoformat(end_time_str.replace("Z", "+00:00"))
+                    if end_time < datetime.now(timezone.utc):
+                        continue  # Skippar om olyckan är gammal
+                except Exception:
+                    pass  # Fortsätter om datum inte kunde tolkas
+
 
             accidents.append({
                 "lat": lat,

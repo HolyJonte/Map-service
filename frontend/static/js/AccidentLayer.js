@@ -1,9 +1,8 @@
-// Denna klass hanterar visning av olyckor på Leaflet-kartan
 export class AccidentLayer {
   constructor(map) {
     this.map = map;
 
-    // Skapar kluster för olyckor
+    // Skapar klustergrupp
     this.clusterGroup = L.markerClusterGroup({
       iconCreateFunction: function (cluster) {
         const count = cluster.getChildCount();
@@ -20,7 +19,16 @@ export class AccidentLayer {
       }
     });
 
-    this.loadData(); // Laddar olycksdata direkt
+    // Lägger till klustret i kartan
+    this.map.addLayer(this.clusterGroup);
+
+    // Laddar initial data
+    this.loadData();
+
+    // Laddar data var 60:e sekund
+    this.interval = setInterval(() => {
+      this.loadData();
+    }, 60000); // 60000 ms = 60 sek
   }
 
   // Hämtar och visar olyckor på kartan
@@ -29,19 +37,20 @@ export class AccidentLayer {
       const response = await fetch('/accidents');
       const accidents = await response.json();
 
-      // Definierar ikon för olycka
+      // Rensar gamla markörer
+      this.clusterGroup.clearLayers();
+
       const accidentIcon = L.divIcon({
         className: 'accident-icon',
         html: '<i class="bi bi-exclamation-triangle-fill"></i>',
         iconSize: null
       });
 
-      // Går igenom varje olycka och lägger till markör
+      // Lägg till nya markörer
       accidents.forEach(item => {
         if (!isNaN(item.lat) && !isNaN(item.lng)) {
           const marker = L.marker([item.lng, item.lat], { icon: accidentIcon });
 
-          // Skapar popup med information om olyckan
           marker.bindPopup(`
             <div class="accident-popup">
               <h5><i class="bi bi-exclamation-triangle-fill"></i> Olycka</h5>
@@ -50,7 +59,7 @@ export class AccidentLayer {
                 ${item.severity || "Okänd påverkan"}
               </div>
               <p><strong>Starttid:</strong> ${item.start ? new Date(item.start).toLocaleString() : "Okänt"}</p>
-              <p><strong>Sluttid:</strong> ${item.end ? new Date(item.end).toLocaleString() : "Okänt"}</p>
+              <p><strong>Beräknad sluttid:</strong> ${item.end ? new Date(item.end).toLocaleString() : "Okänt"}</p>
               <p>${item.message}</p>
             </div>
           `);
@@ -58,9 +67,6 @@ export class AccidentLayer {
           this.clusterGroup.addLayer(marker);
         }
       });
-
-      // Lägger till alla markörer på kartan
-      this.map.addLayer(this.clusterGroup);
     } catch (error) {
       console.error("Kunde inte hämta olyckor:", error);
     }
