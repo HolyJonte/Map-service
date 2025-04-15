@@ -5,14 +5,34 @@
   <title>Prenumerera</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- Ladda Klarnas JavaScript-SDK -->
+  <script src="https://x.klarnacdn.net/kp/lib/v1/api.js" async></script>
 
-<style>
-    /* Styling för Prenumerera-knappen */
-    .subscribe-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      z-index: 1000; /* Över kartan */
+  <style>
+    /* Styling för formuläret och meddelanden */
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    form {
+      margin-top: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      max-width: 300px;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
       padding: 10px 20px;
       background-color: #4CAF50;
       color: white;
@@ -21,80 +41,46 @@
       cursor: pointer;
       font-size: 16px;
     }
-    .subscribe-btn:hover {
+    button:hover {
       background-color: #45a049;
-    }
-
-    /* Styling för modalen */
-    .modal {
-      display: none; /* Dold som standard */
-      position: fixed;
-      z-index: 1001; /* Över kartan */
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5); /* Dimmad bakgrund */
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background-color: white;
-      padding: 20px;
-      border-radius: 5px;
-      width: 400px;
-      max-width: 90%;
-      position: relative;
-    }
-    .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      font-size: 24px;
-      cursor: pointer;
-      color: #333;
     }
     .error {
       color: red;
     }
     .success {
       color: green;
+      margin: 5px 0;
+    }
+    #klarna-checkout-container {
+      margin-top: 20px;
+    }
+    #response {
+      margin-top: 20px;
     }
   </style>
 </head>
-<body onload="openModal()">
-  <h1>Starta din SMS-prennumeration</h1>
+<body>
+  <h1>Starta din SMS-prenumeration</h1>
 
+  <!-- Formulär direkt på sidan -->
+  <div>
+    <h2>Starta Prenumeration</h2>
+    <form id="subscription-form">
+      <label for="phone_number">Telefonnummer:</label>
+      <input type="text" id="phone_number" name="phone_number" required><br><br>
 
-  <!-- Modal för prenumerationsformulär -->
-  <div id="subscription-modal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn" onclick="closeModal()">&times;</span>
-      <h2>Starta Prenumeration</h2>
-      <form id="subscription-form">
-        <label for="phone_number">Telefonnummer:</label><br>
-        <input type="text" id="phone_number" name="phone_number" required><br><br>
+      <label for="county">Län (ange ett nummer, t.ex. 1 för Stockholm):</label>
+      <input type="number" id="county" name="county" required><br><br>
 
-        <label for="county">Län (ange ett nummer, t.ex. 1 för Stockholm):</label><br>
-        <input type="number" id="county" name="county" required><br><br>
-
-        <button type="submit">Starta Prenumeration</button>
-      </form>
-      <div id="response" style="margin-top: 20px;"></div>
-    </div>
+      <button type="submit">Starta Prenumeration</button>
+    </form>
+    <!-- Plats för Klarnas widget -->
+    <div id="klarna-checkout-container"></div>
+    <div id="response"></div>
   </div>
-  <!-- JavaScript för modal och formulär -->
+
+  <!-- JavaScript för formulär och Klarna -->
   <script>
-    // Funktioner för att visa/dölja modalen
-    function openModal() {
-      document.getElementById('subscription-modal').style.display = 'flex';
-    }
-
-    function closeModal() {
-      document.getElementById('subscription-modal').style.display = 'none';
-      document.getElementById('response').innerHTML = ''; // Rensa tidigare svar
-    }
-
     // Hantera formulärinskick
     document.getElementById('subscription-form').addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -118,22 +104,35 @@
         const data = await response.json();
 
         if (response.ok) {
-          responseDiv.innerHTML = `<p class="success">Prenumeration startad! Session ID: ${data.session_id}, Client Token: ${data.client_token}</p>`;
+          // Spara phoneNumber för senare användning
+          localStorage.setItem('phoneNumber', phoneNumber);
+          // Logga client_token för att kontrollera att den finns
+          console.log("Client token:", data.client_token);
+          // Initiera Klarnas betalningswidget
+          Klarna.Payments.init({
+            client_token: data.client_token
+          });
+
+          // Ladda widgeten i klarna-checkout-container
+          Klarna.Payments.load({
+            container: '#klarna-checkout-container',
+            payment_method_category: 'card' // Eller annan metod, t.ex. 'pay_later'
+          }, function(res) {
+            console.log("Klarna load response:", res); // Logga svaret från Klarna
+            if (res.error) {
+              responseDiv.innerHTML = `<p class="error">Fel vid laddning av Klarna: ${res.error}</p>`;
+            } else {
+              responseDiv.innerHTML = `<p>Vänligen slutför betalningen nedan.</p>`;
+            }
+          });
         } else {
           responseDiv.innerHTML = `<p class="error">Fel: ${data.error}</p>`;
         }
       } catch (error) {
         responseDiv.innerHTML = `<p class="error">Något gick fel: ${error.message}</p>`;
+        console.error("Fetch error:", error);
       }
     });
-
-    // Stäng modalen om användaren klickar utanför
-    window.onclick = function(event) {
-      const modal = document.getElementById('subscription-modal');
-      if (event.target === modal) {
-        closeModal();
-      }
-    };
   </script>
 </body>
 </html>

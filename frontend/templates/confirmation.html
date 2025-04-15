@@ -3,9 +3,21 @@
 <head>
     <title>Prenumeration Bekräftad</title>
 </head>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prenumeration Bekräftad</title>
+</head>
 <body>
-    <h1>Tack för din prenumeration!</h1>
-    <p>Din SMS-prenumeration har startats. Du kommer att få ett bekräftelse-SMS snart.</p>
-    <a href="/">Tillbaka till startsidan</a>
+  <h1>Tack för din prenumeration!</h1>
+  <p class="success">Din betalning är godkänd!<br>Din prenumeration är startad!</p>
+  {% if subscriber_id %}
+    <p>Ditt ID är: <strong>{{ subscriber_id }}</strong></p>
+    <p>Spara detta ID om du vill avbryta prenumerationen senare.</p>
+  {% else %}
+    <p>Vi kunde inte hitta ditt ID.</p>
+  {% endif %}
+  <a href="/">Tillbaka till startsidan</a>
 </body>
+</html>
 </html>

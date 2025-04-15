@@ -1,6 +1,8 @@
 import sys
 import os
 
+
+
 # Lägg till din projektmapp i systemets sökväg
 project_home = '/home/MaMaJoViDa/Map-service'
 if project_home not in sys.path:
