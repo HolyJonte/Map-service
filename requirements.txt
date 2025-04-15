@@ -4,4 +4,6 @@ pyotp
 qrcode[pil]
 pillow
 
-# pip install --user -r requirements.txt
+# cd ~/Map-service
+# python3.12 -m pip install --user -r requirements.txt
+
