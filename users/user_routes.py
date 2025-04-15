@@ -83,7 +83,8 @@ def login():
             # Gå vidare till 2FA
             session['user_email'] = email
             session['user_awaiting_2fa'] = True
-            return redirect(url_for('user_routes.verify_user_2fa'))
+            session['show_user_qr'] = True
+            return redirect(url_for('user_routes.show_user_qr'))
 
         return render_template('user_login.html', error="Fel e-post eller lösenord")
 
@@ -109,11 +110,6 @@ def show_user_qr():
 
     return render_template('user_show_qr.html', qr_data=qr_data)
 
-
-
-
-
-
 # ===============================
 # Verifiera engångskod från Authenticator
 # ===============================
@@ -135,6 +131,17 @@ def verify_user_2fa():
             session['user_logged_in'] = True
             return redirect(url_for('serve_index'))
 
-        return render_template('user_2fa.html', error="Fel kod")
+        return render_template('user_two_factor.html', error="Fel kod")
 
     return render_template('user_two_factor.html')
+
+
+# ===============================
+# Log out
+# ===============================
+@user_routes.route('/logout')
+def logout():
+    session.pop('user_logged_in', None)
+    session.pop('user_email', None)
+    session.pop('user_awaiting_2fa', None)
+    return redirect(url_for('serve_index'))
