@@ -68,7 +68,6 @@ def register():
 # ===============================
 # Inloggning av befintlig användare
 # ===============================
-
 @user_routes.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -80,23 +79,28 @@ def login():
         user = next((u for u in users if u['email'] == email), None)
 
         if user and check_password_hash(user['password'], password):
-            # Gå vidare till 2FA
             session['user_email'] = email
             session['user_awaiting_2fa'] = True
-            session['show_user_qr'] = True
-            return redirect(url_for('user_routes.show_user_qr'))
+
+            # Om användaren inte har en totp_secret → visa QR-kod först
+            if not user.get("totp_secret"):
+                session['show_user_qr'] = True
+                return redirect(url_for('user_routes.show_user_qr'))
+
+            # Annars direkt till kodverifiering
+            return redirect(url_for('user_routes.verify_user_2fa'))
 
         return render_template('user_login.html', error="Fel e-post eller lösenord")
 
     return render_template('user_login.html')
 
+
 # ===============================
 # Visa QR-kod för 2FA
 # ===============================
-
 @user_routes.route('/show-qr')
 def show_user_qr():
-    if not session.get('user_awaiting_2fa'):
+    if not session.get('user_awaiting_2fa') or not session.get('show_user_qr'):
         return redirect(url_for('user_routes.login'))
 
     email = session.get('user_email')
@@ -108,13 +112,17 @@ def show_user_qr():
 
     qr_data = generate_user_qr_base64(user)
 
+    # Efter visning tar vi bort flaggan så den inte visas igen
+    session.pop('show_user_qr', None)
+
     return render_template('user_show_qr.html', qr_data=qr_data)
+
 
 # ===============================
 # Verifiera engångskod från Authenticator
 # ===============================
 
-@user_routes.route('/users/2fa', methods=['GET', 'POST'])
+@user_routes.route('/2fa', methods=['GET', 'POST'])
 def verify_user_2fa():
     if not session.get('user_awaiting_2fa'):
         return redirect(url_for('user_routes.login'))
@@ -129,7 +137,7 @@ def verify_user_2fa():
         if user and pyotp.TOTP(user['totp_secret']).verify(code):
             session.pop('user_awaiting_2fa', None)
             session['user_logged_in'] = True
-            return redirect(url_for('serve_index'))
+            return redirect('/')
 
         return render_template('user_two_factor.html', error="Fel kod")
 

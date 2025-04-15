@@ -3,5 +3,15 @@
     "email": "jonatan.cairenius@hotmail.com",
     "password": "scrypt:32768:8:1$HmkpvRv0OJb8rGlN$18845c6aa09d45d5ce7b044124d4dc7a3cf259136aa0cd61fcf255a71542222dc5bae1ba0deb22e647704bb4402d4f73b6e6a757ca935f9643a4751dda1a6a85",
     "totp_secret": "XOYDTFEFGRJUAJKPVSZJ6PZ6RAJSY3WB"
+  },
+  {
+    "email": "jonatan.cairenius@gmail.com",
+    "password": "scrypt:32768:8:1$9IdJQy0zfElkwJ0u$7bfc6854840cb6250735f6e6668114b100d65deffe5a4069adeeb8b85e44656b2816a4689e1696f5719c67051808b9d75587d3a5bed45cfaee24ca6e42cd17d0",
+    "totp_secret": "LBWQM6YI4KLYKXEKBHOW6IM224YJ7M7L"
+  },
+  {
+    "email": "123@du.se",
+    "password": "scrypt:32768:8:1$BvSRhsvW0ln0JveS$450c6bc736286e307ba46fe03a60831e8d1c627a846b2b7a68a3602199b62e870fd30af9126502df1dabb10e508d2a934c59d29f491cf5068845d41aebb5fa24",
+    "totp_secret": "R5CRWXQEN7COA5EXSKUUTQCSXLI6PRZZ"
   }
 ]
