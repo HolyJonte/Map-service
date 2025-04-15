@@ -31,7 +31,7 @@
         <!-- Länk till prenumarationssida -->
         <a onclick="window.location.href='/subscriptions/subscription'" id="subscribeBtn" class="subscribe-btn">Prenumerera</a>
         <!-- Länk för admininloggning -->
-        <a href="#" id="adminLoginBtn">Admin Inlogg</a>
+        <a href="#" id="LoginBtn">Logga in</a>
       </nav>
     </div>
     <div>
@@ -69,13 +69,14 @@
       menuItems.classList.toggle('show');
     });
 
-    const adminBtn = document.getElementById('adminLoginBtn');
-    if (adminBtn) {
-      adminBtn.addEventListener('click', function (e) {
-        e.preventDefault();
-        window.location.href = "/admin/login";
-      });
-    }
+    const loginBtn = document.getElementById('LoginBtn');
+if (loginBtn) {
+  loginBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    window.location.href = "/login";
+  });
+}
+
   </script>
 
 

@@ -1,0 +1,6 @@
+[
+  {
+    "email": "Madde@hotmail.com",
+    "password": "scrypt:32768:8:1$yO3t26aTW473HEkL$b50c7ea0793944aa3b320c2c62f31c4805bb183fccea75253e0d3bef43b412ed733bf4c45e5c20bac6fc8c67532db54627ac961aaaefbabc914a824d33bbdccb"
+  }
+]

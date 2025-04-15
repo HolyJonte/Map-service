@@ -15,6 +15,8 @@ from prenumerationsmodul.subscription_routes import subscription_routes
 #Importerar admin_routes
 from admin.admin_routes import admin_routes
 
+from users.user_routes import user_routes
+
 # Lägg till projektroten så att Python hittar andra moduler/mappar
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -40,6 +42,8 @@ app.register_blueprint(subscription_routes, url_prefix='/subscriptions')
 # Registrerar admin-rutter (admin_routes) som en blueprint
 app.register_blueprint(admin_routes)
 
+app.register_blueprint(user_routes, url_prefix='/users')
+
 # Definierar en route för att servera index.html-filen från frontend-mappen
 @app.route('/')
 def serve_index():
@@ -49,6 +53,11 @@ def serve_index():
 @app.route('/<path:filename>')
 def serve_static(filename):
     return send_from_directory(frontend_path, filename)
+
+@app.route('/login')
+def login_choice():
+    return render_template("login_choice.html")
+
 
 # Om detta skript körs direkt, starta Flask-servern
 if __name__ == '__main__':

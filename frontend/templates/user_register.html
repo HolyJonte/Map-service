@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <title>Registrera konto</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="p-5">
+  <div class="container">
+    <h2>Registrera dig</h2>
+    {% if error %}
+      <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    <form method="POST">
+      <input type="email" name="email" placeholder="E-post" class="form-control mb-3" required>
+      <input type="password" name="password" placeholder="Lösenord" class="form-control mb-3" required>
+      <button type="submit" class="btn btn-success">Skapa konto</button>
+    </form>
+  </div>
+</body>
+</html>
