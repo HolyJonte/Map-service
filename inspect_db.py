@@ -1,3 +1,8 @@
+"""
+För att titta vad som finns i databasen, kör:
+python inspect_db.py
+"""
+
 import sqlite3
 
 conn = sqlite3.connect("trafikvida.db")

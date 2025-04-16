@@ -24,7 +24,7 @@ def initialize_database():
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS pending_subscribers (
             session_id TEXT PRIMARY KEY,
-            phone_number TEXT NOT NULL,
+            phone_number TEXT UNIQUE NOT NULL,
             county INTEGER NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
