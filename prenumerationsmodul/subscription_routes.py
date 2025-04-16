@@ -47,12 +47,45 @@ def start_subscription():
 
     return jsonify({"session_id": session_id, "client_token": client_token}), 200
 # Rutt för att verifiera betalning och aktivera prenumeration
+
+
+
 @subscription_routes.route('/prenumeration-startad', methods=['GET', 'POST'])
 def prenumeration_startad():
     if request.method == 'POST':
-        # Hantera callback från Klarna
-        data = request.json
+        data = request.get_json()
 
+        # ✅ Hantera fejksvar från test-knappen
+        if data.get("status") == "AUTHORIZED" and data.get("authorization_token") == "fake-token-123":
+            session_id = data.get("session_id")
+            klarna_token = "simulated_klarna_token_xyz"
+
+            if not session_id:
+                return jsonify({"error": "Missing session_id"}), 400
+
+            result = get_pending_subscriber(session_id)
+            if not result:
+                return jsonify({"error": "Session ID not found"}), 404
+
+            # ✅ FIX: hämta attribut från objektet, inte packa upp tuple
+            phone_number = result.phone_number
+            county = result.county
+
+            existing = subscriber_exists(phone_number)
+            if existing:
+                update_subscriber(phone_number, klarna_token)
+            else:
+                if not add_subscriber(phone_number, county, klarna_token):
+                    return jsonify({"error": "Phone number already exists"}), 400
+
+            delete_pending_subscriber(session_id)
+
+            subscriber_id = subscriber_exists(phone_number)
+
+
+            return render_template("confirmation.html", subscriber_id=subscriber_id)
+
+        # ✅ Hantera vanliga Klarna-svar
         try:
             is_valid, session_id, klarna_token = verify_payment(data)
         except Exception as e:
@@ -61,14 +94,13 @@ def prenumeration_startad():
         if not is_valid or not session_id:
             return jsonify({"message": "Payment not completed or invalid"}), 400
 
-        # Hämta den väntande prenumeranten
         result = get_pending_subscriber(session_id)
         if not result:
             return jsonify({"error": "Session ID not found"}), 404
 
-        phone_number, county = result
+        phone_number = result.phone_number
+        county = result.county
 
-        # Kontrollera om prenumeranten redan finns och lägg till eller uppdatera
         existing = subscriber_exists(phone_number)
         if existing:
             update_subscriber(phone_number, klarna_token)
@@ -76,14 +108,20 @@ def prenumeration_startad():
             if not add_subscriber(phone_number, county, klarna_token):
                 return jsonify({"error": "Phone number already exists"}), 400
 
-        # Ta bort från pending_subscribers
         delete_pending_subscriber(session_id)
 
-        return jsonify({"message": f"Subscriber {phone_number} added or renewed as active"}), 201
+        subscriber_id = subscriber_exists(phone_number)
+        return render_template("confirmation.html", subscriber_id=subscriber_id)
 
-    else:  # GET
-        # Visa bekräftelsesida för användaren
-        return render_template('confirmation.html')
+    # GET-anrop (t.ex. direktlänk till sidan)
+    return render_template("confirmation.html")
+
+
+
+
+
+
+
 # Rutt för att avbryta prenumeration
 @subscription_routes.route('/cancel-subscription', methods=['POST'])
 def cancel_subscription():
