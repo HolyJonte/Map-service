@@ -85,11 +85,11 @@
     // Hantera formulärinskick
     document.getElementById('subscription-form').addEventListener('submit', async (event) => {
       event.preventDefault();
-
+  
       const phoneNumber = document.getElementById('phone_number').value;
       const county = document.getElementById('county').value;
       const responseDiv = document.getElementById('response');
-
+  
       try {
         const response = await fetch('/subscriptions/start-subscription', {
           method: 'POST',
@@ -101,21 +101,19 @@
             county: parseInt(county),
           }),
         });
-
+  
         const data = await response.json();
-
+  
         if (response.ok) {
-          // Spara phoneNumber för senare användning
+          // Spara till localStorage
           localStorage.setItem('phoneNumber', phoneNumber);
           localStorage.setItem('klarnaSessionId', data.session_id);
-          // Logga client_token för att kontrollera att den finns
           console.log("Client token:", data.client_token);
-          // Initiera Klarnas betalningswidget
+  
           Klarna.Payments.init({
             client_token: data.client_token
           });
-
-          // Ladda widgeten i klarna-checkout-container
+  
           Klarna.Payments.load({
             container: '#klarna-checkout-container',
             payment_method_category: 'card'
@@ -124,19 +122,19 @@
             if (res.error) {
               responseDiv.innerHTML = `<p class="error">Fel vid laddning av Klarna: ${res.error}</p>`;
             } else {
-              responseDiv.innerHTML = `<p>Vänligen slutför betalningen nedan.</p>`;
-
-              // ✅ Skapa fejkknappen dynamiskt
+              responseDiv.innerHTML = `<p></p>`;
+  
+              // ✅ Skapa fake-knappen om den inte redan finns
               if (!document.getElementById('klarna-fake-click')) {
                 const fakeBtn = document.createElement('button');
                 fakeBtn.id = 'klarna-fake-click';
-                fakeBtn.textContent = 'Klarna fungerar inte? Klicka här';
-
-                // Styling direkt i JS
+                fakeBtn.textContent = 'Betala';
+  
+                // Styling
                 fakeBtn.style.marginTop = '20px';
                 fakeBtn.style.display = 'block';
                 fakeBtn.style.padding = '12px 24px';
-                fakeBtn.style.backgroundColor = 'darkorange';
+                fakeBtn.style.backgroundColor = 'green';
                 fakeBtn.style.color = 'white';
                 fakeBtn.style.border = 'none';
                 fakeBtn.style.borderRadius = '8px';
@@ -144,56 +142,13 @@
                 fakeBtn.style.cursor = 'pointer';
                 fakeBtn.style.zIndex = '10000';
 
-                // Lägg knappen ovanpå Klarna-container
-                document.querySelector('#klarna-checkout-container').appendChild(fakeBtn);
-
-                // Klickhändelse
-                fakeBtn.addEventListener('click', async () => {
-                  const sessionId = localStorage.getItem("klarnaSessionId");
-                  const phoneNumber = localStorage.getItem("phoneNumber");
-
-                  if (!sessionId || !phoneNumber) {
-                    alert("Session saknas. Fyll i formuläret först.");
-                    return;
-                  }
-
-                  try {
-                    const response = await fetch('/subscriptions/prenumeration-startad', {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify({
-                        status: "AUTHORIZED",
-                        session_id: sessionId,
-                        authorization_token: "fake-token-123"
-                      }),
-                    });
-
-                    // ✅ Om svaret är en redirect → gå dit
-                    if (response.redirected) {
-                      window.location.href = response.url;
-                      return;
-                    }
-
-                    // ✅ Om inte redirect, kontrollera content-type
-                    const contentType = response.headers.get("Content-Type") || "";
-                    if (contentType.includes("application/json")) {
-                      const json = await response.json();
-                      alert("Fel: " + (json?.error || "Okänt fel"));
-                    } else {
-                      // Det var HTML, men inte redirect – något är knas
-                      alert("Något gick fel. Sidan kunde inte laddas korrekt.");
-                    }
-
-                  } catch (err) {
-                    console.error("Simulerad Klarna-fel:", err);
-                    alert("Något gick fel: " + err.message);
-                  }
+                // ✅ Klick: gå direkt till confirmation-sidan
+                fakeBtn.addEventListener('click', () => {
+                  window.location.href = "/subscriptions/prenumeration-startad";
                 });
 
-                } else {
-                  console.log("Fake button already exists, not creating a new one.");
+                // Lägg till knappen
+                document.querySelector('#klarna-checkout-container').appendChild(fakeBtn);
               }
             }
           });
@@ -206,15 +161,13 @@
           responseDiv.innerHTML = `<p class="error">Fel: ${data.error}</p>`;
         } else {
           responseDiv.innerHTML = `<p class="error">Okänt fel. Försök igen senare.</p>`;
-
         }
       } catch (error) {
         responseDiv.innerHTML = `<p class="error">Något gick fel: ${error.message}</p>`;
         console.error("Fetch error:", error);
       }
     });
-
-
   </script>
+
 </body>
 </html>
