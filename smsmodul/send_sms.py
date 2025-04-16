@@ -2,7 +2,11 @@ import requests
 import json
 from requests.auth import HTTPBasicAuth
 
-def send_sms(to, message, testMode=True):
+# Tillagt av Jonte och Madde
+from prenumerationsmodul.repository import log_sms
+
+# Lagt till parametrar (Madde och Jonte)
+def send_sms(to, message, newspaper_id=None, subscriber_id=None, testMode=True):
     # Ange rätt endpoint-URL från HelloSMS-dokumentationen
     url = "https://api.hellosms.se/v1/sms/send/"  # OBS: Ändra till den korrekta API-URL:en beroende på om det är test eller äkta
 
@@ -27,10 +31,15 @@ def send_sms(to, message, testMode=True):
         response = requests.post(url, json=payload, headers=headers
                                  , auth=HTTPBasicAuth(api_username, api_password))
         response.raise_for_status()  # Om statuskod inte är 2xx, höjs ett fel.
-        
+
         # Skriv ut svar för att se hur det ser ut (t.ex. antal SMS-segment etc.)
         print("Statuskod:", response.status_code)
         print("Response:", json.dumps(response.json(), indent=2))
+
+        # Logga SMS till databasen om ID:n är angivna (Tillagt av Jonte och Madde)
+        if newspaper_id and subscriber_id:
+            log_sms(newspaper_id, subscriber_id, to, message)
+
     except requests.exceptions.RequestException as e:
         print("Något gick fel:", e)
 

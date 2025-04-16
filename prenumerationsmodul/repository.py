@@ -59,6 +59,21 @@ def initialize_database():
         )
     ''')
 
+    # Skapa tabell för sms-loggar
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS sms_logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        newspaper_id INTEGER NOT NULL,
+        subscriber_id INTEGER NOT NULL,
+        recipient TEXT NOT NULL,
+        message TEXT NOT NULL,
+        sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (newspaper_id) REFERENCES newspapers(id),
+        FOREIGN KEY (subscriber_id) REFERENCES subscribers(id)
+    )
+''')
+
+
 
 # =========================================================================================
 # Avslut
@@ -276,3 +291,18 @@ def validate_user_login(email, password):
 
 def verify_user_2fa_code(user, code):
     return pyotp.TOTP(user["totp_secret"]).verify(code)
+
+
+
+# =========================================================================================
+# SMS-log funktion (Madde och Jontes del)
+# =========================================================================================
+def log_sms(newspaper_id, subscriber_id, recipient, message):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO sms_logs (newspaper_id, subscriber_id, recipient, message)
+        VALUES (?, ?, ?, ?)
+    ''', (newspaper_id, subscriber_id, recipient, message))
+    conn.commit()
+    conn.close()
