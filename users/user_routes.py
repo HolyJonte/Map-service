@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from users.user_logic import (
     find_user_by_email,
-    create_user,
+    register_user,
     generate_user_qr_base64,
     validate_login,
     verify_totp_code
@@ -21,7 +21,7 @@ def register():
         if find_user_by_email(email):
             return render_template('user_register.html', error="E-post finns redan")
 
-        create_user(email, password)
+        register_user(email, password)
 
         session['user_email'] = email
         session['user_awaiting_2fa'] = True

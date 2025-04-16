@@ -3,12 +3,13 @@ import qrcode
 import base64
 from io import BytesIO
 
-from prenumerationsmodul.repository import (
-    create_user as db_create_user,
-    get_user_by_email as db_get_user_by_email,
-    validate_user_login as db_validate_login,
-    verify_user_2fa_code as db_verify_code
+from database.crud.user_crud import (
+    create_user,
+    get_user_by_email,
+    validate_user_login,
+    verify_user_2fa_code
 )
+
 
 # ===========================
 # Generera QR-kod för en användare
@@ -30,17 +31,20 @@ def generate_user_qr_base64(user):
 # Hjälpmetoder
 # ===========================
 def find_user_by_email(email):
-    return db_get_user_by_email(email)
+    return get_user_by_email(email)
 
-def create_user(email, password):
+def register_user(email, password):
     secret = pyotp.random_base32()
-    success = db_create_user(email, password, secret)
+    success = create_user(email, password, secret)
     if success:
-        return db_get_user_by_email(email)
+        return get_user_by_email(email)
     return None
 
+
 def validate_login(email, password):
-    return db_validate_login(email, password)
+    return validate_user_login(email, password)
+
 
 def verify_totp_code(user, code):
-    return db_verify_code(user, code)
+    return verify_user_2fa_code(user, code)
+

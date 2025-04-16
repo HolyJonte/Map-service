@@ -3,11 +3,13 @@
 import os
 import pyotp
 import qrcode
-from prenumerationsmodul.repository import (
+from database.crud.subscriber_crud import get_all_subscribers
+from database.crud.newspaper_crud import (
     get_all_newspapers as db_get_all_newspapers,
     add_newspaper as db_add_newspaper,
     delete_newspaper as db_delete_newspaper
 )
+
 
 # ================================
 # Konfiguration
