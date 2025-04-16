@@ -143,12 +143,44 @@
                 fakeBtn.style.zIndex = '10000';
 
                 // ✅ Klick: gå direkt till confirmation-sidan
-                fakeBtn.addEventListener('click', () => {
-                  window.location.href = "/subscriptions/prenumeration-startad";
-                });
+                fakeBtn.addEventListener('click', async () => {
+                const sessionId = localStorage.getItem("klarnaSessionId");
 
-                // Lägg till knappen
-                document.querySelector('#klarna-checkout-container').appendChild(fakeBtn);
+                if (!sessionId) {
+                  alert("Session saknas. Fyll i formuläret först.");
+                  return;
+                }
+
+                try {
+                  const response = await fetch('/subscriptions/prenumeration-startad', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      status: "AUTHORIZED",
+                      session_id: sessionId,
+                      authorization_token: "fake-token-123"
+                    }),
+                  });
+
+                  if (response.redirected) {
+                    // Om Flask gör en redirect → följ den
+                    window.location.href = response.url;
+                  } else {
+                    const html = await response.text();
+                    document.documentElement.innerHTML = html;
+                  }
+
+                } catch (err) {
+                  alert("Något gick fel: " + err.message);
+                  console.error(err);
+                }
+              });
+
+
+              // Lägg till knappen
+              document.querySelector('#klarna-checkout-container').appendChild(fakeBtn);
               }
             }
           });
