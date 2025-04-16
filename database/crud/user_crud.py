@@ -6,7 +6,7 @@ from database.models.user_model import User
 
 
 # =========================================================================================
-# User-funktioner (Madde och Jontes del)
+# User-funktioner
 # =========================================================================================
 
 def create_user(email, password, totp_secret):

@@ -5,10 +5,15 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row  # så vi får dict-aktiga rader
     return conn
 
+
+# =========================================================================================
+# Skapar en databas och nödvändiga tabeller om de inte redan finns
+# =========================================================================================
 def initialize_database():
     conn = get_db_connection()
     cursor = conn.cursor()
     
+    # Skapar subscribers-tabellen
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS subscribers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -21,6 +26,7 @@ def initialize_database():
         )
     ''')
 
+    # Skapar pending_subscribers-tabellen
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS pending_subscribers (
             session_id TEXT PRIMARY KEY,
@@ -30,6 +36,7 @@ def initialize_database():
         )
     ''')
 
+    # Skapar newspapers-tabellen
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS newspapers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -39,6 +46,7 @@ def initialize_database():
         )
     ''')
 
+    # Skapar users-tabellen
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -48,6 +56,7 @@ def initialize_database():
         )
     ''')
 
+    # Skapar sms_logs-tabellen
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS sms_logs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,

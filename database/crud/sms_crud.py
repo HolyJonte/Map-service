@@ -1,7 +1,7 @@
 from database.database import get_db_connection
 
 # =========================================================================================
-# SMS-log funktion (Madde och Jontes del)
+# SMS-log funktion
 # =========================================================================================
 def log_sms(newspaper_id, subscriber_id, recipient, message):
     conn = get_db_connection()

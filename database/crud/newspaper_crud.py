@@ -3,7 +3,7 @@ from database.database import get_db_connection
 from database.models.newspaper_model import Newspaper
 
 # =========================================================================================
-# Newspaper-funktioner (Madde och Jontes del)
+# Newspaper-funktioner
 # =========================================================================================
 
 def get_all_newspapers():

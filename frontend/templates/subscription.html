@@ -59,6 +59,9 @@
     }
   </style>
 </head>
+
+
+
 <body>
   <h1>Starta din SMS-prenumeration</h1>
 
@@ -85,11 +88,11 @@
     // Hantera formulärinskick
     document.getElementById('subscription-form').addEventListener('submit', async (event) => {
       event.preventDefault();
-  
+
       const phoneNumber = document.getElementById('phone_number').value;
       const county = document.getElementById('county').value;
       const responseDiv = document.getElementById('response');
-  
+
       try {
         const response = await fetch('/subscriptions/start-subscription', {
           method: 'POST',
@@ -101,19 +104,19 @@
             county: parseInt(county),
           }),
         });
-  
+
         const data = await response.json();
-  
+
         if (response.ok) {
           // Spara till localStorage
           localStorage.setItem('phoneNumber', phoneNumber);
           localStorage.setItem('klarnaSessionId', data.session_id);
           console.log("Client token:", data.client_token);
-  
+
           Klarna.Payments.init({
             client_token: data.client_token
           });
-  
+
           Klarna.Payments.load({
             container: '#klarna-checkout-container',
             payment_method_category: 'card'
@@ -123,13 +126,13 @@
               responseDiv.innerHTML = `<p class="error">Fel vid laddning av Klarna: ${res.error}</p>`;
             } else {
               responseDiv.innerHTML = `<p></p>`;
-  
+
               // ✅ Skapa fake-knappen om den inte redan finns
               if (!document.getElementById('klarna-fake-click')) {
                 const fakeBtn = document.createElement('button');
                 fakeBtn.id = 'klarna-fake-click';
                 fakeBtn.textContent = 'Betala';
-  
+
                 // Styling
                 fakeBtn.style.marginTop = '20px';
                 fakeBtn.style.display = 'block';

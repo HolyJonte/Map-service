@@ -3,15 +3,16 @@ from datetime import datetime, timedelta
 
 from betalningsmodul.klarna_integration import initiate_payment, verify_payment, cancel_token
 from database.database import initialize_database
+
 from database.crud.subscriber_crud import (
     add_subscriber, update_subscriber, subscriber_exists,
     deactivate_subscriber, manual_add_subscriber, get_all_subscribers,
     get_subscriber_klarna_token, remove_inactive_subscribers
 )
+
 from database.crud.pending_crud import (
     add_pending_subscriber, get_pending_subscriber, delete_pending_subscriber
 )
-
 
 
 ### VI BEHÖVER: Lägga in admin inlogg och flask session hantering så att vi kan kräva inloigg 
@@ -22,11 +23,16 @@ subscription_routes = Blueprint('subscriptions', __name__)
 # Kör funktionen för att initiera databasen när modulen laddas
 initialize_database()
 
-# Renderar startsidan för prenumerationer
+# ==========================================================================================
+# Rutter för prenumerationer
+# ==========================================================================================
 @subscription_routes.route('/subscription', methods=['GET'])
 def show_subscription_page():
     return render_template('subscription.html')
-# Rutt för att starta prenumeration
+
+# ==========================================================================================
+# Rutt för att starta prenumeration  (När man klickar på "Starta prenumeration" i appen)
+# ==========================================================================================
 @subscription_routes.route('/start-subscription', methods=['POST'])
 def start_subscription():
     data = request.json
@@ -46,10 +52,10 @@ def start_subscription():
         return jsonify({"error": "Phone number already in process"}), 400
 
     return jsonify({"session_id": session_id, "client_token": client_token}), 200
-# Rutt för att verifiera betalning och aktivera prenumeration
 
-
-
+# ==========================================================================================
+# Rutt för att verifiera betalning och aktivera prenumeration (När man klickar på "Betala" i Klarna)
+# ==========================================================================================
 @subscription_routes.route('/prenumeration-startad', methods=['GET', 'POST'])
 def prenumeration_startad():
     if request.method == 'POST':
@@ -120,9 +126,9 @@ def prenumeration_startad():
 
 
 
-
-
+# ==========================================================================================
 # Rutt för att avbryta prenumeration
+# ==========================================================================================
 @subscription_routes.route('/cancel-subscription', methods=['POST'])
 def cancel_subscription():
     data = request.json
@@ -148,8 +154,11 @@ def cancel_subscription():
 
     return jsonify({"message": f"Subscription for {phone_number} cancelled"}), 200
 
+
 ### KRÄVA INLOGG
-## Rutt för att lägga till prenumerant manuellt
+# ==========================================================================================
+# Rutt för manuellt lägga till en prenumerant
+# ==========================================================================================
 @subscription_routes.route('/man-add-subscriber', methods=['POST'])
 def man_add_subscriber():
     data = request.json
@@ -167,8 +176,12 @@ def man_add_subscriber():
         return jsonify({"message": f"Subscriber {phone_number} added successfully"}), 201
     else:
         return jsonify({"error": "Phone number already exists"}), 400
+
+
 ### KRÄVA INLOGG
+# ==========================================================================================
 # Rutt för att hämta alla prenumeranter
+# ==========================================================================================
 @subscription_routes.route('/subscribers', methods=['GET'])
 def get_subscribers():
     subscribers = get_all_subscribers()
