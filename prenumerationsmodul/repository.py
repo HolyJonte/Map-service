@@ -1,6 +1,9 @@
 # user_database.py
 import sqlite3
 from datetime import datetime, timedelta
+from werkzeug.security import generate_password_hash, check_password_hash
+import pyotp
+
 
 ## BEHÖVER LÄGGA TILL: Schemaläggare av betalningar så att man årsvis kallar på create_recurring_order
 ### för de prenumeranter där ett år passerat
@@ -36,7 +39,7 @@ def initialize_database():
 # Newpapers (Madde och Jontes del)
 # =========================================================================================
 
-    # Skapa tabell för tidningar med alla fält enligt bilden
+    # Skapa tabell för admin för att lägga till och tabort tidningar
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS newspapers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -45,6 +48,17 @@ def initialize_database():
             sms_quota INTEGER
         )
     ''')
+
+    # Skapa tabell för users för registrering och inloggning
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL,
+            totp_secret TEXT NOT NULL
+        )
+    ''')
+
 
 # =========================================================================================
 # Avslut
@@ -220,3 +234,45 @@ def delete_newspaper(newspaper_id):
     conn.close()
 
 
+# =========================================================================================
+# User funktion (Madde och Jontes del)
+# =========================================================================================
+def create_user(email, password, totp_secret):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        hashed_pw = generate_password_hash(password)
+        cursor.execute(
+            "INSERT INTO users (email, password, totp_secret) VALUES (?, ?, ?)",
+            (email, hashed_pw, totp_secret)
+        )
+        conn.commit()
+        return True
+    except sqlite3.IntegrityError:
+        return False  # Användare finns redan
+    finally:
+        conn.close()
+
+def get_user_by_email(email):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+    row = cursor.fetchone()
+    conn.close()
+    if row:
+        return {
+            "id": row[0],
+            "email": row[1],
+            "password": row[2],
+            "totp_secret": row[3]
+        }
+    return None
+
+def validate_user_login(email, password):
+    user = get_user_by_email(email)
+    if user and check_password_hash(user["password"], password):
+        return user
+    return None
+
+def verify_user_2fa_code(user, code):
+    return pyotp.TOTP(user["totp_secret"]).verify(code)

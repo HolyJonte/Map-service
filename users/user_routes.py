@@ -1,7 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from users.user_logic import (
-    load_users,
-    save_users,
     find_user_by_email,
     create_user,
     generate_user_qr_base64,
@@ -66,7 +64,6 @@ def show_user_qr():
         return redirect(url_for('user_routes.login'))
 
     qr_data = generate_user_qr_base64(user)
-    save_users(load_users())  # Säkerställ att secret sparas
 
     session.pop('show_user_qr', None)
     return render_template('user_show_qr.html', qr_data=qr_data)
