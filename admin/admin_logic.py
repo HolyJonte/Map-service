@@ -1,9 +1,13 @@
 # Denna modul innehåller logik för admin-funktioner: autentisering, QR-kod, 2FA och hantering av tidningar.
 
 import os
-import json
 import pyotp
 import qrcode
+from prenumerationsmodul.repository import (
+    get_all_newspapers as db_get_all_newspapers,
+    add_newspaper as db_add_newspaper,
+    delete_newspaper as db_delete_newspaper
+)
 
 # ================================
 # Konfiguration
@@ -11,8 +15,6 @@ import qrcode
 
 ADMIN_PASSWORD = "hemligt123"
 TOTP_SECRET = "JBSWY3DPEHPK3PXP"
-BASE_DIR = os.path.dirname(__file__)
-JSON_PATH = os.path.join(BASE_DIR, 'newspapers.json')
 
 # ================================
 # Lösenordshantering
@@ -22,18 +24,18 @@ def get_admin_password():
     return ADMIN_PASSWORD
 
 # ================================
-# Tidningshantering
+# Tidningshantering (via databas)
 # ================================
 
-def load_newspapers():
-    if not os.path.exists(JSON_PATH):
-        return []
-    with open(JSON_PATH, 'r', encoding='utf-8') as f:
-        return json.load(f)
+def get_all_newspapers():
+    return db_get_all_newspapers()
 
-def save_newspapers(papers):
-    with open(JSON_PATH, 'w', encoding='utf-8') as f:
-        json.dump(papers, f, ensure_ascii=False, indent=2)
+def add_newspaper(name, contact_email=None, sms_quota=None):
+    return db_add_newspaper(name, contact_email, sms_quota)
+
+def delete_newspaper(newspaper_id):
+    return db_delete_newspaper(newspaper_id)
+
 
 # ================================
 # TOTP och QR-kodshantering

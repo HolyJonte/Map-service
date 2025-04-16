@@ -47,7 +47,7 @@ def login():
             session['user_awaiting_2fa'] = True
             session['show_user_qr'] = True
             return redirect(url_for('user_routes.show_user_qr'))
-        
+
         return render_template('user_login.html', error="Fel e-post eller lösenord")
     return render_template('user_login.html')
 

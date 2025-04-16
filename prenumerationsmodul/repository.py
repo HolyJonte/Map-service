@@ -31,8 +31,27 @@ def initialize_database():
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP  
         )
     ''')
+
+# =========================================================================================
+# Newpapers (Madde och Jontes del)
+# =========================================================================================
+
+    # Skapa tabell för tidningar med alla fält enligt bilden
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS newspapers (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE,
+            contact_email TEXT,
+            sms_quota INTEGER
+        )
+    ''')
+
+# =========================================================================================
+# Avslut
+# =========================================================================================
     conn.commit()
     conn.close()
+
 # Skapar en anslutning till SQLite-databasen
 def get_db_connection():
     conn = sqlite3.connect("trafikvida.db")
@@ -165,3 +184,39 @@ def remove_inactive_subscribers():
     rows = cursor.fetchall()
     conn.close()
     return [row[0] for row in rows] """
+
+
+# =========================================================================================
+# Newpaper funktion (Madde och Jontes del)
+# =========================================================================================
+def get_all_newspapers():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, name, contact_email, sms_quota FROM newspapers')
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(zip(['id', 'name', 'contact_email', 'sms_quota'], row)) for row in rows]
+
+def add_newspaper(name, contact_email=None, sms_quota=None):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute('''
+            INSERT INTO newspapers (name, contact_email, sms_quota) 
+            VALUES (?, ?, ?)
+        ''', (name, contact_email, sms_quota))
+        conn.commit()
+        return True
+    except sqlite3.IntegrityError:
+        return False
+    finally:
+        conn.close()
+
+def delete_newspaper(newspaper_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM newspapers WHERE id = ?', (newspaper_id,))
+    conn.commit()
+    conn.close()
+
+

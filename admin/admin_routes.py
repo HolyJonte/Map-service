@@ -1,11 +1,13 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from admin.admin_logic import (
     get_admin_password,
-    load_newspapers,
-    save_newspapers,
+    get_all_newspapers,
+    add_newspaper,
+    delete_newspaper,
     verify_totp_code,
     get_totp_uri
 )
+
 
 import base64
 from io import BytesIO
@@ -55,20 +57,31 @@ def admin_dashboard():
     if not session.get('admin_logged_in'):
         return redirect(url_for('admin.admin_login'))
 
-    newspapers = load_newspapers()
+    from admin.admin_logic import get_all_newspapers, add_newspaper, delete_newspaper
 
     if request.method == 'POST':
         action = request.form.get('action')
-        name = request.form.get('name')
 
-        if action == 'add' and name and name not in newspapers:
-            newspapers.append(name)
-        elif action == 'delete' and name in newspapers:
-            newspapers.remove(name)
+        if action == 'add':
+            name = request.form.get('name')
+            contact_email = request.form.get('contact_email')
+            sms_quota = request.form.get('sms_quota')
+            sms_quota_int = int(sms_quota) if sms_quota and sms_quota.isdigit() else None
+            if name:
+                add_newspaper(name, contact_email, sms_quota_int)
 
-        save_newspapers(newspapers)
+        #  Funktion för att ta bort tidning (har print för debugning)
+        elif action == 'delete':
+            newspaper_id = request.form.get('id')
+            print("🗑️ Försöker ta bort id:", newspaper_id)  # <-- debug
+            if newspaper_id:
+                delete_newspaper(int(newspaper_id))
 
+
+    newspapers = get_all_newspapers()
     return render_template('admin_dashboard.html', newspapers=newspapers)
+
+
 
 # ===============================
 # Visa QR-kod för 2FA
