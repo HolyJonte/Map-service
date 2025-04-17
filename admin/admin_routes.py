@@ -45,7 +45,7 @@ def two_factor():
             session['admin_logged_in'] = True
             return redirect(url_for('admin.admin_dashboard'))
         else:
-            return render_template('two_factor.html', error="Fel kod")
+            return render_template('admin_two_factor.html', error="Fel kod")
 
     return render_template('admin_two_factor.html')
 
