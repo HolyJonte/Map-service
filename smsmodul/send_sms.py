@@ -3,7 +3,8 @@ import json
 from requests.auth import HTTPBasicAuth
 
 # Tillagt av Jonte och Madde
-from prenumerationsmodul.repository import log_sms
+from database.crud.sms_crud import log_sms
+
 
 # Lagt till parametrar (Madde och Jonte)
 def send_sms(to, message, newspaper_id=None, subscriber_id=None, testMode=True):
