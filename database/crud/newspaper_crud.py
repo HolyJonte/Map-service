@@ -23,6 +23,17 @@ def get_all_newspapers():
             sms_quota=row["sms_quota"]
         ) for row in rows
     ]
+def get_all_newspaper_names():
+    """
+    Hämtar alla tidningar som en lista med namn.
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT name FROM newspapers')
+    rows = cursor.fetchall()
+    
+    conn.close()
+    return [row[0] for row in rows] # [row[0]] extraherar namnet från varje rad
 
 
 def add_newspaper(name, contact_email=None, sms_quota=None):
