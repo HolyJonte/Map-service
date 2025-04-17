@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 from betalningsmodul.klarna_integration import initiate_payment, verify_payment, cancel_token
 from database.database import initialize_database
+from database.county_utils import get_counties
 
 from database.crud.subscriber_crud import (
     add_subscriber, update_subscriber, subscriber_exists,
@@ -15,7 +16,7 @@ from database.crud.pending_crud import (
 )
 
 
-### VI BEHÖVER: Lägga in admin inlogg och flask session hantering så att vi kan kräva inloigg 
+### VI BEHÖVER: Lägga in admin inlogg och flask session hantering så att vi kan kräva inloigg
 ### ex komma åt rutter som /subscribers (alla prenumeranter)
 
 subscription_routes = Blueprint('subscriptions', __name__)
@@ -73,21 +74,16 @@ def prenumeration_startad():
             if not result:
                 return jsonify({"error": "Session ID not found"}), 404
 
-            # ✅ FIX: hämta attribut från objektet, inte packa upp tuple
             phone_number = result.phone_number
             county = result.county
 
-            existing = subscriber_exists(phone_number)
-            if existing:
-                update_subscriber(phone_number, klarna_token)
-            else:
-                if not add_subscriber(phone_number, county, klarna_token):
-                    return jsonify({"error": "Phone number already exists"}), 400
+            if subscriber_exists(phone_number):
+                delete_pending_subscriber(session_id)
+                return jsonify({"error": "already_subscribed"}), 400
 
+            add_subscriber(phone_number, county, klarna_token)
             delete_pending_subscriber(session_id)
-
             subscriber_id = subscriber_exists(phone_number)
-
 
             return render_template("confirmation.html", subscriber_id=subscriber_id)
 
@@ -107,23 +103,18 @@ def prenumeration_startad():
         phone_number = result.phone_number
         county = result.county
 
-        existing = subscriber_exists(phone_number)
-        if existing:
-            update_subscriber(phone_number, klarna_token)
-        else:
-            if not add_subscriber(phone_number, county, klarna_token):
-                return jsonify({"error": "Phone number already exists"}), 400
+        if subscriber_exists(phone_number):
+            delete_pending_subscriber(session_id)
+            return jsonify({"error": "already_subscribed"}), 400
 
+        add_subscriber(phone_number, county, klarna_token)
         delete_pending_subscriber(session_id)
-
         subscriber_id = subscriber_exists(phone_number)
+
         return render_template("confirmation.html", subscriber_id=subscriber_id)
 
     # GET-anrop (t.ex. direktlänk till sidan)
     return render_template("confirmation.html")
-
-
-
 
 
 # ==========================================================================================
@@ -153,6 +144,15 @@ def cancel_subscription():
     deactivate_subscriber(subscriber_id, phone_number)
 
     return jsonify({"message": f"Subscription for {phone_number} cancelled"}), 200
+
+
+# ==========================================================================================
+# Rutt för att hämta alla län (counties) i Sverige
+# ==========================================================================================
+@subscription_routes.route('/counties', methods=['GET'])
+def get_county_list():
+    return jsonify(get_counties())
+
 
 
 ### KRÄVA INLOGG

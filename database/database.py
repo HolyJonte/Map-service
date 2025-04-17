@@ -70,5 +70,19 @@ def initialize_database():
         )
     ''')
 
+    # Hårdkodar in 3 tidningar om det inte redan finns (TA BORT SEDAN)
+    default_newspapers = [
+        ("Dagbladet", "kontakt@dagbladet.se", 1000),
+        ("NyhetsPosten", "redaktion@nyhetsposten.se", 750),
+        ("Sverige Idag", "info@sverigeidag.se", 500)
+    ]
+
+    for name, email, quota in default_newspapers:
+        cursor.execute('''
+            INSERT OR IGNORE INTO newspapers (name, contact_email, sms_quota)
+            VALUES (?, ?, ?)
+        ''', (name, email, quota))
+
+
     conn.commit()
     conn.close()
