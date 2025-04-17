@@ -1,12 +1,15 @@
 import requests
 import json
+
+### OBS! Ta bort raderna när vi testat klart (samma kod ligger i app.py)
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from requests.auth import HTTPBasicAuth
 
 # Tillagt av Jonte och Madde
 from database.crud.sms_crud import log_sms
 
-import os
-print("Aktuell arbetskatalog:", os.getcwd())
 
 
 # Lagt till parametrar (Madde och Jonte)
