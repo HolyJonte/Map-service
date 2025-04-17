@@ -4,17 +4,26 @@ from database.models.pending_model import PendingSubscriber
 
 
 # Lägger till en väntande prenumerant i pending_subscribers-tabellen
+# Tar också bort eventuell gammal rad för detta telefonnummer och lägger in ny
 def add_pending_subscriber(session_id, phone_number, county):
     conn = get_db_connection()
     cursor = conn.cursor()
     try:
+        # Ta bort eventuell gammal rad för detta telefonnummer
+        cursor.execute('''
+            DELETE FROM pending_subscribers WHERE phone_number = ?
+        ''', (phone_number,))
+
+        # Lägg in ny pending-rad
         cursor.execute('''
             INSERT INTO pending_subscribers (session_id, phone_number, county)
             VALUES (?, ?, ?)
         ''', (session_id, phone_number, county))
+
         conn.commit()
         return True
     except sqlite3.IntegrityError:
+        conn.rollback()
         return False
     finally:
         conn.close()
