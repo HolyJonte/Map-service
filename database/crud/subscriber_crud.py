@@ -103,6 +103,14 @@ def get_all_subscribers():
     conn.close()
     return [Subscriber(**dict(row)) for row in rows]
 
+## Hämtar en prenumerant baserat på län (county)
+def get_subscribers_by_county(county):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM subscribers WHERE county = ?', (county,))
+    rows = cursor.fetchall()
+    conn.close()
+    return [Subscriber(**dict(row)) for row in rows]
 
 # Tar bort prenumeranter som är inaktiva och vars sista betalning var för mer än ett år sedan
 def remove_inactive_subscribers():
