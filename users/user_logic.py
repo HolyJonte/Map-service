@@ -15,12 +15,13 @@ from database.crud.user_crud import (
 # Generera QR-kod för en användare
 # ===========================
 def generate_user_qr_base64(user):
-    secret = user.get("totp_secret")
+    secret = user.totp_secret
     if not secret:
         return None  # Kan ej skapa QR utan secret
 
     totp = pyotp.TOTP(secret)
-    uri = totp.provisioning_uri(name=user['email'], issuer_name="TrafikVida")
+    uri = totp.provisioning_uri(name=user.email, issuer_name="TrafikVida")
+
 
     img = qrcode.make(uri)
     buffer = BytesIO()
