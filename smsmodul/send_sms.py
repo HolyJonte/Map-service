@@ -5,6 +5,9 @@ from requests.auth import HTTPBasicAuth
 # Tillagt av Jonte och Madde
 from database.crud.sms_crud import log_sms
 
+import os
+print("Aktuell arbetskatalog:", os.getcwd())
+
 
 # Lagt till parametrar (Madde och Jonte)
 def send_sms(to, message, newspaper_id=None, subscriber_id=None, testMode=True):
@@ -45,4 +48,10 @@ def send_sms(to, message, newspaper_id=None, subscriber_id=None, testMode=True):
         print("Något gick fel:", e)
 
 if __name__ == '__main__':
-    send_sms()
+    send_sms(
+        to="0701234567",  # Telefonnummer (eller en lista med nummer)
+        message="Hej! Det här är ett testmeddelande.",
+        newspaper_id=123,  # Om du har ett id för tidningen
+        subscriber_id=456,  # Om du har ett id för prenumeranten
+        testMode=True  # Om du vill testa utan att faktiskt skicka SMS
+    )
