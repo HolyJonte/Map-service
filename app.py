@@ -8,6 +8,7 @@ import sys
 import os
 # Importerar Flask och render_template
 from flask import Flask, render_template, send_from_directory
+from apscheduler.schedulers.background import BackgroundScheduler
 # Importerar trafik_bp från routes-modulen, som innehåller kameror-endpointen
 from api.routes import trafik_bp
 # Importerar subscription_routes
@@ -16,6 +17,11 @@ from prenumerationsmodul.subscription_routes import subscription_routes
 from admin.admin_routes import admin_routes
 
 from users.user_routes import user_routes
+
+# Importerar APScheduler för schemaläggning
+
+# Importerar notify_accidents för att schemalägga SMS-notifikationer
+from prenumerationsmodul.notifications import notify_accidents
 
 # Lägg till projektroten så att Python hittar andra moduler/mappar
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -58,8 +64,15 @@ def serve_static(filename):
 def login_choice():
     return render_template("login_choice.html")
 
-
+# Skapa en scheduler för att köra notify_accidents var 5:e minut
+scheduler = BackgroundScheduler()
+scheduler.add_job(notify_accidents, 'interval', minutes=5)
+# Starta scheduler innan servern startar
+scheduler.start()
 # Om detta skript körs direkt, starta Flask-servern
 if __name__ == '__main__':
-    app.run(debug=True)
-
+    try:
+        app.run(debug=True)
+    except (KeyboardInterrupt, SystemExit):
+        # Stäng av scheduler vid avbrott
+        scheduler.shutdown()

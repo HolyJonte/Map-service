@@ -15,14 +15,14 @@ def subscriber_exists(phone_number):
 
 
 # Lägger till en ny prenumerant i subscribers-tabellen
-def add_subscriber(phone_number, county, klarna_token):
+def add_subscriber(phone_number, county, newspaper_id, klarna_token):
     conn = get_db_connection()
     cursor = conn.cursor()
     try:
         cursor.execute('''
-            INSERT INTO subscribers (phone_number, county, active, subscription_start, last_payment, klarna_token) 
-            VALUES (?, ?, 1, ?, ?, ?)
-        ''', (phone_number, county, datetime.now(), datetime.now(), klarna_token))
+            INSERT INTO subscribers (phone_number, county, newspaper_id, active, subscription_start, last_payment, klarna_token) 
+            VALUES (?, ?, 1, ?, ?, ?, ?)
+        ''', (phone_number, county, newspaper_id, datetime.now(), datetime.now(), klarna_token))
         conn.commit()
         return True
     except sqlite3.IntegrityError:
@@ -72,7 +72,7 @@ def deactivate_subscriber(subscriber_id, phone_number):
 
 
 # Lägger till en prenumerant manuellt för t.ex. test eller backup
-def manual_add_subscriber(phone_number, county, active=1, subscription_start=None, last_payment=None, klarna_token=None):
+def manual_add_subscriber(phone_number, county, newspaper_id, active=1, subscription_start=None, last_payment=None, klarna_token=None):
     if subscription_start is None:
         subscription_start = datetime.now().isoformat()
     if last_payment is None:
@@ -82,9 +82,9 @@ def manual_add_subscriber(phone_number, county, active=1, subscription_start=Non
     cursor = conn.cursor()
     try:
         cursor.execute('''
-            INSERT INTO subscribers (phone_number, county, active, subscription_start, last_payment, klarna_token)
-            VALUES (?, ?, ?, ?, ?, ?)
-        ''', (phone_number, county, active, subscription_start, last_payment, klarna_token))
+            INSERT INTO subscribers (phone_number, county, newspaper_id, active, subscription_start, last_payment, klarna_token)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (phone_number, county, newspaper_id, active, subscription_start, last_payment, klarna_token))
         conn.commit()
         return True
     except sqlite3.IntegrityError:
@@ -103,6 +103,14 @@ def get_all_subscribers():
     conn.close()
     return [Subscriber(**dict(row)) for row in rows]
 
+## Hämtar en prenumerant baserat på län (county)
+def get_subscribers_by_county(county):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM subscribers WHERE county = ?', (county,))
+    rows = cursor.fetchall()
+    conn.close()
+    return [Subscriber(**dict(row)) for row in rows]
 
 # Tar bort prenumeranter som är inaktiva och vars sista betalning var för mer än ett år sedan
 def remove_inactive_subscribers():

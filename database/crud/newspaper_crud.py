@@ -23,6 +23,20 @@ def get_all_newspapers():
             sms_quota=row["sms_quota"]
         ) for row in rows
     ]
+def get_all_newspaper_names():
+    """
+    Hämtar alla tidningar som ett dictionary med ID som nyckel och namn som värde.
+    """
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('SELECT id, name FROM newspapers')
+        rows = cursor.fetchall()
+        conn.close()
+        return {str(row['id']): row['name'] for row in rows}
+    except Exception as e:
+        print(f"Fel i get_all_newspaper_names: {str(e)}")  # Logg för fel
+        return {}
 
 
 def add_newspaper(name, contact_email=None, sms_quota=None):

@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 
 from betalningsmodul.klarna_integration import initiate_payment, verify_payment, cancel_token
 from database.database import initialize_database
+from database.county_utils import get_counties
+from database.crud.newspaper_crud import get_all_newspaper_names
 
 from database.crud.subscriber_crud import (
     add_subscriber, update_subscriber, subscriber_exists,
@@ -15,7 +17,7 @@ from database.crud.pending_crud import (
 )
 
 
-### VI BEHÖVER: Lägga in admin inlogg och flask session hantering så att vi kan kräva inloigg 
+### VI BEHÖVER: Lägga in admin inlogg och flask session hantering så att vi kan kräva inloigg
 ### ex komma åt rutter som /subscribers (alla prenumeranter)
 
 subscription_routes = Blueprint('subscriptions', __name__)
@@ -38,9 +40,10 @@ def start_subscription():
     data = request.json
     phone_number = data.get('phone_number')
     county = data.get('county')
+    newspaper_id = data.get('newspaper_id')
 
-    if not phone_number or not county:
-        return jsonify({"error": "Phone number and county are required"}), 400
+    if not phone_number or not county or not newspaper_id:
+        return jsonify({"error": "Phone number, county and newspaper are required"}), 400
 
     try:
         session_id, client_token = initiate_payment(phone_number, county, tokenize=True)
@@ -48,7 +51,7 @@ def start_subscription():
         return jsonify({"error": f"Failed to initiate payment: {str(e)}"}), 500
 
     # Använd user_database för att lägga till en väntande prenumerant
-    if not add_pending_subscriber(session_id, phone_number, county):
+    if not add_pending_subscriber(session_id, phone_number, county, newspaper_id):
         return jsonify({"error": "Phone number already in process"}), 400
 
     return jsonify({"session_id": session_id, "client_token": client_token}), 200
@@ -73,21 +76,17 @@ def prenumeration_startad():
             if not result:
                 return jsonify({"error": "Session ID not found"}), 404
 
-            # ✅ FIX: hämta attribut från objektet, inte packa upp tuple
             phone_number = result.phone_number
             county = result.county
+            newspaper_id = result.newspaper_id
 
-            existing = subscriber_exists(phone_number)
-            if existing:
-                update_subscriber(phone_number, klarna_token)
-            else:
-                if not add_subscriber(phone_number, county, klarna_token):
-                    return jsonify({"error": "Phone number already exists"}), 400
+            if subscriber_exists(phone_number):
+                delete_pending_subscriber(session_id)
+                return jsonify({"error": "already_subscribed"}), 400
 
+            add_subscriber(phone_number, county, newspaper_id, klarna_token)
             delete_pending_subscriber(session_id)
-
             subscriber_id = subscriber_exists(phone_number)
-
 
             return render_template("confirmation.html", subscriber_id=subscriber_id)
 
@@ -107,23 +106,18 @@ def prenumeration_startad():
         phone_number = result.phone_number
         county = result.county
 
-        existing = subscriber_exists(phone_number)
-        if existing:
-            update_subscriber(phone_number, klarna_token)
-        else:
-            if not add_subscriber(phone_number, county, klarna_token):
-                return jsonify({"error": "Phone number already exists"}), 400
+        if subscriber_exists(phone_number):
+            delete_pending_subscriber(session_id)
+            return jsonify({"error": "already_subscribed"}), 400
 
+        add_subscriber(phone_number, county, newspaper_id, klarna_token)
         delete_pending_subscriber(session_id)
-
         subscriber_id = subscriber_exists(phone_number)
+
         return render_template("confirmation.html", subscriber_id=subscriber_id)
 
     # GET-anrop (t.ex. direktlänk till sidan)
     return render_template("confirmation.html")
-
-
-
 
 
 # ==========================================================================================
@@ -155,15 +149,45 @@ def cancel_subscription():
     return jsonify({"message": f"Subscription for {phone_number} cancelled"}), 200
 
 
+# ==========================================================================================
+# Rutt för att hämta alla län (counties) i Sverige
+# ==========================================================================================
+@subscription_routes.route('/counties', methods=['GET'])
+def get_county_list():
+    return jsonify(get_counties())
+# ==========================================================================================
+# Rutt för att hämta in alla tidningar från databasen.
+# ==========================================================================================
+
+@subscription_routes.route('/newspapers', methods=['GET'])
+def get_newspaper_names():
+    try:
+        # Hämta alla tidningars namn
+        newspaper_names = get_all_newspaper_names()
+
+        # Kontrollera om vi fick några tidningar
+        if not newspaper_names:
+            return jsonify({"error": "No newspapers found"}), 404
+
+        # Returnera listan som JSON
+        return jsonify(newspaper_names)
+
+    except Exception as e:
+        # Returnera ett felmeddelande om något går fel
+        return jsonify({"error": f"Failed to fetch newspapers: {str(e)}"}), 500
+
+
 ### KRÄVA INLOGG
 # ==========================================================================================
 # Rutt för manuellt lägga till en prenumerant
 # ==========================================================================================
+    ###OBS! LÄGGTILL NEWSPAPER
 @subscription_routes.route('/man-add-subscriber', methods=['POST'])
 def man_add_subscriber():
     data = request.json
     phone_number = data.get('phone_number')
     county = data.get('county')
+    newspaper_id = data.get('newspaper_id')
     active = data.get('active', 1)
     subscription_start = data.get('subscription_start')
     last_payment = data.get('last_payment')
@@ -172,7 +196,7 @@ def man_add_subscriber():
     if not phone_number or not county:
         return jsonify({"error": "Phone number and county are required"}), 400
 
-    if manual_add_subscriber(phone_number, county, active, subscription_start, last_payment, klarna_token):
+    if manual_add_subscriber(phone_number, county, newspaper_id, active, subscription_start, last_payment, klarna_token):
         return jsonify({"message": f"Subscriber {phone_number} added successfully"}), 201
     else:
         return jsonify({"error": "Phone number already exists"}), 400
