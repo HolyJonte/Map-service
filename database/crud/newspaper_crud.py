@@ -25,15 +25,18 @@ def get_all_newspapers():
     ]
 def get_all_newspaper_names():
     """
-    Hämtar alla tidningar som en dict med namn.
+    Hämtar alla tidningar som ett dictionary med ID som nyckel och namn som värde.
     """
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('SELECT name FROM newspapers')
-    rows = cursor.fetchall()
-    
-    conn.close()
-    return {str(row['id']): row['name'] for row in rows} # Omvandla till strängar för att matcha JSON-formatet
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('SELECT id, name FROM newspapers')
+        rows = cursor.fetchall()
+        conn.close()
+        return {str(row['id']): row['name'] for row in rows}
+    except Exception as e:
+        print(f"Fel i get_all_newspaper_names: {str(e)}")  # Temporär logg
+        return {}
 
 
 def add_newspaper(name, contact_email=None, sms_quota=None):
