@@ -37,24 +37,26 @@ def show_subscription_page():
 # ==========================================================================================
 @subscription_routes.route('/start-subscription', methods=['POST'])
 def start_subscription():
-    data = request.json
-    phone_number = data.get('phone_number')
-    county = data.get('county')
-    newspaper_id = data.get('newspaper_id')
-
-    if not phone_number or not county or not newspaper_id:
-        return jsonify({"error": "Phone number, county and newspaper are required"}), 400
-
     try:
+        data = request.get_json(force=True)  # Säkerställ JSON även om Content-Type saknas
+        phone_number = data.get('phone_number')
+        county = data.get('county')
+        newspaper_id = data.get('newspaper_id')
+
+        if not phone_number or not county or not newspaper_id:
+            return jsonify({"error": "Phone number, county and newspaper are required"}), 400
+
         session_id, client_token = initiate_payment(phone_number, county, tokenize=True)
+
+        if not add_pending_subscriber(session_id, phone_number, county, newspaper_id):
+            return jsonify({"error": "Phone number already in process"}), 400
+
+        return jsonify({"session_id": session_id, "client_token": client_token}), 200
+
     except Exception as e:
-        return jsonify({"error": f"Failed to initiate payment: {str(e)}"}), 500
+        current_app.logger.error(f"Fel i start_subscription: {e}")
+        return jsonify({"error": f"Serverfel: {str(e)}"}), 500
 
-    # Använd user_database för att lägga till en väntande prenumerant
-    if not add_pending_subscriber(session_id, phone_number, county, newspaper_id):
-        return jsonify({"error": "Phone number already in process"}), 400
-
-    return jsonify({"session_id": session_id, "client_token": client_token}), 200
 
 # ==========================================================================================
 # Rutt för att verifiera betalning och aktivera prenumeration (När man klickar på "Betala" i Klarna)

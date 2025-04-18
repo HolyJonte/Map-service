@@ -229,3 +229,144 @@ Styling för hitta min plats knapp
   background-color: #f0f0f0;
 }
 
+
+/* -------------------------------------------------------------------------
+Styling för Login-vy
+ ------------------------------------------------------------------------ */
+
+/* ------------------------------------------ 
+Kort för login-vy
+------------------------------------------ */
+.login-card {
+  max-width: 400px;
+  margin: 60px auto;
+  background-color: white;
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.login-card h2 {
+  margin-bottom: 30px;
+  font-size: 24px;
+  color: #222;
+}
+
+/* ------------------------------------------
+Login-knappar
+------------------------------------------ */
+.login-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.2s, transform 0.2s;
+  color: white;
+}
+
+.login-btn i {
+  font-size: 20px;
+}
+
+/* Admin-knapp */
+.login-btn.admin {
+  background-color: #343a40;
+}
+
+.login-btn.admin:hover {
+  background-color: #23272b;
+  transform: scale(1.02);
+}
+
+/* Användarknapp */
+.login-btn.user {
+  background-color: #007bff;
+}
+
+.login-btn.user:hover {
+  background-color: #0069d9;
+  transform: scale(1.02);
+}
+
+/* Registrera-knapp */
+.login-btn.register {
+  background-color: #28a745;
+}
+
+.login-btn.register:hover {
+  background-color: #218838;
+  transform: scale(1.02);
+}
+
+/* -------------------------------------------------------------------------
+Autentiseringskort för admin (inloggning, 2FA, QR)
+------------------------------------------------------------------------- */
+
+/* ------------------------------------------
+Formulärfält i auth-card
+------------------------------------------ */
+.auth-card input[type="text"],
+.auth-card input[type="password"],
+.auth-card input[type="email"] {
+  width: 400px;
+  padding: 10px 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.auth-card input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* ------------------------------------------
+Knapp i auth-card
+------------------------------------------ */
+.auth-card button {
+  width: 160px;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.auth-card button:hover {
+  background-color: #0069d9;
+  transform: scale(1.02);
+}
+
+/* -------------------------------------------------------------------------
+Styling för Admin sida (inloggad)
+ ------------------------------------------------------------------------ */
+
+/* ------------------------------------------
+Dashboard-lista (admin_dashboard)
+------------------------------------------ */
+.dashboard .list-group-item {
+  border-radius: 6px;
+  margin-bottom: 10px;
+  padding: 15px 20px;
+  border: 1px solid #ddd;
+}
+
+.dashboard h4 {
+  margin-top: 40px;
+}

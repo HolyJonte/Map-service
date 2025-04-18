@@ -1,0 +1,64 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Karttjänst – Trafikinfo{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header class="navbar">
+    <div class="navbar-container">
+      <a href="{{ url_for('serve_index') }}">
+        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logotyp" style="cursor: pointer;">
+      </a>
+      <div style="position: relative;">
+        <button class="menu-button" id="menuToggle"><i class="bi bi-list"></i> Meny</button>
+        <nav class="menu-items" id="menuItems">
+          <a href="/subscriptions/subscription" class="subscribe-btn">Prenumerera</a>
+          {% if session.user_logged_in %}
+            <a href="/users/logout">Logga ut</a>
+          {% else %}
+            <a href="/login">Logga in</a>
+          {% endif %}
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN INNEHÅLL -->
+  {% block content %}{% endblock %}
+
+  <noscript>
+    <div style="background: #ffdddd; padding: 1em; text-align: center; color: #900;">
+      Denna tjänst kräver att JavaScript är aktiverat i din webbläsare.
+    </div>
+  </noscript>
+
+  <div id="unsupported-message" style="display:none; background:#ffdddd; padding:1em; text-align:center; color:#900;">
+    Din webbläsare verkar inte stödja HTML5 fullt ut.
+  </div>
+
+  <script>
+    const menuToggle = document.getElementById('menuToggle');
+    const menuItems = document.getElementById('menuItems');
+    if (menuToggle) {
+      menuToggle.addEventListener('click', () => {
+        menuItems.classList.toggle('show');
+      });
+    }
+  </script>
+  
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+</body>
+</html>

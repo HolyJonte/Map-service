@@ -1,21 +1,18 @@
-<!DOCTYPE html>
-<html lang="sv">
-<head>
-  <meta charset="UTF-8">
-  <title>Verifiera kod</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="p-5">
-  <div class="container">
-    <h2>Tvåstegsverifiering</h2>
-    {% if error %}
-      <div class="alert alert-danger">{{ error }}</div>
-    {% endif %}
-    <form method="POST">
-      <input type="text" name="code" class="form-control mb-3" placeholder="Kod från app" required>
-      <button type="submit" class="btn btn-primary">Verifiera</button>
-    </form>
-    <p class="text-muted mt-3">Öppna Google Authenticator eller Authy och skriv in koden du ser där.</p>
-  </div>
-</body>
-</html>
+{# admin_two_factor.html #}
+{% extends "base.html" %}
+
+{% block title %}Verifiera kod{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+  <h2>Tvåstegsverifiering</h2>
+  {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+  <form method="POST">
+    <input type="text" name="code" class="form-control mb-3" placeholder="Kod från app" required>
+    <button type="submit" class="btn btn-dark w-100">Verifiera</button>
+  </form>
+  <p class="text-muted mt-3">Öppna Google Authenticator eller Authy och skriv in koden du ser där.</p>
+</div>
+{% endblock %}

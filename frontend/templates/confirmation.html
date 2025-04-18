@@ -1,28 +1,16 @@
-<!DOCTYPE html>
-<html lang="sv">
-<head>
-  <meta charset="UTF-8">
-  <title>Prenumeration Bekräftad</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-    .success {
-      color: green;
-      font-weight: bold;
-    }
-  </style>
-</head>
-<body>
-  <h1>Tack för din prenumeration!</h1>
-  <p class="success">Din betalning är godkänd!<br>Din prenumeration är startad!</p>
-  {% if subscriber_id %}
-    <p>Ditt ID är: <strong>{{ subscriber_id }}</strong></p>
-    <p>Spara detta ID om du vill avbryta prenumerationen senare.</p>
-  {% else %}
-    <p>Vi kunde inte hitta ditt ID.</p>
-  {% endif %}
-  <a href="/">Tillbaka till startsidan</a>
-</body>
-</html>
+{# confirmation.html #}
+{% extends "base.html" %}
+
+{% block title %}Prenumeration Bekräftad{% endblock %}
+
+{% block content %}
+<h1>Tack för din prenumeration!</h1>
+<p class="success">Din betalning är godkänd!<br>Din prenumeration är startad!</p>
+{% if subscriber_id %}
+  <p>Ditt ID är: <strong>{{ subscriber_id }}</strong></p>
+  <p>Spara detta ID om du vill avbryta prenumerationen senare.</p>
+{% else %}
+  <p>Vi kunde inte hitta ditt ID.</p>
+{% endif %}
+<a href="/">Tillbaka till startsidan</a>
+{% endblock %}

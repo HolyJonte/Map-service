@@ -55,6 +55,7 @@ app.register_blueprint(user_routes, url_prefix='/users')
 def serve_index():
     return render_template("index.html")
 
+
 # Definierar en route för att servera andra statiska filer (tex JS, CSS) från frontend-mappen
 @app.route('/<path:filename>')
 def serve_static(filename):
@@ -63,6 +64,9 @@ def serve_static(filename):
 @app.route('/login')
 def login_choice():
     return render_template("login_choice.html")
+
+
+
 
 # Skapa en scheduler för att köra notify_accidents var 5:e minut
 scheduler = BackgroundScheduler()

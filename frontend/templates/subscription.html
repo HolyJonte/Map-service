@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html lang="sv">
-<head>
-  <meta charset="UTF-8">
-  <title>Prenumerera</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://x.klarnacdn.net/kp/lib/v1/api.js" async></script>
+{# subscription.html #}
+{% extends "base.html" %}
 
+{% block title %}Prenumerera{% endblock %}
+
+{% block content %}
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -38,9 +36,6 @@
       cursor: pointer;
       font-size: 16px;
     }
-    button:hover {
-      background-color: #45a049;
-    }
     .error {
       color: red;
     }
@@ -55,9 +50,7 @@
       margin-top: 20px;
     }
   </style>
-</head>
 
-<body>
   <h1>Starta din SMS-prenumeration</h1>
 
   <div>
@@ -78,38 +71,30 @@
     <div id="klarna-checkout-container"></div>
     <div id="response"></div>
   </div>
-<!-- FLYTTA UT TILL JS-fil -->
+
+  <script src="https://x.klarnacdn.net/kp/lib/v1/api.js" async></script>
   <script>
     async function loadNewspapers() {
-      const select = document.getElementById("newspaper_id"); // Hämta dropdown-elementet
+      const select = document.getElementById("newspaper_id");
       try {
-        // Hämta tidningar från servern via API
         const res = await fetch("/subscriptions/newspapers");
-        if (!res.ok) {
-          throw new Error("Kunde inte hämta tidningar från servern");
-        }
+        if (!res.ok) throw new Error("Kunde inte hämta tidningar från servern");
         const newspapers = await res.json();
-        console.log("Hämtade tidningar:", newspapers); 
-
-        // Töm dropdownen för att undvika att lägga till gamla alternativ
         select.innerHTML = "";
-
-        // Lägg till en default option (t.ex. "Välj en tidning")
         const defaultOption = document.createElement("option");
-        defaultOption.textContent = "Välj en tidning"; // Dynamisk text
+        defaultOption.textContent = "Välj en tidning";
         select.appendChild(defaultOption);
-
-        // Iterera genom tidningarna och skapa option-element för dropdownen
         Object.entries(newspapers).forEach(([id, name]) => {
           const option = document.createElement("option");
-          option.value = id;  // Sätt värdet till tidningens id
-          option.textContent = name;  // Sätt texten till tidningens namn
-          select.appendChild(option);  // Lägg till option-elementet i dropdownen
+          option.value = id;
+          option.textContent = name;
+          select.appendChild(option);
         });
       } catch (err) {
         console.error("Kunde inte hämta tidningar:", err);
       }
     }
+
     async function loadCounties() {
       const select = document.getElementById("county");
       try {
@@ -126,21 +111,18 @@
       }
     }
 
-  // Ladda län och tidningar när sidan har laddats
     window.onload = function() {
       loadCounties();
-      loadNewspapers();  // Lägg till detta för att ladda tidningar
+      loadNewspapers();
     };
 
     document.getElementById('subscription-form').addEventListener('submit', async (event) => {
       event.preventDefault();
-
       const phoneNumber = document.getElementById('phone_number').value;
       const county = document.getElementById('county').value;
       const newspaper_id = document.getElementById('newspaper_id').value;
       const responseDiv = document.getElementById('response');
 
-        // Kontrollera att alla fält är ifyllda
       if (!phoneNumber || !county || !newspaper_id || newspaper_id === "Välj en tidning") {
         responseDiv.innerHTML = `<p class="error">Vänligen fyll i telefonnummer, län och tidning.</p>`;
         return;
@@ -149,9 +131,7 @@
       try {
         const response = await fetch('/subscriptions/start-subscription', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             phone_number: phoneNumber,
             county: parseInt(county),
@@ -166,7 +146,6 @@
           localStorage.setItem('klarnaSessionId', data.session_id);
 
           Klarna.Payments.init({ client_token: data.client_token });
-
           Klarna.Payments.load({
             container: '#klarna-checkout-container',
             payment_method_category: 'card'
@@ -175,7 +154,6 @@
               responseDiv.innerHTML = `<p class="error">Fel vid laddning av Klarna: ${res.error}</p>`;
             } else {
               responseDiv.innerHTML = `<p></p>`;
-
               if (!document.getElementById('klarna-fake-click')) {
                 const fakeBtn = document.createElement('button');
                 fakeBtn.id = 'klarna-fake-click';
@@ -200,9 +178,7 @@
                   try {
                     const response = await fetch('/subscriptions/prenumeration-startad', {
                       method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                      },
+                      headers: { 'Content-Type': 'application/json' },
                       body: JSON.stringify({
                         status: "AUTHORIZED",
                         session_id: sessionId,
@@ -210,17 +186,12 @@
                       }),
                     });
 
-                    const responseDiv = document.getElementById('response');
-
                     if (!response.ok) {
                       const data = await response.json();
-                      if (data.error === "already_subscribed") {
-                        responseDiv.innerHTML = `<p class="error">Detta telefonnummer har redan en aktiv prenumeration.</p>`;
-                        return;
-                      } else {
-                        responseDiv.innerHTML = `<p class="error">Fel: ${data.error || "Okänt fel"}</p>`;
-                        return;
-                      }
+                      responseDiv.innerHTML = data.error === "already_subscribed"
+                        ? `<p class="error">Detta telefonnummer har redan en aktiv prenumeration.</p>`
+                        : `<p class="error">Fel: ${data.error || "Okänt fel"}</p>`;
+                      return;
                     }
 
                     if (response.redirected) {
@@ -229,7 +200,6 @@
                       const html = await response.text();
                       document.documentElement.innerHTML = html;
                     }
-
                   } catch (err) {
                     alert("Något gick fel: " + err.message);
                     console.error(err);
@@ -240,7 +210,6 @@
               }
             }
           });
-
         } else {
           responseDiv.innerHTML = `<p class="error">Fel: ${data.error || "Okänt fel"}</p>`;
         }
@@ -250,5 +219,4 @@
       }
     });
   </script>
-</body>
-</html>
+{% endblock %}
