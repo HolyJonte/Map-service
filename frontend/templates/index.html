@@ -32,8 +32,8 @@
         <!-- Menyval som visas vid klick -->
         <nav class="menu-items" id="menuItems">
           <!-- Länk till prenumarationssida -->
-          <a onclick="window.location.href='/subscriptions/subscription'" id="subscribeBtn" class="subscribe-btn">Prenumerera</a>
-
+          <a href="/subscriptions/subscription" id="subscribeBtn" class="subscribe-btn">Prenumerera</a>
+          
           <!-- Logga in / Logga ut beroende på session -->
           {% if session.user_logged_in %}
             <a href="/users/logout" id="LogoutBtn">Logga ut</a>
