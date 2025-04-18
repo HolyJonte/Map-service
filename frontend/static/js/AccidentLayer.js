@@ -6,9 +6,10 @@ export class AccidentLayer {
     this.clusterGroup = L.markerClusterGroup({
       iconCreateFunction: function (cluster) {
         const count = cluster.getChildCount();
+
         return L.divIcon({
           html: `
-            <div class="accident-cluster">
+            <div class="custom-accident-cluster">
               <i class="bi bi-exclamation-triangle-fill"></i><br>
               <span>${count}</span>
             </div>
@@ -41,7 +42,7 @@ export class AccidentLayer {
       this.clusterGroup.clearLayers();
 
       const accidentIcon = L.divIcon({
-        className: 'accident-icon',
+        className: 'custom-accident-icon',
         html: '<i class="bi bi-exclamation-triangle-fill"></i>',
         iconSize: null
       });

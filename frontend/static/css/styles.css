@@ -108,7 +108,7 @@ Utseende för enskilda trafikolyckor och kluster av trafikolyckor
   color: orange;
 }
 
-.custom-camera-icon i {
+.custom-accident-icon i {
   font-size: 20px;
   display: flex;
   flex-direction: column;

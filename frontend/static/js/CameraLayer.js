@@ -18,7 +18,7 @@ export class CameraLayer {
           // Returnerar en anpassad HTML-ikon för klustret
           return L.divIcon({
             html: `
-              <div class="custom-cluster-icon">
+              <div class="custom-camera-cluster">
                 <i class="bi bi-camera-fill"></i><br>
                 <span>${count}</span>
               </div>

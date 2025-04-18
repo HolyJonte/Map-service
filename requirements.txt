@@ -9,7 +9,13 @@ python-dateutil==2.9.0.post0
 
 #För att installera alla beroenden, kör följande kommando i terminalen:
 #cd ~/Map-service
+
+# För installation på Python Anywhere:
 #python3.12 -m pip install --user -r requirements.txt
+
+# För installation på lokal dator:
+#py -3.12 -m pip install --user -r requirements.txt
+
 
 #För att kunna hämta de senaste ändringarna från GitHub, kör följande kommando i terminalen:
 #git reset --hard HEAD

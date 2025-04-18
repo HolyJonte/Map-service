@@ -9,7 +9,7 @@ export class RoadworkLayer {
         const count = cluster.getChildCount();
         return L.divIcon({
           html: `
-            <div class="custom-cluster-icon">
+            <div class="custom-roadwork-cluster">
               <i class="bi bi-cone-striped"></i><br>
               <span>${count}</span>
             </div>
