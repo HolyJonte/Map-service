@@ -187,6 +187,7 @@ def man_add_subscriber():
     data = request.json
     phone_number = data.get('phone_number')
     county = data.get('county')
+    newspaper_id = data.get('newspaper_id')
     active = data.get('active', 1)
     subscription_start = data.get('subscription_start')
     last_payment = data.get('last_payment')
@@ -195,7 +196,7 @@ def man_add_subscriber():
     if not phone_number or not county:
         return jsonify({"error": "Phone number and county are required"}), 400
 
-    if manual_add_subscriber(phone_number, county, active, subscription_start, last_payment, klarna_token):
+    if manual_add_subscriber(phone_number, county, newspaper_id, active, subscription_start, last_payment, klarna_token):
         return jsonify({"message": f"Subscriber {phone_number} added successfully"}), 201
     else:
         return jsonify({"error": "Phone number already exists"}), 400

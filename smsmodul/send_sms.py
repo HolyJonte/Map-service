@@ -6,15 +6,13 @@ import os
 ## För att kunna testa när vi kör filen enskilt
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-# Tillagt av Jonte och Madde
-from database.crud.sms_crud import log_sms
 
 import os
 print("Aktuell arbetskatalog:", os.getcwd())
 
 
 # Lagt till parametrar (Madde och Jonte)
-def send_sms(to, message, newspaper_id=None, subscriber_id=None, testMode=True):
+def send_sms(to, message, testMode=True):
     # Ange rätt endpoint-URL från HelloSMS-dokumentationen
     url = "https://api.hellosms.se/v1/sms/send/"  # OBS: Ändra till den korrekta API-URL:en beroende på om det är test eller äkta
 
@@ -44,21 +42,12 @@ def send_sms(to, message, newspaper_id=None, subscriber_id=None, testMode=True):
         # Skriv ut svar för att se hur det ser ut (t.ex. antal SMS-segment etc.)
         print("Statuskod:", response.status_code)
         print("Response:", json.dumps(response.json(), indent=2))
-
-        # Logga SMS till databasen om ID:n är angivna (Tillagt av Jonte och Madde)
-        if newspaper_id and subscriber_id:
-            log_sms(newspaper_id, subscriber_id, to, message)
+        return True
 
     except requests.exceptions.RequestException as e:
         print("Något gick fel:", e)
+        return False
 
 if __name__ == '__main__':
-    send_sms(
-        #TA BORT , ENDAST FÖR TEST
-        to="0701234567",  # Telefonnummer (eller en lista med nummer)
-        message="Hej! Det här är ett testmeddelande.  https://www.trafikverket.se/trafikinformation/vag/?map_x=650778.00005&map_y=7200000&map_z=2&map_l=101000000000000",
-        newspaper_id=123,  # Om du har ett id för tidningen
-        subscriber_id=456,  # Om du har ett id för prenumeranten
-        testMode=True  # Om du vill testa utan att faktiskt skicka SMS
-        
-    )
+    pass
+# Lägg till testkod här vid behov (istället för pass)
