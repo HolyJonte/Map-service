@@ -20,29 +20,28 @@
   <!-- Sidebar -->
   <header class="navbar">
     <div class="navbar-container">
+      <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logotyp">
 
-      <!-- Menyknapp -->
-      <button class="menu-button" id="menuToggle">
-        <i class="bi bi-list"></i> Meny
-      </button>
+      <div style="position: relative;">
 
-      <!-- Menyval som visas vid klick -->
-      <nav class="menu-items" id="menuItems">
-        <!-- Länk till prenumarationssida -->
-        <a onclick="window.location.href='/subscriptions/subscription'" id="subscribeBtn" class="subscribe-btn">Prenumerera</a>
+        <!--  Menyknapp -->
+        <button class="menu-button" id="menuToggle">
+          <i class="bi bi-list"></i> Meny
+        </button>
 
-        <!-- Logga in / Logga ut beroende på session -->
-        {% if session.user_logged_in %}
-          <a href="/users/logout" id="LogoutBtn">Logga ut</a>
-        {% else %}
-          <a href="/login" id="LoginBtn">Logga in</a>
-        {% endif %}
-      </nav>
-    </div>
+        <!-- Menyval som visas vid klick -->
+        <nav class="menu-items" id="menuItems">
+          <!-- Länk till prenumarationssida -->
+          <a onclick="window.location.href='/subscriptions/subscription'" id="subscribeBtn" class="subscribe-btn">Prenumerera</a>
 
-    <div>
-        <!-- Huvudrubrik som visas över kartan -->
-        <h1>Karta över Sverige</h1>
+          <!-- Logga in / Logga ut beroende på session -->
+          {% if session.user_logged_in %}
+            <a href="/users/logout" id="LogoutBtn">Logga ut</a>
+          {% else %}
+            <a href="/login" id="LoginBtn">Logga in</a>
+          {% endif %}
+        </nav>
+      </div>
     </div>
   </header>
 

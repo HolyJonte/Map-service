@@ -28,7 +28,7 @@ export class AccidentLayer {
     // Laddar data var 60:e sekund
     this.interval = setInterval(() => {
       this.loadData();
-    }, 60000); // 60000 ms = 60 sek
+    }, 60000); // 60000 ms = 60 seka
   }
 
   // Hämtar och visar olyckor på kartan

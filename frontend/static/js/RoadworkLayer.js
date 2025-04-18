@@ -31,7 +31,7 @@ export class RoadworkLayer {
 
       // Ikon för vägarbete (med Bootstrap-kon)
       const roadworkIcon = L.divIcon({
-        className: 'custom-camera-icon', // CSS-klass för styling
+        className: 'custom-roadwork-icon', // CSS-klass för styling
         html: '<i class="bi bi-cone-striped"></i>',
         iconSize: null
       });
