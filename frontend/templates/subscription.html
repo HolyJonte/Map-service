@@ -69,14 +69,43 @@
       <label for="county">Välj län:</label>
       <select id="county" name="county" required></select><br><br>
 
+      <label for="newspaper_id">Välj tidning:</label>
+      <select id="newspaper_id" name="newspaper" required></select><br><br>
+
       <button type="submit">Starta Prenumeration</button>
     </form>
 
     <div id="klarna-checkout-container"></div>
     <div id="response"></div>
   </div>
-
+<!-- FLYTTA UT TILL JS-fil -->
   <script>
+    async function loadNewspapers() {
+      const select = document.getElementById("newspaper_id"); // Hämta dropdown-elementet
+      try {
+        // Hämta tidningar från servern via API
+        const res = await fetch("/subscriptions/newspapers");
+        const newspapers = await res.json(); // Omvandla till JSON-format
+
+        // Töm dropdownen för att undvika att lägga till gamla alternativ
+        select.innerHTML = "";
+
+        // Lägg till en default option (t.ex. "Välj en tidning")
+        const defaultOption = document.createElement("option");
+        defaultOption.textContent = "Välj en tidning"; // Dynamisk text
+        select.appendChild(defaultOption);
+
+        // Iterera genom tidningarna och skapa option-element för dropdownen
+        Object.entries(newspapers).forEach(([id, name]) => {
+          const option = document.createElement("option");
+          option.value = id;  // Sätt värdet till tidningens id
+          option.textContent = name;  // Sätt texten till tidningens namn
+          select.appendChild(option);  // Lägg till option-elementet i dropdownen
+        });
+      } catch (err) {
+        console.error("Kunde inte hämta tidningar:", err);
+      }
+    }
     async function loadCounties() {
       const select = document.getElementById("county");
       try {
@@ -93,7 +122,11 @@
       }
     }
 
-    loadCounties();
+  // Ladda län och tidningar när sidan har laddats
+    window.onload = function() {
+      loadCounties();
+      loadNewspapers();  // Lägg till detta för att ladda tidningar
+    };
 
     document.getElementById('subscription-form').addEventListener('submit', async (event) => {
       event.preventDefault();

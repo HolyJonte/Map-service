@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from betalningsmodul.klarna_integration import initiate_payment, verify_payment, cancel_token
 from database.database import initialize_database
 from database.county_utils import get_counties
+from database.crud.newspaper_crud import get_all_newspaper_names
 
 from database.crud.subscriber_crud import (
     add_subscriber, update_subscriber, subscriber_exists,
@@ -39,6 +40,7 @@ def start_subscription():
     data = request.json
     phone_number = data.get('phone_number')
     county = data.get('county')
+    newspaper_id = data.get('newspaper_id')
 
     if not phone_number or not county:
         return jsonify({"error": "Phone number and county are required"}), 400
@@ -81,7 +83,7 @@ def prenumeration_startad():
                 delete_pending_subscriber(session_id)
                 return jsonify({"error": "already_subscribed"}), 400
 
-            add_subscriber(phone_number, county, klarna_token)
+            add_subscriber(phone_number, county, newspaper_id, klarna_token)
             delete_pending_subscriber(session_id)
             subscriber_id = subscriber_exists(phone_number)
 
@@ -152,7 +154,26 @@ def cancel_subscription():
 @subscription_routes.route('/counties', methods=['GET'])
 def get_county_list():
     return jsonify(get_counties())
+# ==========================================================================================
+# Rutt för att hämta in alla tidningar från databasen.
+# ==========================================================================================
 
+@subscription_routes.route('/newspapers', methods=['GET'])
+def get_newspaper_names():
+    try:
+        # Hämta alla tidningars namn
+        newspaper_names = get_all_newspaper_names()
+
+        # Kontrollera om vi fick några tidningar
+        if not newspaper_names:
+            return jsonify({"error": "No newspapers found"}), 404
+
+        # Returnera listan som JSON
+        return jsonify(newspaper_names)
+
+    except Exception as e:
+        # Returnera ett felmeddelande om något går fel
+        return jsonify({"error": f"Failed to fetch newspapers: {str(e)}"}), 500
 
 
 ### KRÄVA INLOGG

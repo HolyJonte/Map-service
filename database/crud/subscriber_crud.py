@@ -15,14 +15,14 @@ def subscriber_exists(phone_number):
 
 
 # Lägger till en ny prenumerant i subscribers-tabellen
-def add_subscriber(phone_number, county, klarna_token):
+def add_subscriber(phone_number, county, newspaper_id, klarna_token):
     conn = get_db_connection()
     cursor = conn.cursor()
     try:
         cursor.execute('''
-            INSERT INTO subscribers (phone_number, county, active, subscription_start, last_payment, klarna_token) 
-            VALUES (?, ?, 1, ?, ?, ?)
-        ''', (phone_number, county, datetime.now(), datetime.now(), klarna_token))
+            INSERT INTO subscribers (phone_number, county, newspaper_id, active, subscription_start, last_payment, klarna_token) 
+            VALUES (?, ?, 1, ?, ?, ?, ?)
+        ''', (phone_number, county, newspaper_id, datetime.now(), datetime.now(), klarna_token))
         conn.commit()
         return True
     except sqlite3.IntegrityError:

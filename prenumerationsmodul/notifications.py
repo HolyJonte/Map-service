@@ -67,6 +67,7 @@ def notify_accidents():
 
     # Filtrera händelser till bara dagens datum
     today = datetime.now(timezone.utc).date()
+
     todays_events = []
     for event in events:
         start_time_str = event.get("start")
@@ -118,19 +119,21 @@ def notify_accidents():
 
         # Kontrollera händelsetyp (accident eller roadwork) och skapa anpassat meddelande
         event_type = event.get("type", "").lower()
-        if event_type == "accident":
-            message = (f"Olycka i {county}:\n"
-                       f"Plats: {event.get('location')}\n"
-                       f"Beskrivning: {event.get('message')}\n"
-                       f"Start: {event.get('start')}")
-        elif event_type == "roadwork":
-            message = (f"Vägarbete i {county}:\n"
-                       f"Plats: {event.get('location')}\n"
-                       f"Beskrivning: {event.get('message')}\n"
-                       f"Start: {event.get('start')}")
-        else:
-            print(f"Okänd händelsetyp '{event_type}' för händelse {event_id}, hoppar över")
-            continue
+            # Hämta severity-text för att kontrollera om det är "Stor påverkan" eller "Mycket stor påverkan"
+        severity_text = event.get("severity", "Okänd påverkan")
+        if severity_text == "Stor påverkan" or severity_text == "Mycket stor påverkan":
+            if event_type == "accident":
+                message = (f"Olycka i {county}:\n"
+                        f"Plats: {event.get('location')}\n"
+                        f"Beskrivning: {event.get('message')}\n"
+                        f"Start: {event.get('start')}\n"
+                        f"Se mer information här: {event.get('link')})")
+            elif event_type == "roadwork":
+                message = (f"Vägarbete i {county}:\n"
+                        f"Plats: {event.get('location')}\n"
+                        f"Beskrivning: {event.get('message')}\n"
+                        f"Start: {event.get('start')}\n"
+                        f"Se mer information här: {event.get('link')})")
 
         print("Meddelande som skickas:", message)
 

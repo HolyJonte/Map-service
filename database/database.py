@@ -19,10 +19,12 @@ def initialize_database():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             phone_number TEXT UNIQUE NOT NULL,
             county INTEGER NOT NULL,
+            newspaper_id INTEGER NOT NULL,
             active INTEGER DEFAULT 1,
             subscription_start TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             last_payment TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            klarna_token TEXT
+            klarna_token TEXT,
+            FOREIGN KEY (newspaper_id) REFERENCES newspapers(id)
         )
     ''')
 
@@ -32,7 +34,9 @@ def initialize_database():
             session_id TEXT PRIMARY KEY,
             phone_number TEXT UNIQUE NOT NULL,
             county INTEGER NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            newspaper_id INTEGER NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (newspaper_id) REFERENCES newspapers(id)
         )
     ''')
 
