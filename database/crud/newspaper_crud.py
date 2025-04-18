@@ -25,7 +25,7 @@ def get_all_newspapers():
     ]
 def get_all_newspaper_names():
     """
-    Hämtar alla tidningar som en lista med namn.
+    Hämtar alla tidningar som en dict med namn.
     """
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -33,7 +33,7 @@ def get_all_newspaper_names():
     rows = cursor.fetchall()
     
     conn.close()
-    return [row[0] for row in rows] # [row[0]] extraherar namnet från varje rad
+    return {str(row['id']): row['name'] for row in rows} # Omvandla till strängar för att matcha JSON-formatet
 
 
 def add_newspaper(name, contact_email=None, sms_quota=None):

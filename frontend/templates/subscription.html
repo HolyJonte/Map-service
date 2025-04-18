@@ -85,7 +85,11 @@
       try {
         // Hämta tidningar från servern via API
         const res = await fetch("/subscriptions/newspapers");
-        const newspapers = await res.json(); // Omvandla till JSON-format
+        if (!res.ok) {
+          throw new Error("Kunde inte hämta tidningar från servern");
+        }
+        const newspapers = await res.json();
+        console.log("Hämtade tidningar:", newspapers); 
 
         // Töm dropdownen för att undvika att lägga till gamla alternativ
         select.innerHTML = "";
@@ -133,7 +137,14 @@
 
       const phoneNumber = document.getElementById('phone_number').value;
       const county = document.getElementById('county').value;
+      const newspaper_id = document.getElementById('newspaper_id').value;
       const responseDiv = document.getElementById('response');
+
+        // Kontrollera att alla fält är ifyllda
+      if (!phoneNumber || !county || !newspaper_id || newspaper_id === "Välj en tidning") {
+        responseDiv.innerHTML = `<p class="error">Vänligen fyll i telefonnummer, län och tidning.</p>`;
+        return;
+      }
 
       try {
         const response = await fetch('/subscriptions/start-subscription', {
@@ -144,6 +155,7 @@
           body: JSON.stringify({
             phone_number: phoneNumber,
             county: parseInt(county),
+            newspaper_id: parseInt(newspaper_id),
           }),
         });
 

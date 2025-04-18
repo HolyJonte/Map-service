@@ -72,7 +72,7 @@ def deactivate_subscriber(subscriber_id, phone_number):
 
 
 # Lägger till en prenumerant manuellt för t.ex. test eller backup
-def manual_add_subscriber(phone_number, county, active=1, subscription_start=None, last_payment=None, klarna_token=None):
+def manual_add_subscriber(phone_number, county, newspaper_id, active=1, subscription_start=None, last_payment=None, klarna_token=None):
     if subscription_start is None:
         subscription_start = datetime.now().isoformat()
     if last_payment is None:
@@ -82,9 +82,9 @@ def manual_add_subscriber(phone_number, county, active=1, subscription_start=Non
     cursor = conn.cursor()
     try:
         cursor.execute('''
-            INSERT INTO subscribers (phone_number, county, active, subscription_start, last_payment, klarna_token)
-            VALUES (?, ?, ?, ?, ?, ?)
-        ''', (phone_number, county, active, subscription_start, last_payment, klarna_token))
+            INSERT INTO subscribers (phone_number, county, newspaper_id, active, subscription_start, last_payment, klarna_token)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (phone_number, county, newspaper_id, active, subscription_start, last_payment, klarna_token))
         conn.commit()
         return True
     except sqlite3.IntegrityError:

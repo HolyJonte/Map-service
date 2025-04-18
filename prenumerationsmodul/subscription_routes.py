@@ -42,8 +42,8 @@ def start_subscription():
     county = data.get('county')
     newspaper_id = data.get('newspaper_id')
 
-    if not phone_number or not county:
-        return jsonify({"error": "Phone number and county are required"}), 400
+    if not phone_number or not county or not newspaper_id:
+        return jsonify({"error": "Phone number, county and newspaper are required"}), 400
 
     try:
         session_id, client_token = initiate_payment(phone_number, county, tokenize=True)
@@ -51,7 +51,7 @@ def start_subscription():
         return jsonify({"error": f"Failed to initiate payment: {str(e)}"}), 500
 
     # Använd user_database för att lägga till en väntande prenumerant
-    if not add_pending_subscriber(session_id, phone_number, county):
+    if not add_pending_subscriber(session_id, phone_number, county, newspaper_id):
         return jsonify({"error": "Phone number already in process"}), 400
 
     return jsonify({"session_id": session_id, "client_token": client_token}), 200
@@ -78,6 +78,7 @@ def prenumeration_startad():
 
             phone_number = result.phone_number
             county = result.county
+            newspaper_id = result.newspaper_id
 
             if subscriber_exists(phone_number):
                 delete_pending_subscriber(session_id)
@@ -109,7 +110,7 @@ def prenumeration_startad():
             delete_pending_subscriber(session_id)
             return jsonify({"error": "already_subscribed"}), 400
 
-        add_subscriber(phone_number, county, klarna_token)
+        add_subscriber(phone_number, county, newspaper_id, klarna_token)
         delete_pending_subscriber(session_id)
         subscriber_id = subscriber_exists(phone_number)
 
@@ -180,6 +181,7 @@ def get_newspaper_names():
 # ==========================================================================================
 # Rutt för manuellt lägga till en prenumerant
 # ==========================================================================================
+    ###OBS! LÄGGTILL NEWSPAPER
 @subscription_routes.route('/man-add-subscriber', methods=['POST'])
 def man_add_subscriber():
     data = request.json
