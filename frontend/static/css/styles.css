@@ -161,6 +161,33 @@ Utseende för enskilda trafikolyckor och kluster av trafikolyckor
 }
 
 
+/* ==========================================
+Styling för modalerna i ikonerna på kartan (gemensamt för olyckor och vägarbeten)
+========================================== */
+
+.impact-box {
+  padding: 4px;
+  font-weight: bold;
+  text-align: center;
+  color: black;
+}
+
+.impact-none {
+  background-color: green;
+}
+
+.impact-low {
+  background-color: yellow;
+}
+
+.impact-high {
+  background-color: red;
+}
+
+.impact-unknown {
+  background-color: gray;
+}
+
 /* ---------------------------------------------------
 Utseende för Header
 --------------------------------------------------- */
@@ -404,7 +431,6 @@ Knapp i auth-card
 /* -------------------------------------------------------------------------
 Styling för Admin sida (inloggad)
  ------------------------------------------------------------------------ */
-
 /* ---------------------------------------------------
 Utseende för admin dashboard
 --------------------------------------------------- */
@@ -458,29 +484,66 @@ Utseende för admin dashboard
   transform: scale(1.02);
 }
 
-/* ==========================================
-Styling för modalerna i ikonerna på kartan (gemensamt för olyckor och vägarbeten)
-========================================== */
 
-.impact-box {
-  padding: 4px;
-  font-weight: bold;
-  text-align: center;
-  color: black;
+/* -------------------------------------------------------------------------
+Styling för Subscription sidan
+ ------------------------------------------------------------------------ */
+/* ---------------------------------------------------
+Stil för SMS-prenumeration (subscription.html)
+--------------------------------------------------- */
+.subscription-page h1,
+.subscription-page h2 {
+  color: #333;
+  margin-top: 0;
 }
 
-.impact-none {
-  background-color: green;
+.subscription-page form {
+  margin-top: 20px;
 }
 
-.impact-low {
-  background-color: yellow;
+.subscription-page label {
+  display: block;
+  margin-bottom: 5px;
 }
 
-.impact-high {
-  background-color: red;
+.subscription-page input[type="text"],
+.subscription-page select {
+  width: 100%;
+  max-width: 300px;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
 }
 
-.impact-unknown {
-  background-color: gray;
+.subscription-page button {
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.subscription-page button:hover {
+  background-color: #218838;
+}
+
+.subscription-page .error {
+  color: red;
+}
+
+.subscription-page .success {
+  color: green;
+  margin: 5px 0;
+}
+
+#klarna-checkout-container {
+  margin-top: 20px;
+}
+
+#response {
+  margin-top: 20px;
 }
