@@ -457,3 +457,66 @@ Utseende för admin dashboard
   background-color: #c82333;
   transform: scale(1.02);
 }
+
+/* -------------------------------------------------------------------------
+Styling för Subscription sidan
+ ------------------------------------------------------------------------ */
+/* ---------------------------------------------------
+Stil för SMS-prenumeration (subscription.html)
+--------------------------------------------------- */
+.subscription-page h1,
+.subscription-page h2 {
+  color: #333;
+  margin-top: 0;
+}
+
+.subscription-page form {
+  margin-top: 20px;
+}
+
+.subscription-page label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.subscription-page input[type="text"],
+.subscription-page select {
+  width: 100%;
+  max-width: 300px;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.subscription-page button {
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.subscription-page button:hover {
+  background-color: #218838;
+}
+
+.subscription-page .error {
+  color: red;
+}
+
+.subscription-page .success {
+  color: green;
+  margin: 5px 0;
+}
+
+#klarna-checkout-container {
+  margin-top: 20px;
+}
+
+#response {
+  margin-top: 20px;
+}
