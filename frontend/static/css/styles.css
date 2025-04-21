@@ -457,3 +457,30 @@ Utseende för admin dashboard
   background-color: #c82333;
   transform: scale(1.02);
 }
+
+/* ==========================================
+Styling för modalerna i ikonerna på kartan (gemensamt för olyckor och vägarbeten)
+========================================== */
+
+.impact-box {
+  padding: 4px;
+  font-weight: bold;
+  text-align: center;
+  color: black;
+}
+
+.impact-none {
+  background-color: green;
+}
+
+.impact-low {
+  background-color: yellow;
+}
+
+.impact-high {
+  background-color: red;
+}
+
+.impact-unknown {
+  background-color: gray;
+}
