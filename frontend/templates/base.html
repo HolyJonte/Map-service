@@ -13,30 +13,36 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
 </head>
 
-<body>
+<body class="{% block body_class %}{% endblock %}">
   <!-- HEADER -->
   <header class="navbar">
     <div class="navbar-container">
       <a href="{{ url_for('serve_index') }}">
         <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logotyp" style="cursor: pointer;">
       </a>
-      <div style="position: relative;">
-        <button class="menu-button" id="menuToggle"><i class="bi bi-list"></i> Meny</button>
-        <nav class="menu-items" id="menuItems">
-          <a href="/subscriptions/subscription" class="subscribe-btn">Prenumerera</a>
-          {% if session.user_logged_in %}
-            <a href="/users/logout">Logga ut</a>
-          {% else %}
-            <a href="/login">Logga in</a>
-          {% endif %}
-        </nav>
-      </div>
+    </div>
+
+    <!-- Huvudmeny -->
+    <div class="menu-wrapper">
+      <button class="menu-button" id="menuToggle"><i class="bi bi-list"></i> Meny</button>
+      <nav class="menu-items" id="menuItems">
+        <a href="{{ url_for('serve_index') }}"><i class="bi bi-house"></i> Hem</a>
+        <a href="/subscriptions/subscription"><i class="bi bi-chat-dots"></i> Prenumerera</a>
+        {% if session.user_logged_in %}
+          <a href="/users/logout"><i class="bi bi-box-arrow-right"></i> Logga ut</a>
+        {% else %}
+          <a href="/login"><i class="bi bi-box-arrow-in-right"></i> Logga in</a>
+        {% endif %}
+      </nav>
     </div>
   </header>
-
+  
   <!-- MAIN INNEHÅLL -->
+  <div class ="main-content">
   {% block content %}{% endblock %}
+  </div>
 
+  <!-- Noscript -->
   <noscript>
     <div style="background: #ffdddd; padding: 1em; text-align: center; color: #900;">
       Denna tjänst kräver att JavaScript är aktiverat i din webbläsare.

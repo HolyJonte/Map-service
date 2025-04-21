@@ -2,6 +2,9 @@
 
 {% block title %}Karttjänst – Startsida{% endblock %}
 
+{% block body_class %}index-page{% endblock %}
+
+
 {% block content %}
   <map-component></map-component>
   <script type="module" src="{{ url_for('static', filename='js/MapComponent.js') }}"></script>

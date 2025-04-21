@@ -4,46 +4,53 @@
 {% block title %}Adminpanel{% endblock %}
 
 {% block content %}
-<div class="container dashboard p-5">
-  <h2 class="mb-4">Dagstidningar som har tillgång</h2>
+
+<div class="container dashboard">
+  <h2 class="mb-4">Tillagda dagstidningar</h2>
 
   {% if newspapers %}
-    <ul class="list-group mb-5">
+    <div class="newspaper-list">
       {% for paper in newspapers %}
-        <li class="list-group-item d-flex justify-content-between align-items-start flex-column flex-md-row">
+        <div class="newspaper-card">
           <div>
-            <strong>{{ paper.name }}</strong><br>
-            {% if paper.contact_email %}<small>E-post: {{ paper.contact_email }}</small><br>{% endif %}
-            {% if paper.sms_quota is not none %}<small>SMS-kvot: {{ paper.sms_quota }}</small>{% endif %}
+            <h5>{{ paper.name }}</h5>
+            {% if paper.contact_email %}
+              <p><strong>E-post:</strong> {{ paper.contact_email }}</p>
+            {% endif %}
+            {% if paper.sms_quota is not none %}
+              <p><strong>SMS-kvot:</strong> {{ paper.sms_quota }}</p>
+            {% endif %}
           </div>
-          <form method="POST" class="mt-2 mt-md-0">
+          <form method="POST" class="delete-form">
             <input type="hidden" name="id" value="{{ paper.id }}">
-            <button type="submit" name="action" value="delete" class="btn btn-outline-danger btn-sm">Ta bort</button>
+            <button type="submit" name="action" value="delete" class="btn btn-danger btn-sm">Ta bort</button>
           </form>
-        </li>
+        </div>
       {% endfor %}
-    </ul>
+    </div>
   {% else %}
     <p>Inga dagstidningar registrerade än.</p>
   {% endif %}
-
-  <h4>Lägg till ny dagstidning</h4>
-  <form method="POST" class="row g-3 mt-2">
-    <input type="hidden" name="action" value="add">
-    <div class="col-md-4">
-      <input type="text" name="name" class="form-control" placeholder="Tidningens namn" required>
-    </div>
-    <div class="col-md-4">
-      <input type="email" name="contact_email" class="form-control" placeholder="Kontaktmail (valfritt)">
-    </div>
-    <div class="col-md-3">
-      <input type="number" name="sms_quota" class="form-control" placeholder="SMS-kvot (valfritt)">
-    </div>
-    <div class="col-md-1">
-      <button type="submit" class="btn btn-success w-100">Lägg till</button>
-    </div>
-  </form>
-
-  <a href="{{ url_for('admin.admin_logout') }}" class="btn btn-link mt-5">Logga ut</a>
 </div>
+
+
+  <div class="auth-card">
+    <h2>Lägg till ny dagstidning</h2>
+  
+    {% if error %}
+      <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+  
+    <form method="POST" class="mt-4">
+      <input type="hidden" name="action" value="add">
+      <input type="text" name="name" placeholder="Tidningens namn" required>
+      <input type="email" name="contact_email" placeholder="Kontaktmail (valfritt)">
+      <input type="number" name="sms_quota" placeholder="SMS-kvot (valfritt)">
+      <button type="submit">Lägg till</button>
+    </form>
+  
+    <a href="{{ url_for('admin.admin_logout') }}" class="btn btn-link mt-4">Logga ut</a>
+  </div>
+  
+  
 {% endblock %}
