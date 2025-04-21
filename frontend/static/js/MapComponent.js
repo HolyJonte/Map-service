@@ -39,7 +39,7 @@ class MapComponent extends HTMLElement {
 
   // Denna metod anropas när komponenten läggs till i DOM
   connectedCallback() {
-    this.innerHTML = `<div id="map" style="height: 80vh;"></div>`;
+    this.innerHTML = `<div id="map"></div>`;
     this.initMap();
   }
 
