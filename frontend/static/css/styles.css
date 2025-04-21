@@ -520,3 +520,23 @@ Stil för SMS-prenumeration (subscription.html)
 #response {
   margin-top: 20px;
 }
+
+/* ---------------------------------------------------
+Stil för fake betalknapp för Klarna (subscription.html)
+--------------------------------------------------- */
+.klarna-fake-button {
+  margin-top: 20px;
+  display: block;
+  padding: 12px 24px;
+  background-color: green;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.klarna-fake-button:hover {
+  background-color: #138d13;
+}
