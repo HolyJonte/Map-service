@@ -56,7 +56,7 @@ export class AccidentLayer {
           // Ny färglogik baserat på påverkan
           // ================================
           let severityText = item.severity || "Okänd påverkan";
-          let severityClass = "impact-unknown"; // Standardfärg
+          let severityClass = "impact-unknown"; // Default
 
           if (severityText.includes("Ingen påverkan")) {
             severityClass = "impact-none";
