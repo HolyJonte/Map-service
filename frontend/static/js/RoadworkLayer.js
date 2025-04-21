@@ -39,20 +39,43 @@ export class RoadworkLayer {
       // Gå igenom varje vägarbete och placera markör på kartan
       roadworks.forEach(item => {
         if (!isNaN(item.lat) && !isNaN(item.lng)) {
-          // OBS: lat/lng är omkastade i koordinatsystemet här
+          // Skapar markör
           const marker = L.marker([item.lng, item.lat], { icon: roadworkIcon });
 
-          // Popup med information om vägarbetet
+          // ===========================
+          // NY KOD FÖR FÄRGAD PÅVERKAN
+          // ===========================
+          // === Klassbaserad färg (i stället för inline-färg)
+          let severityText = item.severity || "Okänd påverkan";
+          let severityClass = "impact-unknown"; // default
+
+          if (severityText.includes("Ingen påverkan")) {
+            severityClass = "impact-none";
+          } else if (severityText.includes("Liten påverkan")) {
+            severityClass = "impact-low";
+          } else if (
+            severityText.includes("Stor påverkan") ||
+            severityText.includes("Mycket stor påverkan")
+          ) {
+            severityClass = "impact-high";
+          }
+
+          // Popup med samma stil som olyckorna
           marker.bindPopup(`
-            <div class="roadwork-popup">
+            <div class="accident-popup">
+              <h5><i class="bi bi-cone-striped"></i> Vägarbete</h5>
               <p><strong>${item.location || "Okänd plats"}</strong></p>
-              <strong>Vägarbete</strong><br>
-              ${item.message || "Ingen beskrivning"}<br><br>
-              <strong>Påverkan:</strong> ${item.severity || "Okänd påverkan"}<br>
-              <strong>Starttid:</strong> ${item.start ? new Date(item.start).toLocaleString() : "Okänt"}<br>
-              <strong>Sluttid:</strong> ${item.end ? new Date(item.end).toLocaleString() : "Okänt"}<br>
+              <div class="impact-box ${severityClass}">
+                ${severityText}
+              </div>
+              <p><strong>Starttid:</strong> ${item.start ? new Date(item.start).toLocaleString() : "Okänt"}</p>
+              <p><strong>Beräknad sluttid:</strong> ${item.end ? new Date(item.end).toLocaleString() : "Okänt"}</p>
+              <p>${item.message || "Ingen beskrivning"}</p>
             </div>
           `);
+          // ===========================
+          // SLUT PÅ NY KOD
+          // ===========================
 
           this.clusterGroup.addLayer(marker); // Lägg till i klustret
         }

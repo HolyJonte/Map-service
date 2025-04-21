@@ -56,9 +56,13 @@ export class CameraLayer {
 
             // Visa namnet och vägnummer i en popup
             marker.bindPopup(`
-              <strong>${camera.name}</strong><br>
-              Vägnummer: ${camera.road}
+              <div class="accident-popup">
+                <h5><i class="bi bi-camera-fill"></i> Fartkamera</h5>
+                <p><strong>${camera.name}</strong></p>
+                <p>Vägnummer: ${camera.road}</p>
+              </div>
             `);
+            
 
             this.clusterGroup.addLayer(marker);                   // Lägg till markören i klustret
           } else {

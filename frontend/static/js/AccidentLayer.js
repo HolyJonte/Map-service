@@ -29,7 +29,7 @@ export class AccidentLayer {
     // Laddar data var 60:e sekund
     this.interval = setInterval(() => {
       this.loadData();
-    }, 60000); // 60000 ms = 60 seka
+    }, 60000); // 60000 ms = 60 sekunder
   }
 
   // Hämtar och visar olyckor på kartan
@@ -52,12 +52,30 @@ export class AccidentLayer {
         if (!isNaN(item.lat) && !isNaN(item.lng)) {
           const marker = L.marker([item.lng, item.lat], { icon: accidentIcon });
 
+          // ================================
+          // Ny färglogik baserat på påverkan
+          // ================================
+          let severityText = item.severity || "Okänd påverkan";
+          let severityClass = "impact-unknown"; // Standardfärg
+
+          if (severityText.includes("Ingen påverkan")) {
+            severityClass = "impact-none";
+          } else if (severityText.includes("Liten påverkan")) {
+            severityClass = "impact-low";
+          } else if (
+            severityText.includes("Stor påverkan") ||
+            severityText.includes("Mycket stor påverkan")
+          ) {
+            severityClass = "impact-high";
+          }
+
+          // Popup med konsekvent stil (samma som vägarbeten)
           marker.bindPopup(`
             <div class="accident-popup">
               <h5><i class="bi bi-exclamation-triangle-fill"></i> Olycka</h5>
               <p><strong>${item.location || "Okänd plats"}</strong></p>
-              <div style="background-color: red; color: white; padding: 4px; font-weight: bold; text-align: center;">
-                ${item.severity || "Okänd påverkan"}
+              <div class="impact-box ${severityClass}">
+                ${severityText}
               </div>
               <p><strong>Starttid:</strong> ${item.start ? new Date(item.start).toLocaleString() : "Okänt"}</p>
               <p><strong>Beräknad sluttid:</strong> ${item.end ? new Date(item.end).toLocaleString() : "Okänt"}</p>
