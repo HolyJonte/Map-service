@@ -19,42 +19,22 @@ body.index-page html {
 body.index-page .main-content,
 body.index-page map-component,
 body.index-page #map {
-  height : calc(100vh - 50px); /* Höjd minus headern */
+  height : calc(100vh - 50px); /* Höjd minus headerns storlek */
   width: 100%;
   margin: 0;
   padding: 0;
 }
 
-body.index-page #map {
-  margin: 0;
-  padding: 0;
-}
-
-
-/* Standardmarginal för alla sidor */
+/* Standardmarginal för alla sidor så att texten inte startar vid kanten på sidan */
 .main-content {
   margin: 15px;
 }
 
-/* Undantag för kartan (index.html) */
+/* Undantag för kartan (index.html) (om det behövs senare) */
 body.index-page .main-content {
   margin: 0;
   padding: 0;
 }
-
-/* ---------------------------------------------------
-Utseende för kartan
---------------------------------------------------- */
-/* ---------------------------------------------------
-
-#map {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-
-}
---------------------------------------------------- */
 
 /* ---------------------------------------------------
 Utseende för enskilda kameror och kluster av kameror

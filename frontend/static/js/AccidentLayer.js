@@ -44,7 +44,8 @@ export class AccidentLayer {
       const accidentIcon = L.divIcon({
         className: 'custom-accident-icon',
         html: '<i class="bi bi-exclamation-triangle-fill"></i>',
-        iconSize: null
+        iconAnchor: [10, 20],     // X: mitten av ikonen, Y: nedre kant
+        popupAnchor: [-4, -25]     // popup exakt ovanför
       });
 
       // Lägg till nya markörer
@@ -79,7 +80,7 @@ export class AccidentLayer {
               </div>
               <p><strong>Starttid:</strong> ${item.start ? new Date(item.start).toLocaleString() : "Okänt"}</p>
               <p><strong>Beräknad sluttid:</strong> ${item.end ? new Date(item.end).toLocaleString() : "Okänt"}</p>
-              <p>${item.message}</p>
+              <p><strong>Beskrivning:</strong> ${item.message}</p>
             </div>
           `);
 

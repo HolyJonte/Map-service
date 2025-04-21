@@ -43,8 +43,9 @@ export class CameraLayer {
         // Skapa en ikon för varje kamera (Bootstrap-kameraikon)
         const cameraIcon = L.divIcon({
           className: 'custom-camera-icon',
-          html: '<i class="bi bi-camera-fill"></i>',  // Bootstrap ikon
-          iconSize: null                              // Storlek styrs av CSS
+          html: '<i class="bi bi-camera-fill"></i>',
+          iconAnchor: [10, 20],     // X: mitten av ikonen, Y: nedre kant
+          popupAnchor: [-4, -25]     // popup exakt ovanför
         });
 
         // Kontrollera koordinater för att säkerställa att de ligger inom Sverige

@@ -33,7 +33,8 @@ export class RoadworkLayer {
       const roadworkIcon = L.divIcon({
         className: 'custom-roadwork-icon', // CSS-klass för styling
         html: '<i class="bi bi-cone-striped"></i>',
-        iconSize: null
+        iconAnchor: [10, 20],   // X: mitten av ikonen, Y: nedre kant
+        popupAnchor: [-4, -25]  // popup flyttad manuellt åt vänster och uppåt för att vara centerad
       });
 
       // Gå igenom varje vägarbete och placera markör på kartan
@@ -70,7 +71,7 @@ export class RoadworkLayer {
               </div>
               <p><strong>Starttid:</strong> ${item.start ? new Date(item.start).toLocaleString() : "Okänt"}</p>
               <p><strong>Beräknad sluttid:</strong> ${item.end ? new Date(item.end).toLocaleString() : "Okänt"}</p>
-              <p>${item.message || "Ingen beskrivning"}</p>
+              <p><strong>Beskrivning:</strong> ${item.message || "Ingen beskrivning"}</p>
             </div>
           `);
           // ===========================
