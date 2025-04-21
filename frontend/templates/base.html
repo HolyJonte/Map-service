@@ -28,15 +28,19 @@
       <nav class="menu-items" id="menuItems">
         <a href="{{ url_for('serve_index') }}"><i class="bi bi-house"></i> Hem</a>
         <a href="/subscriptions/subscription"><i class="bi bi-chat-dots"></i> Prenumerera</a>
-        {% if session.user_logged_in %}
-          <a href="/users/logout"><i class="bi bi-box-arrow-right"></i> Logga ut</a>
+        {% if session.user_logged_in or session.admin_logged_in %}
+          {% if session.user_logged_in %}
+            <a href="/users/logout"><i class="bi bi-box-arrow-right"></i> Logga ut</a>
+          {% else %}
+            <a href="/admin/logout"><i class="bi bi-box-arrow-right"></i> Logga ut</a>
+          {% endif %}
         {% else %}
           <a href="/login"><i class="bi bi-box-arrow-in-right"></i> Logga in</a>
         {% endif %}
       </nav>
     </div>
   </header>
-  
+
   <!-- MAIN INNEHÅLL -->
   <div class ="main-content">
   {% block content %}{% endblock %}

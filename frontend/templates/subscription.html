@@ -4,72 +4,30 @@
 {% block title %}Prenumerera{% endblock %}
 
 {% block content %}
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-    h1, h2 {
-      color: #333;
-    }
-    form {
-      margin-top: 20px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-    }
-    input[type="text"], select {
-      width: 100%;
-      max-width: 300px;
-      padding: 8px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    button {
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .error {
-      color: red;
-    }
-    .success {
-      color: green;
-      margin: 5px 0;
-    }
-    #klarna-checkout-container {
-      margin-top: 20px;
-    }
-    #response {
-      margin-top: 20px;
-    }
-  </style>
 
-  <h1>Starta din SMS-prenumeration</h1>
+<!-- OBS! Styling för subscription sidan finns nu i css:en (längst ner) istället-->
 
-  <div>
-    <h2>Starta Prenumeration</h2>
-    <form id="subscription-form">
-      <label for="phone_number">Telefonnummer:</label>
-      <input type="text" id="phone_number" name="phone_number" required><br><br>
+  <div class="subscription-page">
+    <h1>Starta din SMS-prenumeration</h1>
 
-      <label for="county">Välj län:</label>
-      <select id="county" name="county" required></select><br><br>
+    <div>
+      <h2>Starta Prenumeration</h2>
+      <form id="subscription-form">
+        <label for="phone_number">Telefonnummer:</label>
+        <input type="text" id="phone_number" name="phone_number" required><br><br>
 
-      <label for="newspaper_id">Välj tidning:</label>
-      <select id="newspaper_id" name="newspaper" required></select><br><br>
+        <label for="county">Välj län:</label>
+        <select id="county" name="county" required></select><br><br>
 
-      <button type="submit">Starta Prenumeration</button>
-    </form>
+        <label for="newspaper_id">Välj tidning:</label>
+        <select id="newspaper_id" name="newspaper" required></select><br><br>
 
-    <div id="klarna-checkout-container"></div>
-    <div id="response"></div>
+        <button type="submit">Starta Prenumeration</button>
+      </form>
+
+      <div id="klarna-checkout-container"></div>
+      <div id="response"></div>
+    </div>
   </div>
 
   <script src="https://x.klarnacdn.net/kp/lib/v1/api.js" async></script>
@@ -154,19 +112,13 @@
               responseDiv.innerHTML = `<p class="error">Fel vid laddning av Klarna: ${res.error}</p>`;
             } else {
               responseDiv.innerHTML = `<p></p>`;
+
+              // Fake knapp för att simulera betalning (styling i CSS)
               if (!document.getElementById('klarna-fake-click')) {
                 const fakeBtn = document.createElement('button');
                 fakeBtn.id = 'klarna-fake-click';
                 fakeBtn.textContent = 'Betala';
-                fakeBtn.style.marginTop = '20px';
-                fakeBtn.style.display = 'block';
-                fakeBtn.style.padding = '12px 24px';
-                fakeBtn.style.backgroundColor = 'green';
-                fakeBtn.style.color = 'white';
-                fakeBtn.style.border = 'none';
-                fakeBtn.style.borderRadius = '8px';
-                fakeBtn.style.fontSize = '16px';
-                fakeBtn.style.cursor = 'pointer';
+                fakeBtn.className = 'klarna-fake-button';
 
                 fakeBtn.addEventListener('click', async () => {
                   const sessionId = localStorage.getItem("klarnaSessionId");

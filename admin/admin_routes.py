@@ -110,4 +110,4 @@ def show_qr():
 @admin_routes.route('/admin/logout')
 def admin_logout():
     session.pop('admin_logged_in', None)
-    return redirect(url_for('admin.admin_login'))
+    return redirect(url_for('serve_index'))
