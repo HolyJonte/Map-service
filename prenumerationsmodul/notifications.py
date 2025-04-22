@@ -101,6 +101,7 @@ def notify_accidents():
         return
 
     new_events_found = False
+    sms_count = 0   ## RÄKNARE FÖR SKICKADE SMS- TA bort sen
 
     for event in new_events:
         event_id = event.get("id")
@@ -156,6 +157,7 @@ def notify_accidents():
                     success = send_sms(to=phone, message=message)
                     if success:
                         print(f"SMS skickat till {phone} om händelse {event_id} ({event_type})")
+                        sms_count += 1 ## ÖKA RÄKNAREN - TA BORT SEN
                         try:
                             log_sms(
                                 newspaper_id=subscriber.newspaper_id,
@@ -176,6 +178,12 @@ def notify_accidents():
                         print(f"Misslyckades att skicka SMS till {phone}")
                 except Exception as e:
                     print(f"Fel vid SMS-sändning för {phone}: {e}")
+                    
+    ## SKRIV UT ANTALET SMS SOM SKICKATS - TA BORT SEN
+    if sms_count > 0:
+        print(f"Totalt skickade {sms_count} SMS.")
+    else:
+        print("Inga SMS skickades.")
 
     if not new_events_found:
         print("Inga nya händelser hittades för idag.")

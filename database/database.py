@@ -92,6 +92,26 @@ def initialize_database():
             VALUES (?, ?, ?)
         ''', (name, email, quota))
 
+    # Hårdkodar in en användare (TA BORT SEDAN)
+    default_user = ("testuser@example.com", "hashed_password", "totp_secret_123")
+    cursor.execute('''
+        INSERT OR IGNORE INTO users (email, password, totp_secret)
+        VALUES (?, ?, ?)
+    ''', default_user)
+
+    # Hämta user_id för default-användaren (TA BORT SEDAN)
+    cursor.execute("SELECT id FROM users WHERE email = ?", (default_user[0],))
+    user = cursor.fetchone()
+    if not user:
+        raise Exception("Kunde inte skapa eller hitta default-användaren!")
+    user_id = user["id"]
+
+    # Hårdkodar in en prenumerant för county = 1 (TA BORT SEDAN)
+    default_subscriber = (user_id, "+46701234567", 1, 1, "test_klarna_token")
+    cursor.execute('''
+        INSERT OR IGNORE INTO subscribers (user_id, phone_number, county, newspaper_id, klarna_token)
+        VALUES (?, ?, ?, ?, ?)
+    ''', default_subscriber)
 
     conn.commit()
     conn.close()
