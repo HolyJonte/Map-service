@@ -24,7 +24,7 @@ def load_processed_events():
 def save_processed_events(processed_events):
     """Sparar behandlade händelse-ID:n och deras tidsstämplar till JSON-fil."""
     with open(PROCESSED_EVENTS_FILE, 'w') as f:
-        json.dump(processed_events, f)
+        json.dump(processed_events, f, indent=2)
     # TA BORT SEN, till för debugging
     print(f"DEBUG: Sparade {len(processed_events)} poster till {PROCESSED_EVENTS_FILE}")
 
