@@ -1,4 +1,3 @@
-{# subscription.html #}
 {% extends "base.html" %}
 
 {% block title %}Prenumerera{% endblock %}
@@ -7,168 +6,170 @@
 
 <!-- OBS! Styling för subscription sidan finns nu i css:en (längst ner) istället-->
 
-  <div class="subscription-page">
-    <h1>Starta din SMS-prenumeration</h1>
+<div class="subscription-page">
+  <h1>Starta din SMS-prenumeration</h1>
 
-    <div>
-      <h2>Starta Prenumeration</h2>
-      <form id="subscription-form">
-        <label for="phone_number">Telefonnummer:</label>
-        <input type="text" id="phone_number" name="phone_number" required><br><br>
+  <div>
+    <h2>Starta Prenumeration</h2>
+    <form id="subscription-form">
+      <label for="phone_number">Telefonnummer:</label>
+      <input type="text" id="phone_number" name="phone_number" required><br><br>
 
-        <label for="county">Välj län:</label>
-        <select id="county" name="county" required></select><br><br>
+      <label for="county">Välj län:</label>
+      <select id="county" name="county" required></select><br><br>
 
-        <label for="newspaper_id">Välj tidning:</label>
-        <select id="newspaper_id" name="newspaper" required></select><br><br>
+      <label for="newspaper_id">Välj tidning:</label>
+      <select id="newspaper_id" name="newspaper" required></select><br><br>
 
-        <button type="submit">Starta Prenumeration</button>
-      </form>
+      <button type="submit">Starta Prenumeration</button>
+    </form>
 
-      <div id="klarna-checkout-container"></div>
-      <div id="response"></div>
-    </div>
+    <div id="klarna-checkout-container"></div> <!-- Klarna-widgeten kommer här -->
+    <div id="response"></div>
   </div>
+</div>
 
-  <script src="https://x.klarnacdn.net/kp/lib/v1/api.js" async></script>
-  <script>
-    async function loadNewspapers() {
-      const select = document.getElementById("newspaper_id");
-      try {
-        const res = await fetch("/subscriptions/newspapers");
-        if (!res.ok) throw new Error("Kunde inte hämta tidningar från servern");
-        const newspapers = await res.json();
-        select.innerHTML = "";
-        const defaultOption = document.createElement("option");
-        defaultOption.textContent = "Välj en tidning";
-        select.appendChild(defaultOption);
-        Object.entries(newspapers).forEach(([id, name]) => {
-          const option = document.createElement("option");
-          option.value = id;
-          option.textContent = name;
-          select.appendChild(option);
-        });
-      } catch (err) {
-        console.error("Kunde inte hämta tidningar:", err);
-      }
+<script>
+  async function loadNewspapers() {
+    const select = document.getElementById("newspaper_id");
+    try {
+      const res = await fetch("/subscriptions/newspapers");
+      if (!res.ok) throw new Error("Kunde inte hämta tidningar från servern");
+      const newspapers = await res.json();
+      select.innerHTML = "";
+      const defaultOption = document.createElement("option");
+      defaultOption.textContent = "Välj en tidning";
+      select.appendChild(defaultOption);
+      Object.entries(newspapers).forEach(([id, name]) => {
+        const option = document.createElement("option");
+        option.value = id;
+        option.textContent = name;
+        select.appendChild(option);
+      });
+    } catch (err) {
+      console.error("Kunde inte hämta tidningar:", err);
+    }
+  }
+
+  async function loadCounties() {
+    const select = document.getElementById("county");
+    try {
+      const res = await fetch("/subscriptions/counties");
+      const counties = await res.json();
+      Object.entries(counties).forEach(([code, name]) => {
+        const option = document.createElement("option");
+        option.value = code;
+        option.textContent = name;
+        select.appendChild(option);
+      });
+    } catch (err) {
+      console.error("Kunde inte hämta länslista:", err);
+    }
+  }
+
+  window.onload = function() {
+    loadCounties();
+    loadNewspapers();
+  };
+
+  document.getElementById('subscription-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const phoneNumber = document.getElementById('phone_number').value;
+    const county = document.getElementById('county').value;
+    const newspaper_id = document.getElementById('newspaper_id').value;
+    const responseDiv = document.getElementById('response');
+
+    if (!phoneNumber || !county || !newspaper_id || newspaper_id === "Välj en tidning") {
+      responseDiv.innerHTML = `<p class="error">Vänligen fyll i telefonnummer, län och tidning.</p>`;
+      return;
     }
 
-    async function loadCounties() {
-      const select = document.getElementById("county");
-      try {
-        const res = await fetch("/subscriptions/counties");
-        const counties = await res.json();
-        Object.entries(counties).forEach(([code, name]) => {
-          const option = document.createElement("option");
-          option.value = code;
-          option.textContent = name;
-          select.appendChild(option);
-        });
-      } catch (err) {
-        console.error("Kunde inte hämta länslista:", err);
-      }
-    }
+    try {
+      const response = await fetch('/subscriptions/start-subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phone_number: phoneNumber,
+          county: parseInt(county),
+          newspaper_id: parseInt(newspaper_id),
+        }),
+      });
 
-    window.onload = function() {
-      loadCounties();
-      loadNewspapers();
-    };
+      const data = await response.json();
 
-    document.getElementById('subscription-form').addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const phoneNumber = document.getElementById('phone_number').value;
-      const county = document.getElementById('county').value;
-      const newspaper_id = document.getElementById('newspaper_id').value;
-      const responseDiv = document.getElementById('response');
+      if (response.ok) {
+        localStorage.setItem('phoneNumber', phoneNumber);
+        localStorage.setItem('klarnaSessionId', data.session_id);
 
-      if (!phoneNumber || !county || !newspaper_id || newspaper_id === "Välj en tidning") {
-        responseDiv.innerHTML = `<p class="error">Vänligen fyll i telefonnummer, län och tidning.</p>`;
-        return;
-      }
+        Klarna.Payments.init({ client_token: data.client_token });
+        Klarna.Payments.load({
+          container: '#klarna-checkout-container',
+          payment_method_category: 'card' // här kan du också ändra för att stödja andra betalmetoder
+        }, function (res) {
+          if (res.error) {
+            responseDiv.innerHTML = `<p class="error">Fel vid laddning av Klarna: ${res.error}</p>`;
+          } else {
+            responseDiv.innerHTML = `<p></p>`;
 
-      try {
-        const response = await fetch('/subscriptions/start-subscription', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            phone_number: phoneNumber,
-            county: parseInt(county),
-            newspaper_id: parseInt(newspaper_id),
-          }),
-        });
+            // Fejkknappen bortkommenterad för nu
+            /*
+            if (!document.getElementById('klarna-fake-click')) {
+              const fakeBtn = document.createElement('button');
+              fakeBtn.id = 'klarna-fake-click';
+              fakeBtn.textContent = 'Betala';
+              fakeBtn.className = 'klarna-fake-button';
 
-        const data = await response.json();
+              fakeBtn.addEventListener('click', async () => {
+                const sessionId = localStorage.getItem("klarnaSessionId");
+                if (!sessionId) {
+                  alert("Session saknas. Fyll i formuläret först.");
+                  return;
+                }
 
-        if (response.ok) {
-          localStorage.setItem('phoneNumber', phoneNumber);
-          localStorage.setItem('klarnaSessionId', data.session_id);
+                try {
+                  const response = await fetch('/subscriptions/prenumeration-startad', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      status: "AUTHORIZED",  // Här simulerar vi att betalningen godkänts
+                      session_id: sessionId,
+                      authorization_token: "fake-token-123"
+                    }),
+                  });
 
-          Klarna.Payments.init({ client_token: data.client_token });
-          Klarna.Payments.load({
-            container: '#klarna-checkout-container',
-            payment_method_category: 'card'
-          }, function (res) {
-            if (res.error) {
-              responseDiv.innerHTML = `<p class="error">Fel vid laddning av Klarna: ${res.error}</p>`;
-            } else {
-              responseDiv.innerHTML = `<p></p>`;
-
-              // Fake knapp för att simulera betalning (styling i CSS)
-              if (!document.getElementById('klarna-fake-click')) {
-                const fakeBtn = document.createElement('button');
-                fakeBtn.id = 'klarna-fake-click';
-                fakeBtn.textContent = 'Betala';
-                fakeBtn.className = 'klarna-fake-button';
-
-                fakeBtn.addEventListener('click', async () => {
-                  const sessionId = localStorage.getItem("klarnaSessionId");
-                  if (!sessionId) {
-                    alert("Session saknas. Fyll i formuläret först.");
+                  if (!response.ok) {
+                    const data = await response.json();
+                    responseDiv.innerHTML = data.error === "already_subscribed"
+                      ? `<p class="error">Detta telefonnummer har redan en aktiv prenumeration.</p>`
+                      : `<p class="error">Fel: ${data.error || "Okänt fel"}</p>`;
                     return;
                   }
 
-                  try {
-                    const response = await fetch('/subscriptions/prenumeration-startad', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({
-                        status: "AUTHORIZED",
-                        session_id: sessionId,
-                        authorization_token: "fake-token-123"
-                      }),
-                    });
-
-                    if (!response.ok) {
-                      const data = await response.json();
-                      responseDiv.innerHTML = data.error === "already_subscribed"
-                        ? `<p class="error">Detta telefonnummer har redan en aktiv prenumeration.</p>`
-                        : `<p class="error">Fel: ${data.error || "Okänt fel"}</p>`;
-                      return;
-                    }
-
-                    if (response.redirected) {
-                      window.location.href = response.url;
-                    } else {
-                      const html = await response.text();
-                      document.documentElement.innerHTML = html;
-                    }
-                  } catch (err) {
-                    alert("Något gick fel: " + err.message);
-                    console.error(err);
+                  if (response.redirected) {
+                    window.location.href = response.url;  // Om servern skickar tillbaka en omdirigering
+                  } else {
+                    const html = await response.text();
+                    document.documentElement.innerHTML = html;  // Byter ut hela sidan med den nya sidan
                   }
-                });
+                } catch (err) {
+                  alert("Något gick fel: " + err.message);
+                  console.error(err);
+                }
+              });
 
-                document.querySelector('#klarna-checkout-container').appendChild(fakeBtn);
-              }
+              document.querySelector('#klarna-checkout-container').appendChild(fakeBtn);
             }
-          });
-        } else {
-          responseDiv.innerHTML = `<p class="error">Fel: ${data.error || "Okänt fel"}</p>`;
-        }
-      } catch (error) {
-        responseDiv.innerHTML = `<p class="error">Något gick fel: ${error.message}</p>`;
-        console.error("Fetch error:", error);
+            */
+          }
+        });
+      } else {
+        responseDiv.innerHTML = `<p class="error">Fel: ${data.error || "Okänt fel"}</p>`;
       }
-    });
-  </script>
+    } catch (error) {
+      responseDiv.innerHTML = `<p class="error">Något gick fel: ${error.message}</p>`;
+      console.error("Fetch error:", error);
+    }
+  });
+</script>
+
 {% endblock %}

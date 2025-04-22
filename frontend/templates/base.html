@@ -11,6 +11,9 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+  
+  <!-- Klarna widget-SDK -->
+  <script type="text/javascript" src="https://x.klarnacdn.net/kp/lib/v1/api.js" async></script>
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
@@ -64,6 +67,16 @@
       menuToggle.addEventListener('click', () => {
         menuItems.classList.toggle('show');
       });
+    }
+  </script>
+
+<!-- Kontroll för att kolla om Klarna SDK (Widget) ens laddas -->
+
+  <script>
+    if (typeof Klarna !== 'undefined' && Klarna.Payments) {
+      console.log("Klarna SDK is loaded successfully.");
+    } else {
+      console.error("Failed to load Klarna SDK.");
     }
   </script>
 
