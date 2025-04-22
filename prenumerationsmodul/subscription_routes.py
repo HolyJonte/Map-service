@@ -38,12 +38,11 @@ def show_subscription_page():
 
 @subscription_routes.route('/prenumerera')
 def prenumerera_check():
-    print("Session just nu:", dict(session))  # Lägg till detta för felsökning
     if session.get('user_logged_in'):
         return redirect(url_for('subscriptions.show_subscription_page'))
     else:
-        return redirect(url_for('user_routes.login'))
-
+        session['next'] = url_for('subscriptions.show_subscription_page')
+        return redirect(url_for('user_routes.serve_login_choice'))
 
 # ==========================================================================================
 # Rutt för att starta prenumeration  (När man klickar på "Starta prenumeration" i appen)

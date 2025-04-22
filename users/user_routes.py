@@ -9,6 +9,15 @@ from users.user_logic import (
 
 user_routes = Blueprint('user_routes', __name__, template_folder='../frontend/templates')
 
+
+# ======================================================
+# Logga in som admin, user eller registera ny användare
+# ======================================================
+
+@user_routes.route('/login-choice')
+def serve_login_choice():
+    return render_template('login_choice.html')
+
 # ===============================
 # Registrering
 # ===============================
@@ -21,11 +30,19 @@ def register():
         if find_user_by_email(email):
             return render_template('user_register.html', error="E-post finns redan")
 
+        # Skapa användaren
         register_user(email, password)
 
+        # Spara session
         session['user_email'] = email
         session['user_awaiting_2fa'] = True
         session['show_user_qr'] = True
+
+        # Kolla om vi har en sparad redirect efter 2FA
+        next_page = session.pop('next', None)
+        if next_page:
+            session['after_2fa_redirect'] = next_page
+
         return redirect(url_for('user_routes.show_user_qr'))
 
     return render_template('user_register.html')
@@ -41,13 +58,23 @@ def login():
         user = validate_login(email, password)
 
         if user:
+            # Spara användaruppgifter i session
             session['user_email'] = email
             session['user_awaiting_2fa'] = True
             session['show_user_qr'] = True
+
+            # Kontrollera om vi har en redirect-sida sparad
+            next_page = session.pop('next', None)
+            if next_page:
+                session['after_2fa_redirect'] = next_page
+
+            # Skicka till QR-sidan för 2FA
             return redirect(url_for('user_routes.show_user_qr'))
 
         return render_template('user_login.html', error="Fel e-post eller lösenord")
+
     return render_template('user_login.html')
+
 
 # ===============================
 # Visa QR-kod
@@ -84,7 +111,9 @@ def verify_user_2fa():
         if user and verify_totp_code(user, code):
             session.pop('user_awaiting_2fa', None)
             session['user_logged_in'] = True
-            return redirect('/')
+            redirect_url = session.pop('after_2fa_redirect', '/')
+            return redirect(redirect_url)
+
 
         return render_template('user_two_factor.html', error="Fel kod")
     return render_template('user_two_factor.html')
