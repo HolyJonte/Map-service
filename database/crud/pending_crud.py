@@ -17,7 +17,7 @@ def add_pending_subscriber(session_id, user_id, phone_number, county, newspaper_
         # Lägg in ny pending-rad
         cursor.execute('''
             INSERT INTO pending_subscribers (session_id, user_id, phone_number, county, newspaper_id)
-            VALUES (?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?)
         ''', (session_id, user_id, phone_number, county, newspaper_id))
 
         conn.commit()
@@ -44,7 +44,7 @@ def get_pending_subscriber(session_id):
     if row:
         return PendingSubscriber(
             session_id=row["session_id"],
-            user_id=row["user_id"],             # OSÄKER!?
+            user_id=row["user_id"],
             phone_number=row["phone_number"],
             county=row["county"],
             newspaper_id=row["newspaper_id"],

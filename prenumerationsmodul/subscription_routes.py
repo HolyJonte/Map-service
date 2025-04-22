@@ -58,9 +58,13 @@ def start_subscription():
         if not phone_number or not county or not newspaper_id:
             return jsonify({"error": "Phone number, county and newspaper are required"}), 400
 
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({"error": "User not logged in"}), 401
+
         session_id, client_token = initiate_payment(phone_number, county, tokenize=True)
 
-        if not add_pending_subscriber(session_id, phone_number, county, newspaper_id):
+        if not add_pending_subscriber(session_id, user_id, phone_number, county, newspaper_id):
             return jsonify({"error": "Phone number already in process"}), 400
 
         return jsonify({"session_id": session_id, "client_token": client_token}), 200

@@ -21,7 +21,7 @@ def add_subscriber(phone_number, user_id, county, newspaper_id, klarna_token):
     try:
         cursor.execute('''
             INSERT INTO subscribers (phone_number, user_id, county, newspaper_id, active, subscription_start, last_payment, klarna_token) 
-            VALUES (?, ?, 1, ?, ?, ?, ?)
+            VALUES (?, ?, 1, ?, ?, ?, ?, ?)
         ''', (phone_number, user_id, county, newspaper_id, datetime.now(), datetime.now(), klarna_token))
         conn.commit()
         return True
@@ -83,7 +83,7 @@ def manual_add_subscriber(phone_number, user_id, county, newspaper_id, active=1,
     try:
         cursor.execute('''
             INSERT INTO subscribers (phone_number, user_id, county, newspaper_id, active, subscription_start, last_payment, klarna_token)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ''', (phone_number, user_id, county, newspaper_id, active, subscription_start, last_payment, klarna_token))
         conn.commit()
         return True
