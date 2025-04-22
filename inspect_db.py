@@ -24,6 +24,7 @@ def inspect_table(table_name):
 
 # Lista av tabeller att inspektera
 tables = [
+    "sms_logs",
     "newspapers",
     "users",
     "subscribers",
