@@ -20,24 +20,24 @@
       <a href="{{ url_for('serve_index') }}">
         <img src="{{ url_for('static', filename='logo.png') }}" alt="Logotyp" style="cursor: pointer;">
       </a>
-    </div>
 
-    <!-- Huvudmeny -->
-    <div class="menu-wrapper">
-      <button class="menu-button" id="menuToggle"><i class="bi bi-list"></i> Meny</button>
-      <nav class="menu-items" id="menuItems">
-        <a href="{{ url_for('serve_index') }}"><i class="bi bi-house"></i> Hem</a>
-        <a href="{{ url_for('subscriptions.prenumerera_check') }}"><i class="bi bi-chat-dots"></i> Prenumerera</a>
-        {% if session.user_logged_in or session.admin_logged_in %}
-          {% if session.user_logged_in %}
-            <a href="/users/logout"><i class="bi bi-box-arrow-right"></i> Logga ut</a>
+      <!-- Huvudmeny -->
+      <div class="menu-wrapper">
+        <button class="menu-button" id="menuToggle"><i class="bi bi-list"></i> Meny</button>
+        <nav class="menu-items" id="menuItems">
+          <a href="{{ url_for('serve_index') }}"><i class="bi bi-house"></i> Hem</a>
+          <a href="{{ url_for('subscriptions.prenumerera_check') }}"><i class="bi bi-chat-dots"></i> Prenumerera</a>
+          {% if session.user_logged_in or session.admin_logged_in %}
+            {% if session.user_logged_in %}
+              <a href="/users/logout"><i class="bi bi-box-arrow-right"></i> Logga ut</a>
+            {% else %}
+              <a href="/admin/logout"><i class="bi bi-box-arrow-right"></i> Logga ut</a>
+            {% endif %}
           {% else %}
-            <a href="/admin/logout"><i class="bi bi-box-arrow-right"></i> Logga ut</a>
+            <a href="/login"><i class="bi bi-box-arrow-in-right"></i> Logga in</a>
           {% endif %}
-        {% else %}
-          <a href="/login"><i class="bi bi-box-arrow-in-right"></i> Logga in</a>
-        {% endif %}
-      </nav>
+        </nav>
+      </div>
     </div>
   </header>
 

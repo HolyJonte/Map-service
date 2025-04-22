@@ -194,68 +194,56 @@ Styling för modalerna i ikonerna på kartan (gemensamt för olyckor och vägarb
   background-color: gray;
 }
 
-/* ---------------------------------------------------
-Utseende för Header
---------------------------------------------------- */
+
+/* ==========================================
+HEADER & CONTAINER
+========================================== */
 .navbar {
   background-color: #222;
   color: white;
-  padding: 0px 0px;
-  position: relative;
+  padding: 0;
 }
-
 
 .navbar-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: relative;
-  padding: 0px; /* Mer utrymme runt innehållet */
+  flex-wrap: nowrap; /* 🛑 Inget wrap! */
+  padding: 0 20px;
+  gap: 20px;
 }
 
+/* === LOGOTYP === */
 .navbar-container img {
-  height: 100px;
+  height: 80px;
   width: auto;
+  max-width: 100%; /* 🛠️ Hindrar överskridning */
 }
 
-/* ---------------------------------------------------
-Utseende för menyn
---------------------------------------------------- */
+/* === MENY === */
+.menu-wrapper {
+  display: flex;
+  align-items: center;
+  white-space: nowrap; /* 🛑 Hindra radbrytning */
+}
 
-
+/* Menyknappen (hamburgare) */
 .menu-button {
+  display: none;
   background: none;
   border: none;
   color: white;
   font-size: 1.8em;
   cursor: pointer;
-  z-index: 1001;
 }
 
+/* Menyval – visas bara på breda skärmar */
 .menu-items {
-  position: absolute;
-  top: 100%; /* Helt under headern */
-  right: 0; /* Mot högerkant */
-  background-color: #222;
-  border-radius: 0 0 8px 8px;
-  padding: 15px 20px; /* Mer marginal inuti */
   display: flex;
-  flex-direction: column;
-  align-items: flex-end; /* Högerjustera innehåll */
-  gap: 12px;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(-10px);
-  transition: all 0.3s ease;
-  z-index: 1000;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Snygg skugga */
-  min-width: 180px; /* Ger lite utrymme även om texten är kort */
-}
-
-.menu-items.show {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+  white-space: nowrap; /* 🛑 Viktigt */
 }
 
 .menu-items a {
@@ -264,7 +252,7 @@ Utseende för menyn
   font-size: 1rem;
   display: flex;
   align-items: center;
-  gap: 8px; /* Lite luft mellan ikon och text */
+  gap: 8px;
 }
 
 .menu-items a:hover {
@@ -272,49 +260,33 @@ Utseende för menyn
   color: #ddd;
 }
 
-.menu-wrapper {
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  padding-right: 20px;
-  z-index: 1001;
-}
-
-/* =======================
-   Responsiv meny – desktopläge
-========================== */
-@media screen and (min-width: 768px) {
+/* === MOBILLÄGE – under 1024px eller annan breakpoint === */
+@media screen and (max-width: 768px) {
   .menu-button {
-    display: none; /* Göm hamburgermenyn på desktop */
+    display: block;
   }
 
   .menu-items {
-    all: unset; /* Återställ tidigare styling för mobil */
-    display: flex !important;
-    flex-direction: row;
-    gap: 20px;
-    align-items: center;
-    justify-content: flex-end;
-    margin-right: 20px;
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 20px;
+    background-color: #222;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+    padding: 15px 20px;
+    border-radius: 0 0 8px 8px;
+    z-index: 1000;
+    min-width: 180px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   }
 
-  .menu-items a {
-    color: white;
-    text-decoration: none;
-    font-size: 1rem;
+  .menu-items.show {
     display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .menu-items a:hover {
-    text-decoration: underline;
-    color: #ddd;
   }
 }
+
 
 
 /* ---------------------------------------------------
