@@ -6,7 +6,9 @@ import json
 from datetime import datetime, timedelta, timezone
 
 from smsmodul.send_sms import send_sms
-from api.logic import get_all_accidents
+# Fil för att lagra behandlade händelse-ID:n och deras tidsstämplar
+# Fil för att lagra behandlade händelse-ID:n och deras tidsstämplar
+from api.logic import get_all_accidents, get_all_roadworks
 from database.crud.subscriber_crud import get_subscribers_by_county
 from database.crud.sms_crud import log_sms  # Lägg till
 
@@ -26,7 +28,8 @@ def save_processed_events(processed_events):
     """Sparar behandlade händelse-ID:n och deras tidsstämplar till JSON-fil."""
     with open(PROCESSED_EVENTS_FILE, 'w') as f:
         json.dump(processed_events, f)
-
+    #TA BORT SEN, till för debugging
+    print(f"DEBUG: Sparade {len(processed_events)} poster till {PROCESSED_EVENTS_FILE}")
 def clean_old_events(processed_events, days_to_keep=30):
     """Rensa händelse-ID:n som är äldre än det angivna antalet dagar."""
     cutoff_time = datetime.now(timezone.utc) - timedelta(days=days_to_keep)
@@ -51,20 +54,27 @@ def notify_accidents():
     processed_events = load_processed_events()
     processed_ids = {entry["id"] for entry in processed_events if "id" in entry}
 
-    events = get_all_accidents()
-    print(f"Hittade totalt {len(events)} händelser")
+        # 2) Hämta olyckor och vägarbeten
+    accidents = get_all_accidents()
+    for ev in accidents:
+        ev["type"] = "accident"
+    roadworks = get_all_roadworks()
+    for ev in roadworks:
+        ev["type"] = "roadwork"
 
-    if not events:
+    all_events = accidents + roadworks
+    #TA BORT SEN
+    print(f"Hittade totalt {len(all_events)} events (olyckor + vägarbeten)")
+    if not all_events:
         print("Inga händelser hittades.")
         return
 
     today = datetime.now(timezone.utc).date()
 
     todays_events = []
-    for event in events:
+    for event in all_events:
         start_time_str = event.get("start")
         if not start_time_str:
-            print("Starttid saknas för en händelse vid plats:", event.get("location"))
             continue
         try:
             start_time = datetime.fromisoformat(start_time_str.replace("Z", "+00:00"))
@@ -72,11 +82,12 @@ def notify_accidents():
             if event_date == today:
                 todays_events.append(event)
         except ValueError as e:
-            print(f"Kunde inte parsa starttid för händelse vid {event.get('location')}: {e}")
             continue
 
     if not todays_events:
         print("Inga händelser hittades för dagens datum.")
+        # säkerställ att fil skapas om tom
+        save_processed_events(processed_events)
         return
 
     new_events_found = False
@@ -91,56 +102,61 @@ def notify_accidents():
             continue
 
         new_events_found = True
-        county = event.get("county")
-
-        if not county:
+        raw_counties = event.get("county", [])
+        if not raw_counties:
             print("County saknas för en händelse vid plats:", event.get("location"))
             continue
 
-        county = str(county)
+        for county_no in raw_counties:
+            county = str(county_no)
 
         subscribers = get_subscribers_by_county(county)
         if not subscribers:
             print(f"Inga prenumeranter hittades för county: {county}")
             continue
 
-        event_type = event.get("type", "").lower()
+               # 1) Mappa både olyckor och vägarbeten till en etikett, hoppa annars
+        event_type    = event.get("type", "").lower()
+        label_map     = {"accident": "Olycka", "roadwork": "Vägarbete"}
+        label         = label_map.get(event_type)
+        if not label:
+            continue
+
+        # 2) Behåll din severity‑kontroll
         severity_text = event.get("severity", "Okänd påverkan")
-        if severity_text == "Stor påverkan" or severity_text == "Mycket stor påverkan":
-            if event_type == "accident":
-                message = (f"Olycka i {county}:\n"
-                          f"Plats: {event.get('location')}\n"
-                          f"Beskrivning: {event.get('message')}\n"
-                          f"Start: {event.get('start')}\n"
-                          f"Se mer information här: {event.get('link')}")
-            elif event_type == "roadwork":
-                message = (f"Vägarbete i {county}:\n"
-                          f"Plats: {event.get('location')}\n"
-                          f"Beskrivning: {event.get('message')}\n"
-                          f"Start: {event.get('start')}\n"
-                          f"Se mer information här: {event.get('link')}")
-            else:
-                continue
+        if severity_text not in ("Stor påverkan", "Mycket stor påverkan"):
+            continue
 
-            print("Meddelande som skickas:", message)
+        # 3) Bygg alltid meddelandet likadant, bara etiketten skiljer
+        message = (
+            f"{label} i {county}:\n"
+            f"Plats: {event.get('location')}\n"
+            f"Beskrivning: {event.get('message')}\n"
+            f"Start: {event.get('start')}\n"
+            f"Se mer information här: {event.get('link')}"
+        )
+        print("Meddelande som skickas:", message.replace("\n", " | "))
 
-            for subscriber in subscribers:
-                phone = subscriber.phone_number
-                try:
-                    success = send_sms(to=phone, message=message)
-                    if success:
-                        print(f"SMS skickat till {phone} om händelse {event_id} ({event_type})")
-                        log_sms(
-                            newspaper_id=subscriber.newspaper_id,
-                            subscriber_id=subscriber.id,
-                            recipient=phone,
-                            message=message
-                        )
-                        print(f"SMS loggat för subscriber_id={subscriber.id}, newspaper_id={subscriber.newspaper_id}")
-                    else:
-                        print(f"Misslyckades att skicka SMS till {phone}")
-                except Exception as e:
-                    print(f"Fel vid SMS eller loggning för {phone}: {e}")
+
+
+
+        for subscriber in subscribers:
+            phone = subscriber.phone_number
+            try:
+                success = send_sms(to=phone, message=message)
+                if success:
+                    print(f"SMS skickat till {phone} om händelse {event_id} ({event_type})")
+                    log_sms(
+                        newspaper_id=subscriber.newspaper_id,
+                        subscriber_id=subscriber.id,
+                        recipient=phone,
+                        message=message
+                    )
+                    print(f"SMS loggat för subscriber_id={subscriber.id}, newspaper_id={subscriber.newspaper_id}")
+                else:
+                    print(f"Misslyckades att skicka SMS till {phone}")
+            except Exception as e:
+                print(f"Fel vid SMS eller loggning för {phone}: {e}")
 
         processed_events.append({
             "id": event_id,
@@ -154,4 +170,4 @@ def notify_accidents():
         print("Inga nya händelser hittades för dagens datum.")
 
 if __name__ == "__main__":
-    notify_accidents()
+    notify_accidents() 

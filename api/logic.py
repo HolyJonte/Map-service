@@ -68,6 +68,7 @@ def get_all_roadworks():
                     "id": deviation.get("Id", "Inget id"),
                     "message": deviation.get("Message", "Inget meddelande"),
                     "location": deviation.get("LocationDescriptor", "Okänd plats"),
+                    "county": deviation.get("CountyNo", None),
                     "severity": deviation.get("SeverityText", "Okänd påverkan"),
                     "start": deviation.get("StartTime"),
                     "end": deviation.get("EndTime"),
@@ -126,7 +127,6 @@ def get_all_accidents():
                 "county": deviation.get("CountyNo", None),
                 "link": deviation.get("WebLink", "Läs mer om trafikläget på: https://www.trafikverket.se/trafikinformation/vag/?map_x=650778.00005&map_y=7200000&map_z=2&map_l=101000000000000")
             })
-            
-    print(accidents)
+
     return accidents
 
