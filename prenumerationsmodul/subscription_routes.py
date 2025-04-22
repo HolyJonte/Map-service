@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, render_template, current_app, session
+from flask import Blueprint, request, jsonify, render_template, current_app, session, redirect, url_for
 from datetime import datetime, timedelta
 
 from betalningsmodul.klarna_integration import initiate_payment, verify_payment, cancel_token
@@ -28,9 +28,22 @@ initialize_database()
 # ==========================================================================================
 # Rutter för prenumerationer
 # ==========================================================================================
+
 @subscription_routes.route('/subscription', methods=['GET'])
 def show_subscription_page():
+    if not session.get('user_logged_in'):
+        return redirect(url_for('user_routes.login'))
     return render_template('subscription.html')
+
+
+@subscription_routes.route('/prenumerera')
+def prenumerera_check():
+    print("Session just nu:", dict(session))  # Lägg till detta för felsökning
+    if session.get('user_logged_in'):
+        return redirect(url_for('subscriptions.show_subscription_page'))
+    else:
+        return redirect(url_for('user_routes.login'))
+
 
 # ==========================================================================================
 # Rutt för att starta prenumeration  (När man klickar på "Starta prenumeration" i appen)
