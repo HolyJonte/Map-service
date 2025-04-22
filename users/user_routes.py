@@ -9,6 +9,15 @@ from users.user_logic import (
 
 user_routes = Blueprint('user_routes', __name__, template_folder='../frontend/templates')
 
+
+# ======================================================
+# Logga in som admin, user eller registera ny användare
+# ======================================================
+
+@user_routes.route('/login-choice')
+def serve_login_choice():
+    return render_template('login_choice.html')
+
 # ===============================
 # Registrering
 # ===============================
