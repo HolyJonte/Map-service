@@ -3,9 +3,8 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import json
-from datetime import datetime, timedelta, timezone
-
 from smsmodul.send_sms import send_sms
+from datetime import datetime, timedelta, timezone
 from api.logic import get_all_accidents, get_all_roadworks
 from database.crud.subscriber_crud import get_subscribers_by_county
 from database.crud.sms_crud import log_sms
