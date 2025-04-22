@@ -41,6 +41,7 @@ def prenumerera_check():
     if session.get('user_logged_in'):
         return redirect(url_for('subscriptions.show_subscription_page'))
     else:
+        session['next'] = url_for('subscriptions.show_subscription_page')
         return redirect(url_for('user_routes.serve_login_choice'))
 
 # ==========================================================================================
