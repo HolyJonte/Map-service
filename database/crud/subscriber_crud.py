@@ -15,14 +15,14 @@ def subscriber_exists(phone_number):
 
 
 # Lägger till en ny prenumerant i subscribers-tabellen
-def add_subscriber(phone_number, county, newspaper_id, klarna_token):
+def add_subscriber(phone_number, user_id, county, newspaper_id, klarna_token):
     conn = get_db_connection()
     cursor = conn.cursor()
     try:
         cursor.execute('''
-            INSERT INTO subscribers (phone_number, county, newspaper_id, active, subscription_start, last_payment, klarna_token) 
+            INSERT INTO subscribers (phone_number, user_id, county, newspaper_id, active, subscription_start, last_payment, klarna_token) 
             VALUES (?, ?, 1, ?, ?, ?, ?)
-        ''', (phone_number, county, newspaper_id, datetime.now(), datetime.now(), klarna_token))
+        ''', (phone_number, user_id, county, newspaper_id, datetime.now(), datetime.now(), klarna_token))
         conn.commit()
         return True
     except sqlite3.IntegrityError:
@@ -72,7 +72,7 @@ def deactivate_subscriber(subscriber_id, phone_number):
 
 
 # Lägger till en prenumerant manuellt för t.ex. test eller backup
-def manual_add_subscriber(phone_number, county, newspaper_id, active=1, subscription_start=None, last_payment=None, klarna_token=None):
+def manual_add_subscriber(phone_number, user_id, county, newspaper_id, active=1, subscription_start=None, last_payment=None, klarna_token=None):
     if subscription_start is None:
         subscription_start = datetime.now().isoformat()
     if last_payment is None:
@@ -82,9 +82,9 @@ def manual_add_subscriber(phone_number, county, newspaper_id, active=1, subscrip
     cursor = conn.cursor()
     try:
         cursor.execute('''
-            INSERT INTO subscribers (phone_number, county, newspaper_id, active, subscription_start, last_payment, klarna_token)
+            INSERT INTO subscribers (phone_number, user_id, county, newspaper_id, active, subscription_start, last_payment, klarna_token)
             VALUES (?, ?, ?, ?, ?, ?, ?)
-        ''', (phone_number, county, newspaper_id, active, subscription_start, last_payment, klarna_token))
+        ''', (phone_number, user_id, county, newspaper_id, active, subscription_start, last_payment, klarna_token))
         conn.commit()
         return True
     except sqlite3.IntegrityError:

@@ -90,6 +90,11 @@ def prenumeration_startad():
             if not result:
                 return jsonify({"error": "Session ID not found"}), 404
 
+            user_id = session.get('user_id')
+            if not user_id:
+                return jsonify({"error": "User not logged in"}), 401
+
+
             phone_number = result.phone_number
             county = result.county
             newspaper_id = result.newspaper_id
@@ -98,7 +103,7 @@ def prenumeration_startad():
                 delete_pending_subscriber(session_id)
                 return jsonify({"error": "already_subscribed"}), 400
 
-            add_subscriber(phone_number, county, newspaper_id, klarna_token)
+            add_subscriber(phone_number, user_id, county, newspaper_id, klarna_token)
             delete_pending_subscriber(session_id)
             subscriber_id = subscriber_exists(phone_number)
 

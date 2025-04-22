@@ -13,7 +13,7 @@ body.index-page html {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden;  /* 💥 fixar sista lilla scrollen */
+  overflow: hidden;  /* fixar sista lilla scrollen */
 }
 
 body.index-page .main-content,
@@ -214,7 +214,7 @@ Utseende för Header
 }
 
 .navbar-container img {
-  height: 50px;
+  height: 100px;
   width: auto;
 }
 

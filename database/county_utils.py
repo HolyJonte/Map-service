@@ -1,6 +1,8 @@
 def get_counties():
     return {
+        0: "Alla län",
         1: "Stockholms län",
+        2: "Stockholms län",
         3: "Uppsala län",
         4: "Södermanlands län",
         5: "Östergötlands län",

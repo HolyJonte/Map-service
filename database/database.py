@@ -12,11 +12,12 @@ def get_db_connection():
 def initialize_database():
     conn = get_db_connection()
     cursor = conn.cursor()
-    
+
     # Skapar subscribers-tabellen
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS subscribers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
             phone_number TEXT UNIQUE NOT NULL,
             county INTEGER NOT NULL,
             newspaper_id INTEGER NOT NULL,
@@ -32,6 +33,7 @@ def initialize_database():
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS pending_subscribers (
             session_id TEXT PRIMARY KEY,
+            user_id INTEGER NOT NULL,
             phone_number TEXT UNIQUE NOT NULL,
             county INTEGER NOT NULL,
             newspaper_id INTEGER NOT NULL,

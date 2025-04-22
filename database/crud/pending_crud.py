@@ -5,7 +5,7 @@ from database.models.pending_model import PendingSubscriber
 
 # Lägger till en väntande prenumerant i pending_subscribers-tabellen
 # Tar också bort eventuell gammal rad för detta telefonnummer och lägger in ny
-def add_pending_subscriber(session_id, phone_number, county, newspaper_id):
+def add_pending_subscriber(session_id, user_id, phone_number, county, newspaper_id):
     conn = get_db_connection()
     cursor = conn.cursor()
     try:
@@ -16,9 +16,9 @@ def add_pending_subscriber(session_id, phone_number, county, newspaper_id):
 
         # Lägg in ny pending-rad
         cursor.execute('''
-            INSERT INTO pending_subscribers (session_id, phone_number, county, newspaper_id)
+            INSERT INTO pending_subscribers (session_id, user_id, phone_number, county, newspaper_id)
             VALUES (?, ?, ?, ?)
-        ''', (session_id, phone_number, county, newspaper_id))
+        ''', (session_id, user_id, phone_number, county, newspaper_id))
 
         conn.commit()
         return True
@@ -34,7 +34,7 @@ def get_pending_subscriber(session_id):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('''
-        SELECT session_id, phone_number, county, newspaper_id, created_at
+        SELECT session_id, user_id, phone_number, county, newspaper_id, created_at
         FROM pending_subscribers
         WHERE session_id = ?
     ''', (session_id,))
@@ -44,6 +44,7 @@ def get_pending_subscriber(session_id):
     if row:
         return PendingSubscriber(
             session_id=row["session_id"],
+            user_id=row["user_id"],             # OSÄKER!?
             phone_number=row["phone_number"],
             county=row["county"],
             newspaper_id=row["newspaper_id"],

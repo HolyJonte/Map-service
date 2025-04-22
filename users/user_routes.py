@@ -111,6 +111,7 @@ def verify_user_2fa():
         if user and verify_totp_code(user, code):
             session.pop('user_awaiting_2fa', None)
             session['user_logged_in'] = True
+            session['user_id'] = user.id
             redirect_url = session.pop('after_2fa_redirect', '/')
             return redirect(redirect_url)
 
