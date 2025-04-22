@@ -14,6 +14,26 @@ def initialize_database():
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # Skapar newspapers-tabellen
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS newspapers (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE,
+            contact_email TEXT,
+            sms_quota INTEGER
+        )
+    ''')
+
+    # Skapar users-tabellen
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL,
+            totp_secret TEXT NOT NULL
+        )
+    ''')
+
     # Skapar subscribers-tabellen
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS subscribers (
@@ -42,26 +62,6 @@ def initialize_database():
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id),
             FOREIGN KEY (newspaper_id) REFERENCES newspapers(id)
-        )
-    ''')
-
-    # Skapar newspapers-tabellen
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS newspapers (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL UNIQUE,
-            contact_email TEXT,
-            sms_quota INTEGER
-        )
-    ''')
-
-    # Skapar users-tabellen
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT NOT NULL UNIQUE,
-            password TEXT NOT NULL,
-            totp_secret TEXT NOT NULL
         )
     ''')
 
