@@ -3,6 +3,7 @@ import sqlite3
 def get_db_connection():
     conn = sqlite3.connect("trafikvida.db")
     conn.row_factory = sqlite3.Row  # så vi får dict-aktiga rader
+    conn.execute("PRAGMA foreign_keys = ON")  # Aktiverar stöd för FOREIGN KEY
     return conn
 
 
@@ -25,6 +26,7 @@ def initialize_database():
             subscription_start TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             last_payment TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             klarna_token TEXT,
+            FOREIGN KEY (user_id) REFERENCES users(id),
             FOREIGN KEY (newspaper_id) REFERENCES newspapers(id)
         )
     ''')
@@ -38,6 +40,7 @@ def initialize_database():
             county INTEGER NOT NULL,
             newspaper_id INTEGER NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id),
             FOREIGN KEY (newspaper_id) REFERENCES newspapers(id)
         )
     ''')
