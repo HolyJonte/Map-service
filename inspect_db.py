@@ -33,4 +33,10 @@ tables = [
 for table in tables:
     inspect_table(table)
 
+# Förklaring vad alla kolumner betyder
+print("")
+print("Subscribers har de här kolumnerna:")
+print("id, user_id, phone_number, county, newspaper_id, active, subscription_start, last_payment, klarna_token")
+print("Pednding Subscribers har de här kolumnerna:")
+print("session_id, user_id, phone_number, county, newspaper_id, created_at")
 conn.close()
