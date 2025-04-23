@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Konto registrerat{% endblock %}
+
+{% block content %}
+<div class="auth-card text-center">
+  <h2>Kontot för <strong>{{ email }}</strong> har skapats!</h2>
+  <p>Du behöver nu aktivera tvåstegsverifiering för att kunna logga in på nästa sida.</p>
+
+  <div class="d-flex justify-content-center gap-3 mt-4">
+    <a href="{{ url_for('user_routes.show_user_qr') }}" class="btn btn-primary">Fortsätt till QR-kod</a><br><br>
+    <a href="{{ url_for('serve_index') }}" class="btn btn-secondary">Tillbaka till startsidan</a>
+  </div>
+</div>
+{% endblock %}
+

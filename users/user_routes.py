@@ -43,9 +43,20 @@ def register():
         if next_page:
             session['after_2fa_redirect'] = next_page
 
-        return redirect(url_for('user_routes.show_user_qr'))
+        return redirect(url_for('user_routes.register_confirmation'))
 
     return render_template('user_register.html')
+
+
+# ===============================
+# Registrering Bekräftelse
+# ===============================
+@user_routes.route('/register-confirmation')
+def register_confirmation():
+    if not session.get('user_email'):
+        return redirect(url_for('user_routes.login'))
+    return render_template('user_register_confirmation.html')
+
 
 # ===============================
 # Inloggning

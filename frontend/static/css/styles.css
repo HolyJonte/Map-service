@@ -261,7 +261,7 @@ HEADER & CONTAINER
 }
 
 /* === MOBILLÄGE – under 1024px eller annan breakpoint === */
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 768px) {
   .menu-button {
     display: block;
   }
