@@ -58,7 +58,7 @@ def initiate_payment(_phone_number, _county, tokenize=False, payment_method='cre
         "merchant_urls": {
             "checkout": f"{BASE_URL}/subscriptions/subscription",
             "confirmation": f"{BASE_URL}/subscriptions/prenumeration-startad",
-            "push": f"{BASE_URL}/subscriptions/prenumeration-startad"
+            "push": f"{BASE_URL}/subscriptions/klarna-push"
         }
     }
 
@@ -100,7 +100,7 @@ def verify_payment(data):
     payment_status = data.get("status")
     klarna_token = data.get("klarna_token")
     # Verifierar att betalningen är slutförd
-    if payment_status == "completed":
+    if payment_status == "completed" and klarna_token:
         return True, session_id, klarna_token
     return False, None, None
 

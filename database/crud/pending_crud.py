@@ -60,3 +60,11 @@ def delete_pending_subscriber(session_id):
     cursor.execute('DELETE FROM pending_subscribers WHERE session_id = ?', (session_id,))
     conn.commit()
     conn.close()
+
+def get_all_pending_subscribers():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM pending_subscribers')
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(row) for row in rows]

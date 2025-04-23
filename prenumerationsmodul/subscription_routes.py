@@ -1,7 +1,8 @@
+import requests
 from flask import Blueprint, request, jsonify, render_template, current_app, session, redirect, url_for
 from datetime import datetime, timedelta
 
-from betalningsmodul.klarna_integration import initiate_payment, verify_payment, cancel_token
+from betalningsmodul.klarna_integration import initiate_payment, verify_payment, cancel_token, auth_header
 from database.database import initialize_database
 from database.county_utils import get_counties
 from database.crud.newspaper_crud import get_all_newspaper_names
@@ -13,7 +14,7 @@ from database.crud.subscriber_crud import (
 )
 
 from database.crud.pending_crud import (
-    add_pending_subscriber, get_pending_subscriber, delete_pending_subscriber
+    add_pending_subscriber, get_pending_subscriber, delete_pending_subscriber, get_all_pending_subscribers
 )
 
 
@@ -241,3 +242,66 @@ def get_subscribers():
 
 def check_subscriptions():
     remove_inactive_subscribers()
+
+# ==========================================================================================
+# Rutt för att hantera push från klarna och hämta klarna_order_id
+# ==========================================================================================
+@subscription_routes.route('/klarna-push', methods=['POST'])
+def handle_klarna_push():
+    try:
+        klarna_order_id = request.args.get('klarna_order_id')
+        if not klarna_order_id:
+            return jsonify({"error": "Missing klarna_order_id"}), 400
+
+        # Hämta orderdetaljer från Order Management API
+        headers = {
+            "Authorization": f"Basic {auth_header}",
+            "Content-Type": "application/json"
+        }
+        response = requests.get(
+            f"https://api.playground.klarna.com/ordermanagement/v1/orders/{klarna_order_id}",
+            headers=headers,
+            timeout=10 # Timeout för att undvika hängande anrop
+        )
+        if response.status_code != 200:
+            current_app.logger.error(f"Failed to fetch order details: {response.text}")
+            return jsonify({"error": "Failed to fetch order details"}), 500
+
+        order_data = response.json()
+        # Kontrollera att ordern är godkänd
+        if order_data.get("status") in ["CAPTURED", "COMPLETED"]:
+            # Hämta kundens telefonnummer från order_data
+            phone_number = order_data.get("billing_address", {}).get("phone")
+            if not phone_number:
+                return jsonify({"error": "Phone number not found in order data"}), 400
+
+            # Hitta matchande pending_subscriber baserat på phone_number
+            result = None
+            for pending in get_all_pending_subscribers():
+                if pending["phone_number"] == phone_number:
+                    result = pending
+                    break
+            if not result:
+                return jsonify({"error": "No matching pending subscriber found"}), 404
+
+            # Kontrollera om prenumeration redan finns
+            if subscriber_exists(phone_number):
+                return jsonify({"error": "already_subscribed"}), 400
+
+            # Aktivera prenumeration
+            user_id = result["user_id"]
+            county = result["county"]
+            newspaper_id = result["newspaper_id"]
+            klarna_token = order_data.get("recurring_token")
+            if not klarna_token:
+                return jsonify({"error": "No recurring token found"}), 400
+
+            add_subscriber(phone_number, user_id, county, newspaper_id, klarna_token)
+
+            # Radera pending_subscriber en gång efter hantering
+            delete_pending_subscriber(result["session_id"])
+
+        return jsonify({"message": "Push notification received"}), 200
+    except Exception as e:
+        current_app.logger.error(f"Fel i handle_klarna_push: {e}")
+        return jsonify({"error": f"Serverfel: {str(e)}"}), 500

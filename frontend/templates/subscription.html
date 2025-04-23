@@ -101,10 +101,14 @@
         localStorage.setItem('phoneNumber', phoneNumber);
         localStorage.setItem('klarnaSessionId', data.session_id);
 
-        Klarna.Payments.init({ client_token: data.client_token });
+        Klarna.Payments.init({
+          clientId: data.client_id,
+          client_token: data.client_token
+        });
+
         Klarna.Payments.load({
           container: '#klarna-checkout-container',
-          payment_method_category: 'card' // här kan du också ändra för att stödja andra betalmetoder
+          payment_method_category: 'pay_now' // här kan du också ändra för att stödja andra betalmetoder
         }, function (res) {
           if (res.error) {
             responseDiv.innerHTML = `<p class="error">Fel vid laddning av Klarna: ${res.error}</p>`;
