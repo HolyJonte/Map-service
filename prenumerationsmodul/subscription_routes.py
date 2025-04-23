@@ -50,7 +50,7 @@ def prenumerera_check():
 @subscription_routes.route('/start-subscription', methods=['POST'])
 def start_subscription():
     try:
-        data = request.get_json(force=True)  # Säkerställ JSON även om Content-Type saknas
+        data = request.get_json(force=True)
         phone_number = data.get('phone_number')
         county = data.get('county')
         newspaper_id = data.get('newspaper_id')
@@ -62,17 +62,22 @@ def start_subscription():
         if not user_id:
             return jsonify({"error": "User not logged in"}), 401
 
-        session_id, client_token = initiate_payment(phone_number, county, tokenize=True)
+        # Hantera tre returvärden från initiate_payment
+        session_id, client_token, client_id = initiate_payment(phone_number, county, tokenize=True)
 
         if not add_pending_subscriber(session_id, user_id, phone_number, county, newspaper_id):
             return jsonify({"error": "Phone number already in process"}), 400
 
-        return jsonify({"session_id": session_id, "client_token": client_token}), 200
+        # Inkludera client_id i JSON-svaret
+        return jsonify({
+            "session_id": session_id,
+            "client_token": client_token,
+            "client_id": client_id
+        }), 200
 
     except Exception as e:
         current_app.logger.error(f"Fel i start_subscription: {e}")
         return jsonify({"error": f"Serverfel: {str(e)}"}), 500
-
 
 # ==========================================================================================
 # Rutt för att verifiera betalning och aktivera prenumeration (När man klickar på "Betala" i Klarna)
@@ -133,7 +138,7 @@ def prenumeration_startad():
             delete_pending_subscriber(session_id)
             return jsonify({"error": "already_subscribed"}), 400
 
-        add_subscriber(phone_number, county, newspaper_id, klarna_token)
+        add_subscriber(phone_number, user_id, county, newspaper_id, klarna_token)
         delete_pending_subscriber(session_id)
         subscriber_id = subscriber_exists(phone_number)
 

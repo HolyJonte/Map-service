@@ -8,7 +8,7 @@ import os
 KLARNA_API_URL = "https://api.playground.klarna.com/"  # Playground API-bas-URL
 KLARNA_API_KEY = 'd0a11e27-6f26-4b94-9d75-5c30713b1009' 
 KLARNA_API_SECRET = 'klarna_test_api_WVNlYVdGZVVxRU1WNUxBLXoyZjJmViNzRnhpLTV1ekIsZDBhMTFlMjctNmYyNi00Yjk0LTlkNzUtNWMzMDcxM2IxMDA5LDEsbXNUV1VyMGl4RVlnT0tBNjFDZjNac3NTMDFWQmZBVm5FUlRJdnNEbHJVVT0' 
-
+KLARNA_CLIENT_ID = 'klarna_test_client_UGtPJHNGMVdZMHVmZ0I1LyUoUilnaSNDMiV3YWZ4ZlMsNjkzZWJiZTItZjI0ZS00ZmQ1LWFlMzQtZDczOGNlMDlhZjBmLDEsakJlRVNBQytFZGFjTVAyUXBYdnNHWGNWai9jTUR6M1QydVIweHpOVTNQUT0'
 
 # Bas-URL för appen (används för callbacks)
 BASE_URL = "https://trafikvida.ddns.net"
@@ -66,7 +66,7 @@ def initiate_payment(_phone_number, _county, tokenize=False, payment_method='cre
     if payment_method == 'direct_debit':
         payment_data["customer"]["personal_number"] = "19770111-6050"  # Testpersonnummer för Direct Debit
 
-    elif payment_method == 'credit_card' or payment_method == 'debit_card':
+    elif payment_method in ['credit_card', 'debit_card']:
         # Ingen ytterligare data behövs här för dessa betalmetoder, Klarna widget kommer hantera det
         pass
 
@@ -92,7 +92,7 @@ def initiate_payment(_phone_number, _county, tokenize=False, payment_method='cre
     session_id = session_data["session_id"]
     client_token = session_data["client_token"]
 
-    return session_id, client_token
+    return session_id, client_token, KLARNA_CLIENT_ID
 
 def verify_payment(data):
     #Verifierar betalningsstatus från callback
