@@ -194,7 +194,6 @@ Styling för modalerna i ikonerna på kartan (gemensamt för olyckor och vägarb
   background-color: gray;
 }
 
-
 /* ==========================================
 HEADER & CONTAINER
 ========================================== */
@@ -216,8 +215,6 @@ HEADER & CONTAINER
 /* === LOGOTYP === */
 .navbar-container img {
   height: 80px;
-  width: auto;
-  max-width: 100%; /* 🛠️ Hindrar överskridning */
 }
 
 /* === MENY === */
@@ -225,6 +222,7 @@ HEADER & CONTAINER
   display: flex;
   align-items: center;
   white-space: nowrap; /* 🛑 Hindra radbrytning */
+  position: relative;
 }
 
 /* Menyknappen (hamburgare) */
@@ -244,6 +242,8 @@ HEADER & CONTAINER
   gap: 20px;
   align-items: center;
   white-space: nowrap; /* 🛑 Viktigt */
+  z-index: 1000;
+  pointer-events: auto;
 }
 
 .menu-items a {
@@ -261,7 +261,7 @@ HEADER & CONTAINER
 }
 
 /* === MOBILLÄGE – under 1024px eller annan breakpoint === */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1024px) {
   .menu-button {
     display: block;
   }
@@ -270,7 +270,7 @@ HEADER & CONTAINER
     display: none;
     position: absolute;
     top: 100%;
-    right: 20px;
+    right: -20px;
     background-color: #222;
     flex-direction: column;
     align-items: flex-end;
