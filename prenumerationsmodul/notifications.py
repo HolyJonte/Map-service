@@ -69,13 +69,17 @@ def notify_accidents():
         return
 
     today = datetime.now(timezone.utc).date()
-
+# Lista för att samla nya händelser som hittas idag och ännu inte behandlats
     new_events = []
+    # Loopa igenom alla händelser och filtrera ut de som ska behandlas idag
     for event in all_events:
+          # Hämta händelse-ID (viktigt för att avgöra om det redan behandlats)
         event_id = event.get("id")
         if not event_id:
             continue
-
+        
+        # Kontrollera om händelsen redan har behandlats tidigare
+        # (baserat på att ID finns i processed_events.json)
         if event_id in processed_ids:
             print(f"Händelse ID {event_id} redan behandlad, hoppar över")
             continue
