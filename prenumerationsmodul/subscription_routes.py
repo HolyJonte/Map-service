@@ -133,7 +133,7 @@ def prenumeration_startad():
             delete_pending_subscriber(session_id)
             return jsonify({"error": "already_subscribed"}), 400
 
-        add_subscriber(phone_number, county, newspaper_id, klarna_token)
+        add_subscriber(phone_number, user_id, county, newspaper_id, klarna_token)
         delete_pending_subscriber(session_id)
         subscriber_id = subscriber_exists(phone_number)
 
