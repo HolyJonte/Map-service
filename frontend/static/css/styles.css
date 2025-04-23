@@ -197,35 +197,37 @@ Styling för modalerna i ikonerna på kartan (gemensamt för olyckor och vägarb
 /* ==========================================
 HEADER & CONTAINER
 ========================================== */
+/* === HEADER / NAVBAR === */
 .navbar {
   background-color: #222;
   color: white;
-  padding: 0;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
 }
 
 .navbar-container {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  flex-wrap: nowrap; /* 🛑 Inget wrap! */
-  padding: 0 20px;
-  gap: 20px;
+  align-items: center;
+  width: 100%;
 }
 
 /* === LOGOTYP === */
 .navbar-container img {
   height: 80px;
+  margin-left: 20px;
 }
 
 /* === MENY === */
 .menu-wrapper {
   display: flex;
   align-items: center;
-  white-space: nowrap; /* 🛑 Hindra radbrytning */
   position: relative;
 }
 
-/* Menyknappen (hamburgare) */
+/* Hamburgermenyn syns bara i mobil */
 .menu-button {
   display: none;
   background: none;
@@ -235,15 +237,13 @@ HEADER & CONTAINER
   cursor: pointer;
 }
 
-/* Menyval – visas bara på breda skärmar */
+/* Menyval (desktop) */
 .menu-items {
   display: flex;
-  flex-direction: row;
+  margin-right: 20px;
   gap: 20px;
   align-items: center;
-  white-space: nowrap; /* 🛑 Viktigt */
-  z-index: 1000;
-  pointer-events: auto;
+  white-space: nowrap;
 }
 
 .menu-items a {
@@ -260,17 +260,19 @@ HEADER & CONTAINER
   color: #ddd;
 }
 
-/* === MOBILLÄGE – under 1024px eller annan breakpoint === */
+/* === MOBILLÄGE – max 768px === */
 @media screen and (max-width: 768px) {
   .menu-button {
     display: block;
+    margin-right: 20px;
   }
 
   .menu-items {
     display: none;
-    position: absolute;
-    top: 100%;
-    right: -20px;
+    position: fixed;
+    top: 100px; /* precis under navbaren */
+    right: 0;
+    margin-right: 0px;
     background-color: #222;
     flex-direction: column;
     align-items: flex-end;
@@ -286,6 +288,8 @@ HEADER & CONTAINER
     display: flex;
   }
 }
+
+
 
 
 
@@ -317,7 +321,7 @@ Styling för Login-vy
 Kort för login-vy
 ------------------------------------------ */
 .login-card {
-  max-width: 400px;
+  max-width: 600px;
   margin: 60px auto;
   background-color: white;
   padding: 40px 30px;
@@ -392,6 +396,20 @@ Login-knappar
 /* -------------------------------------------------------------------------
 Autentiseringskort för admin (inloggning, 2FA, QR)
 ------------------------------------------------------------------------- */
+/* ------------------------------------------
+Fältet där man lägger till ny dagstidning (längst ner på sidan)
+------------------------------------------ */
+.auth-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;         /* Centrera innehåll inne i kortet */
+  margin-top: 40px;
+  margin-bottom: 40px;
+  max-width: 600px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;          /* ⬅ Det här centrerar kortet på sidan */
+}
 
 /* ------------------------------------------
 Formulärfält i auth-card
@@ -449,19 +467,22 @@ Utseende för admin dashboard
 .dashboard {
   display: flex;
   flex-direction: column;
+  align-items: center; /* ⬅ centrera allt horisontellt */
   box-sizing: border-box; /* Inkludera padding i totalhöjd och bredd */
+  padding: 20px;
 }
 
 .newspaper-list {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  max-width: 600px;
+
 }
 
 .newspaper-card {
   background-color: white;
   padding: 20px 25px;
+  width: 500px;
   border-radius: 10px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
   border-left: 5px solid #007bff;
