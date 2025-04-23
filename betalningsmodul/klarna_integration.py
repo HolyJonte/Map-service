@@ -21,6 +21,7 @@ auth_header = "Basic " + base64.b64encode(auth_string.encode()).decode("ascii")
 # Denna funktion anropas från subscription_routes.py för att skapa en betalningssession hos Klarna
 #Tar emot parametrar från subscription_routes.py, parametrarna används inte
 # men behöver tas emot här ändå eftersom de kommer från formuläret. Ev kan vi ta bort senare?
+## MÅSTE VI TA EMOT newspaper_id OCKSÅ??
 def initiate_payment(_phone_number, _county, tokenize=False, payment_method='credit_card'):
     headers = {
         "Authorization": auth_header,
@@ -35,9 +36,11 @@ def initiate_payment(_phone_number, _county, tokenize=False, payment_method='cre
 
     # Skapar grundläggande betalningsdata
     payment_data = {
+        "acquiring_channel": "ECOMMERCE",
+        "intet": "buy_and_tokenize",
         "purchase_country": "SE",
         "purchase_currency": "SEK",
-        "locale": "sv-SE",
+        "locale": "en-SE",
         "order_amount": 9900,  # 99 SEK i öre
         "order_tax_amount": 0,
         "order_lines": [
