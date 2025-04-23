@@ -27,6 +27,12 @@ def initiate_payment(_phone_number, _county, tokenize=False, payment_method='cre
         "Content-Type": "application/json"
     }
 
+    normalized_phone = _phone_number.strip()
+    if not normalized_phone.startswith('+46'):
+        normalized_phone = '+46' + normalized_phone.lstrip('0')
+    if not normalized_phone.startswith('+46') or len(normalized_phone) != 12:
+        raise ValueError("Ogiltigt telefonnummer: Måste vara i formatet +46701234567")
+
     # Skapar grundläggande betalningsdata
     payment_data = {
         "purchase_country": "SE",

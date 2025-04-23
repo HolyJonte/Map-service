@@ -12,7 +12,7 @@
   <div>
     <h2>Starta Prenumeration</h2>
     <form id="subscription-form">
-      <label for="phone_number">Telefonnummer:</label>
+      <label for="phone_number">Telefonnummer: (använd +46701740615 för test i Playground)</label>
       <input type="text" id="phone_number" name="phone_number" required><br><br>
 
       <label for="county">Välj län:</label>
@@ -74,10 +74,19 @@
 
   document.getElementById('subscription-form').addEventListener('submit', async (event) => {
     event.preventDefault();
-    const phoneNumber = document.getElementById('phone_number').value;
+    let phoneNumber = document.getElementById('phone_number').value;
     const county = document.getElementById('county').value;
     const newspaper_id = document.getElementById('newspaper_id').value;
     const responseDiv = document.getElementById('response');
+
+    phoneNumber = phoneNumber.trim();
+    if (!phoneNumber.startsWith('+46')) {
+        phoneNumber = phoneNumber.replace(/^0/, '+46'); // Ersätt ledande 0 med +46
+    }
+    if (!/^\+46\d{9}$/.test(phoneNumber)) {
+        responseDiv.innerHTML = `<p class="error">Ogiltigt telefonnummer. Använd formatet +46701234567.</p>`;
+        return;
+    }
 
     if (!phoneNumber || !county || !newspaper_id || newspaper_id === "Välj en tidning") {
       responseDiv.innerHTML = `<p class="error">Vänligen fyll i telefonnummer, län och tidning.</p>`;
