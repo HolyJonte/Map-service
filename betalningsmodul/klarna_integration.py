@@ -5,7 +5,7 @@ import os
 
 
 # Konfiguration för Playground
-KLARNA_API_URL = "https://api.playground.klarna.com/"  # Playground API-bas-URL
+KLARNA_API_URL = "https://api.playground.klarna.com"  # Playground API-bas-URL
 KLARNA_API_KEY = 'd0a11e27-6f26-4b94-9d75-5c30713b1009' 
 KLARNA_API_SECRET = 'klarna_test_api_WVNlYVdGZVVxRU1WNUxBLXoyZjJmViNzRnhpLTV1ekIsZDBhMTFlMjctNmYyNi00Yjk0LTlkNzUtNWMzMDcxM2IxMDA5LDEsbXNUV1VyMGl4RVlnT0tBNjFDZjNac3NTMDFWQmZBVm5FUlRJdnNEbHJVVT0' 
 KLARNA_CLIENT_ID = 'klarna_test_client_UGtPJHNGMVdZMHVmZ0I1LyUoUilnaSNDMiV3YWZ4ZlMsNjkzZWJiZTItZjI0ZS00ZmQ1LWFlMzQtZDczOGNlMDlhZjBmLDEsakJlRVNBQytFZGFjTVAyUXBYdnNHWGNWai9jTUR6M1QydVIweHpOVTNQUT0'
