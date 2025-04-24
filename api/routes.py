@@ -2,7 +2,8 @@
 
 # Importerar nödvändiga moduler
 from flask import Blueprint, jsonify
-from api.logic import get_all_cameras, get_all_roadworks, get_all_accidents
+from api.logic import get_all_cameras, get_all_roadworks, get_all_accidents, get_cached_cameras, get_cached_roadworks, get_cached_accidents
+
 
 # Skapar en Blueprint för att definiera API-rutter som kan användas i Flask-applikationen
 trafik_bp = Blueprint('api', __name__)
@@ -13,7 +14,7 @@ trafik_bp = Blueprint('api', __name__)
 @trafik_bp.route('/cameras')
 def get_cameras():
     try:
-        return jsonify(get_all_cameras())
+        return jsonify(get_cached_cameras())
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -23,7 +24,7 @@ def get_cameras():
 @trafik_bp.route('/roadworks')
 def get_roadworks():
     try:
-        return jsonify(get_all_roadworks())
+        return jsonify(get_cached_roadworks())
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -33,6 +34,6 @@ def get_roadworks():
 @trafik_bp.route('/accidents')
 def get_accidents():
     try:
-        return jsonify(get_all_accidents())
+        return jsonify(get_cached_accidents())
     except Exception as e:
         return jsonify({"error": str(e)}), 500

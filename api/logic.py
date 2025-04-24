@@ -2,12 +2,15 @@
 
 # Importerar funktioner för att hämta data från Trafikverket
 from api.fetch_data import fetch_cameras, fetch_situations
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
+import threading
+
 import sys
 import os
 
 # För att kunna testa när vi kör filen enskilt
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 
 
 #===========================================================================================================
@@ -131,3 +134,50 @@ def get_all_accidents():
 
     return accidents
 
+#===========================================================================================================
+# Hämtar alla kameror, vägarbeten och olyckor från Trafikverket och lagrar dem i en cache
+#===========================================================================================================
+
+cache = {
+    "active": {
+        "cameras": [],
+        "roadworks": [],
+        "accidents": [],
+        "last_updated": None
+    },
+    "updating": False  # Förhindrar flera samtidiga uppdateringar
+}
+
+def update_cache():
+    # Undvik parallella uppdateringar
+    if cache["updating"]:
+        return
+
+    cache["updating"] = True
+    try:
+        # Hämta ny data
+        new_cameras = get_all_cameras()
+        new_roadworks = get_all_roadworks()
+        new_accidents = get_all_accidents()
+        # Byt ut "active" bara när all ny data är redo
+        cache["active"] = {
+            "cameras": new_cameras,
+            "roadworks": new_roadworks,
+            "accidents": new_accidents,
+            "last_updated": datetime.now()
+        }
+    finally:
+        cache["updating"] = False
+
+def get_cached_cameras():
+    if not cache["active"]["last_updated"] or datetime.now() - cache["active"]["last_updated"] > timedelta(seconds=60):
+        threading.Thread(target=update_cache).start()  # Kör i bakgrunden
+    return cache["active"]["cameras"]
+
+def get_cached_roadworks():
+    get_cached_cameras()  # Trigger eventuell uppdatering
+    return cache["active"]["roadworks"]
+
+def get_cached_accidents():
+    get_cached_cameras()  # Trigger eventuell uppdatering
+    return cache["active"]["accidents"]
