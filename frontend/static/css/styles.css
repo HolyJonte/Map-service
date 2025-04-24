@@ -273,7 +273,7 @@ HEADER & CONTAINER
   color: #ddd;
 }
 
-/* === MOBILLÄGE – max 768px === */
+/* === Mindre skärmar – max 768px === */
 @media screen and (max-width: 768px) {
   .menu-button {
     display: block;
@@ -299,6 +299,31 @@ HEADER & CONTAINER
 
   .menu-items.show {
     display: flex;
+  }
+}
+
+/* === MOBILLÄGE – max 400px === */
+@media screen and (max-width: 400px) {
+  .menu-button i {
+    margin-right: 0;
+  }
+
+  .menu-button {
+    font-size: 2em;
+  }
+
+  .menu-button::after {
+    content: "";
+  }
+
+  .menu-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .menu-button span {
+    display: none;
   }
 }
 
