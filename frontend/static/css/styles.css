@@ -302,8 +302,8 @@ HEADER & CONTAINER
   }
 }
 
-/* === MOBILLÄGE – max 400px === */
-@media screen and (max-width: 400px) {
+/* === MOBILLÄGE – max 450px === */
+@media screen and (max-width: 450px) {
   .menu-button i {
     margin-right: 0;
   }
