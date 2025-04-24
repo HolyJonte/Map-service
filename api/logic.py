@@ -181,3 +181,10 @@ def get_cached_roadworks():
 def get_cached_accidents():
     get_cached_cameras()  # Trigger eventuell uppdatering
     return cache["active"]["accidents"]
+
+# Starta med en direkt cacheuppdatering när servern startas om
+def preload_cache():
+    print("▶ Startar initial cacheuppdatering i bakgrunden...")
+    threading.Thread(target=update_cache).start()
+
+preload_cache()
