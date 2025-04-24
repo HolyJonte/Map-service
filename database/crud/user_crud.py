@@ -1,18 +1,28 @@
+# Denna modul hanterar allt kring användare i databasen såsom:
+# - Skapa ny användare med hashat lösenord och TOTP-secret
+# - Hämta användare med e-post
+# - Validera inloggning (lösenord och 2FA)
+
+
+# Importerar SQLite-modulen för databasoperationer
 import sqlite3
+# Importerar pyotp för TOTP-verifiering
 import pyotp
+
+# Funktion för att öppna en databasanslutning (finns i database.py)
 from database.database import get_db_connection
+
+# Lösenordssäkerhetsfunktioner från werkzeug
 from werkzeug.security import generate_password_hash, check_password_hash
+# Importerar modellen som representerar en användare
 from database.models.user_model import User
 
 
 # =========================================================================================
-# User-funktioner
+# Skapa ny användare
 # =========================================================================================
 
 def create_user(email, password, totp_secret):
-    """
-    Skapar en ny användare med hashat lösenord och TOTP-secret.
-    """
     conn = get_db_connection()
     cursor = conn.cursor()
     try:
@@ -29,11 +39,10 @@ def create_user(email, password, totp_secret):
         conn.close()
 
 
+# ===========================================================================================
+# Hämtar användare via e-post
+# ===========================================================================================
 def get_user_by_email(email):
-    """
-    Hämtar en användare med hjälp av e-postadress.
-    Returnerar en User-instans eller None.
-    """
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
@@ -49,19 +58,20 @@ def get_user_by_email(email):
     return None
 
 
+
+#=============================================================================================
+#  Validerar inloggning med e-post och lösenord.
+#=============================================================================================
 def validate_user_login(email, password):
-    """
-    Validerar inloggning med e-post och lösenord.
-    Returnerar användaren om korrekt, annars None.
-    """
     user = get_user_by_email(email)
     if user and check_password_hash(user.password, password):
         return user
     return None
 
 
+
+# =============================================================================================
+# Verifierar 2FA-kod
+# =============================================================================================
 def verify_user_2fa_code(user, code):
-    """
-    Verifierar 2FA-koden från användarens TOTP-secret.
-    """
     return pyotp.TOTP(user.totp_secret).verify(code)

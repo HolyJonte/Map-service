@@ -5,7 +5,8 @@ from api.fetch_data import fetch_cameras, fetch_situations
 from datetime import datetime, timezone
 import sys
 import os
-## För att kunna testa när vi kör filen enskilt
+
+# För att kunna testa när vi kör filen enskilt
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 
