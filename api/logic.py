@@ -183,19 +183,19 @@ def get_cached_accidents():
     return cache["active"]["accidents"]
 
 # Starta med en direkt cacheuppdatering när servern startas om
-import threading
-import os
-
 def preload_cache():
     print("▶ Startar cacheuppdatering...")
 
-    # Kör synkront om vi är på PythonAnywhere (även via NO-IP)
+    # Kör detta om sidan körs på PythonAnywhere
     if "PYTHONANYWHERE_DOMAIN" in os.environ:
         print("▶ Kör på PythonAnywhere – uppdaterar cache synkront...")
         update_cache()
+
+    # Kör detta om sidan körs lokalt (så att det går snabbare att testa sidan)
     else:
         print("▶ Kör lokalt – uppdaterar cache i bakgrundstråd...")
         threading.Thread(target=update_cache).start()
 
+# Kör preload_cache() när sidan laddas (alltså direkt man startar servern på PythonAnywhere)
 preload_cache()
 
