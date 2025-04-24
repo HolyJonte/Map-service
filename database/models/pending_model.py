@@ -1,3 +1,6 @@
+# Denna klass representerar en väntande prenumerant.
+# Objektet används innan prenumerationen har bekräftats.
+
 class PendingSubscriber:
     def __init__(self, session_id, user_id, phone_number, county, newspaper_id, created_at):
         self.session_id = session_id

@@ -1,10 +1,24 @@
+# Denna modul hanterar CRUD-operationer för prenumenranter i databasen.
+# Funktionerna i denna modul inkluderar:
+# - Kontrollera om en prenumerant redan finns
+# - Lägga till, uppdatera, inaktivera eller manuellet lägga till en prenumerant
+# - Hämta prenumeranter baserat på olika kriterier
+# - Ta bort inaktiva prenumeranter
+
+# Importerar SQLite-modulen för databasoperationer
 import sqlite3
+
+# Funktion för att öppna en databasanslutning (finns i database.py)
 from database.database import get_db_connection
+
+# Importerar modellen som representerar en prenumerant
 from database.models.subscriber_model import Subscriber
+# Importerar datetime och timedelta för att hantera datum och tid
 from datetime import datetime, timedelta
 
-
+#====================================================================================================================
 # Kolla om en prenumerant redan finns i subscribers-tabellen
+#====================================================================================================================
 def subscriber_exists(phone_number):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -14,7 +28,9 @@ def subscriber_exists(phone_number):
     return result[0] if result else None
 
 
+#=====================================================================================================================
 # Lägger till en ny prenumerant i subscribers-tabellen
+#=====================================================================================================================
 def add_subscriber(phone_number, user_id, county, newspaper_id, klarna_token):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -32,7 +48,9 @@ def add_subscriber(phone_number, user_id, county, newspaper_id, klarna_token):
         conn.close()
 
 
+#========================================================================================================================
 # Uppdaterar en befintlig prenumerants status och betalningsdatum
+#========================================================================================================================
 def update_subscriber(phone_number, klarna_token):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -45,7 +63,10 @@ def update_subscriber(phone_number, klarna_token):
     conn.close()
 
 
+
+#========================================================================================================================
 # Hämtar en prenumerants Klarna-token baserat på subscriber_id och telefonnummer
+#========================================================================================================================
 def get_subscriber_klarna_token(subscriber_id, phone_number):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -57,8 +78,9 @@ def get_subscriber_klarna_token(subscriber_id, phone_number):
     conn.close()
     return result[0] if result else None
 
-
+#==========================================================================================================================
 # Avaktiverar en prenumerant genom att sätta status till inaktiv
+#==========================================================================================================================
 def deactivate_subscriber(subscriber_id, phone_number):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -71,7 +93,9 @@ def deactivate_subscriber(subscriber_id, phone_number):
     conn.close()
 
 
+#============================================================================================================================
 # Lägger till en prenumerant manuellt för t.ex. test eller backup
+#============================================================================================================================
 def manual_add_subscriber(phone_number, user_id, county, newspaper_id, active=1, subscription_start=None, last_payment=None, klarna_token=None):
     if subscription_start is None:
         subscription_start = datetime.now().isoformat()
@@ -94,7 +118,9 @@ def manual_add_subscriber(phone_number, user_id, county, newspaper_id, active=1,
         conn.close()
 
 
-# Hämtar alla prenumeranter som Subscriber-objekt
+#===========================================================================================================================
+# Hämtar alla prenumeranter
+#===========================================================================================================================
 def get_all_subscribers():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -103,7 +129,10 @@ def get_all_subscribers():
     conn.close()
     return [Subscriber(**dict(row)) for row in rows]
 
-## Hämtar en prenumerant baserat på län (county)
+
+#=============================================================================================================================
+# Hämtar en prenumerant baserat på län (county)
+#=============================================================================================================================
 def get_subscribers_by_county(county):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -112,7 +141,10 @@ def get_subscribers_by_county(county):
     conn.close()
     return [Subscriber(**dict(row)) for row in rows]
 
+
+#===============================================================================================================================
 # Tar bort prenumeranter som är inaktiva och vars sista betalning var för mer än ett år sedan
+#===============================================================================================================================
 def remove_inactive_subscribers():
     conn = get_db_connection()
     cursor = conn.cursor()

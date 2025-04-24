@@ -1,3 +1,13 @@
+# Denna modul innehåller Flask-rutter för adminflödet i Trafikvida
+# Den ansvarar för:
+# - Att visa inloggningssidan och hanterera POST-anrop
+# - Att styra flödet genom sessionhantering (lösenord, QR och TOTP)
+# - Att rendera adminpanelen med funktioner för att hantera tidningar
+# - Adminpanel för att hantera tidningar (lägga till/ ta bort / se lista med tidningar)
+# - Utloggning
+
+
+# Flask-importer
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from admin.admin_logic import (
     get_admin_password,
@@ -9,15 +19,19 @@ from admin.admin_logic import (
 )
 
 
+# Importera nödvändiga moduler för QR-kodsgenerering
 import base64
 from io import BytesIO
 import qrcode
 
+# Skapar en Blueprint för admin-rutter och kopplar till templates-mappen
 admin_routes = Blueprint('admin', __name__, template_folder='../frontend/templates')
 
-# ===============================
+
+
+# ==============================================================================================
 # Inloggning
-# ===============================
+# ==============================================================================================
 @admin_routes.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
     if request.method == 'POST':
@@ -30,9 +44,10 @@ def admin_login():
     return render_template('admin_login.html')
 
 
-# ===============================
+
+# ==============================================================================================
 # Tvåfaktorsautentisering (2FA)
-# ===============================
+# ==============================================================================================
 @admin_routes.route('/admin/2fa', methods=['GET', 'POST'])
 def two_factor():
     if not session.get('awaiting_2fa'):
@@ -49,9 +64,11 @@ def two_factor():
 
     return render_template('admin_two_factor.html')
 
-# ===============================
+
+
+# ==============================================================================================
 # Adminpanel för tidningar
-# ===============================
+# ==============================================================================================
 @admin_routes.route('/admin/dashboard', methods=['GET', 'POST'])
 def admin_dashboard():
     if not session.get('admin_logged_in'):
@@ -82,10 +99,9 @@ def admin_dashboard():
     return render_template('admin_dashboard.html', newspapers=newspapers)
 
 
-
-# ===============================
+# ================================================================================================
 # Visa QR-kod för 2FA
-# ===============================
+# ================================================================================================
 @admin_routes.route('/admin/show-qr')
 def show_qr():
     if not session.get('awaiting_2fa') or not session.get('show_qr'):
@@ -104,9 +120,11 @@ def show_qr():
 
     return render_template('admin_show_qr.html', qr_data=img_base64)
 
-# ===============================
+
+
+# =================================================================================================
 # Logga ut
-# ===============================
+# =================================================================================================
 @admin_routes.route('/admin/logout')
 def admin_logout():
     session.pop('admin_logged_in', None)
