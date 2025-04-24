@@ -42,7 +42,7 @@ def fetch_situations():
     <REQUEST>
         <LOGIN authenticationkey="{API_KEY}" />
         <QUERY objecttype="Situation" namespace="road.trafficinfo" schemaversion="1.5">
-        <FILTER></FILTER>
+            <INCLUDE>Deviation</INCLUDE>
         </QUERY>
     </REQUEST>
     """

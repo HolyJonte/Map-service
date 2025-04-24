@@ -1,3 +1,5 @@
+// Denna modul visas 
+
 export class AccidentLayer {
   constructor(map) {
     this.map = map;
