@@ -1,4 +1,9 @@
-// Denna modul visas 
+// Den här klassen `AccidentLayer` skapar ett lager av olyckor på en Leaflet-karta.
+// Olyckorna hämtas från API:et `/accidents` och visas som markörer.
+// Markörerna grupperas i kluster med hjälp av Leaflet.markercluster.
+// Varje olycka visas med en Bootstrap-ikon.
+// Om flera olyckor är nära varandra, visas de som en större ikon med antal inuti.
+// ---------------------------------------------
 
 export class AccidentLayer {
   constructor(map) {
@@ -28,7 +33,7 @@ export class AccidentLayer {
     // Laddar initial data
     this.loadData();
 
-    // Laddar data var 60:e sekund
+    // Laddar data var 60:e sekund (lagom för att inte överbelasta servern)
     this.interval = setInterval(() => {
       this.loadData();
     }, 60000); // 60000 ms = 60 sekunder
@@ -46,8 +51,8 @@ export class AccidentLayer {
       const accidentIcon = L.divIcon({
         className: 'custom-accident-icon',
         html: '<i class="bi bi-exclamation-triangle-fill"></i>',
-        iconAnchor: [10, 20],     // X: mitten av ikonen, Y: nedre kant
-        popupAnchor: [-4, -25]     // popup exakt ovanför
+        iconAnchor: [10, 20],     // X: mitten av ikonen, Y: nedrekant
+        popupAnchor: [-4, -25]    // justering för att popup rutan ska hamna exakt ovanför ikonen
       });
 
       // Lägg till nya markörer
@@ -55,9 +60,9 @@ export class AccidentLayer {
         if (!isNaN(item.lat) && !isNaN(item.lng)) {
           const marker = L.marker([item.lng, item.lat], { icon: accidentIcon });
 
-          // ================================
-          // Ny färglogik baserat på påverkan
-          // ================================
+          // ===================================================================================================
+          // Denna del gör så att texten i popup rutan ändrar färg beroende på hur allvarlig trafikpåverkan är.
+          // ===================================================================================================
           let severityText = item.severity || "Okänd påverkan";
           let severityClass = "impact-unknown"; // Default
 
@@ -72,7 +77,7 @@ export class AccidentLayer {
             severityClass = "impact-high";
           }
 
-          // Popup med konsekvent stil (samma som vägarbeten)
+          // Innehållet i popup rutan, alltså när man klickar på en olycka.
           marker.bindPopup(`
             <div class="accident-popup">
               <h5><i class="bi bi-exclamation-triangle-fill"></i> Olycka</h5>
@@ -86,11 +91,11 @@ export class AccidentLayer {
             </div>
           `);
 
-          this.clusterGroup.addLayer(marker);
+          this.clusterGroup.addLayer(marker); // // Lägg till i klustret
         }
       });
     } catch (error) {
-      console.error("Kunde inte hämta olyckor:", error);
+      console.error("Kunde inte hämta olyckor:", error); // Felhantering
     }
   }
 }

@@ -1,3 +1,8 @@
+# Denna fil styr hur databasen skapas upp och hur tabellerna som finns i den ska se ut.
+# Efter att tabellerna har skapats upp eller om de redan finns så kommer den att
+# hårdkoda in 3 tidningar och en användare i databasen. Detta är endast för testning.
+# När allt är klart så kommer den att stänga ner databasen.
+# =========================================================================================
 import sqlite3
 
 def get_db_connection():
@@ -79,6 +84,9 @@ def initialize_database():
         )
     ''')
 
+# =========================================================================================
+# Fyller tabellen med innehåll (för testning)
+# =========================================================================================
     # Hårdkodar in 3 tidningar om det inte redan finns (TA BORT SEDAN)
     default_newspapers = [
         ("Dagbladet", "kontakt@dagbladet.se", 1000),

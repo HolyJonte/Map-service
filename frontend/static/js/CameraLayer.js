@@ -45,7 +45,7 @@ export class CameraLayer {
           className: 'custom-camera-icon',
           html: '<i class="bi bi-camera-fill"></i>',
           iconAnchor: [10, 20],     // X: mitten av ikonen, Y: nedre kant
-          popupAnchor: [-4, -25]     // popup exakt ovanför
+          popupAnchor: [-4, -25]    // justering för att popup rutan ska hamna exakt ovanför ikonen
         });
 
         // Kontrollera koordinater för att säkerställa att de ligger inom Sverige
@@ -78,8 +78,7 @@ export class CameraLayer {
         this.map.setView([62.0, 15.0], 6);  // Centrerad på Sverige med zoomnivå 6
 
       } catch (error) {
-        // Om något går fel med hämtning av data, visa fel i konsolen
-        console.error("Kunde inte hämta kameradata:", error);
+        console.error("Kunde inte hämta kameradata:", error); // Logga eventuella fel vid hämtning av data
       }
     }
   }

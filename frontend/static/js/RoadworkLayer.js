@@ -1,4 +1,10 @@
-// Denna klass hanterar visning av vägarbeten på Leaflet-kartan
+// Den här klassen `RoadworkLayer` skapar ett lager av vägarbeten på en Leaflet-karta.
+// Vägarbetena hämtas från API:et `/roadworks` och visas som markörer.
+// Markörerna grupperas i kluster med hjälp av Leaflet.markercluster.
+// Varje vägarbete visas med en Bootstrap-ikon.
+// Om flera vägarbeten är nära varandra, visas de som en större ikon med antal inuti.
+// ---------------------------------------------
+
 export class RoadworkLayer {
   constructor(map) {
     this.map = map;
@@ -34,7 +40,7 @@ export class RoadworkLayer {
         className: 'custom-roadwork-icon', // CSS-klass för styling
         html: '<i class="bi bi-cone-striped"></i>',
         iconAnchor: [10, 20],   // X: mitten av ikonen, Y: nedre kant
-        popupAnchor: [-4, -25]  // popup flyttad manuellt åt vänster och uppåt för att vara centerad
+        popupAnchor: [-4, -25]  // justering för att popup rutan ska hamna exakt ovanför ikonen
       });
 
       // Gå igenom varje vägarbete och placera markör på kartan
@@ -43,10 +49,9 @@ export class RoadworkLayer {
           // Skapar markör
           const marker = L.marker([item.lng, item.lat], { icon: roadworkIcon });
 
-          // ===========================
-          // NY KOD FÖR FÄRGAD PÅVERKAN
-          // ===========================
-          // === Klassbaserad färg (i stället för inline-färg)
+          // ===================================================================================================
+          // Denna del gör så att texten i popup rutan ändrar färg beroende på hur allvarlig trafikpåverkan är.
+          // ===================================================================================================
           let severityText = item.severity || "Okänd påverkan";
           let severityClass = "impact-unknown"; // default
 
@@ -61,7 +66,7 @@ export class RoadworkLayer {
             severityClass = "impact-high";
           }
 
-          // Popup med samma stil som olyckorna
+          // Innehållet i popup rutan, alltså när man klickar på ett vägarbete.
           marker.bindPopup(`
             <div class="accident-popup">
               <h5><i class="bi bi-cone-striped"></i> Vägarbete</h5>
@@ -74,9 +79,6 @@ export class RoadworkLayer {
               <p><strong>Beskrivning:</strong> ${item.message || "Ingen beskrivning"}</p>
             </div>
           `);
-          // ===========================
-          // SLUT PÅ NY KOD
-          // ===========================
 
           this.clusterGroup.addLayer(marker); // Lägg till i klustret
         }
