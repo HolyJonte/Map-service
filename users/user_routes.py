@@ -1,4 +1,14 @@
+# Denna modul hanterar alla routes för användarinloggning, registrering och 2FA-verifiering i Trafikvida.
+# Funktionalitet:
+# - Registrering av ny användare
+# - Inloggning med lösenord
+# - 2FA med TOTP + QR-kod
+# - Utloggning
+
+# Flask-importer
 from flask import Blueprint, render_template, request, redirect, url_for, session
+
+# Importerar funktioner från lokigen i user_logic.py
 from users.user_logic import (
     find_user_by_email,
     register_user,
@@ -7,20 +17,22 @@ from users.user_logic import (
     verify_totp_code
 )
 
+
+# Skapar en Bluepring för användarrelaterade rutter
 user_routes = Blueprint('user_routes', __name__, template_folder='../frontend/templates')
 
 
-# ======================================================
+# =================================================================================================
 # Logga in som admin, user eller registera ny användare
-# ======================================================
+# =================================================================================================
 
 @user_routes.route('/login-choice')
 def serve_login_choice():
     return render_template('login_choice.html')
 
-# ===============================
+# =================================================================================================
 # Registrering
-# ===============================
+# =================================================================================================
 @user_routes.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -48,9 +60,9 @@ def register():
     return render_template('user_register.html')
 
 
-# ===============================
-# Registrering Bekräftelse
-# ===============================
+# =================================================================================================
+# Bekräftelse efter registrering
+# =================================================================================================
 @user_routes.route('/register-confirmation')
 def register_confirmation():
     if not session.get('user_email'):
@@ -58,9 +70,9 @@ def register_confirmation():
     return render_template('user_register_confirmation.html')
 
 
-# ===============================
+# =================================================================================================
 # Inloggning
-# ===============================
+# =================================================================================================
 @user_routes.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -87,9 +99,9 @@ def login():
     return render_template('user_login.html')
 
 
-# ===============================
+# ====================================================================================================
 # Visa QR-kod
-# ===============================
+# ====================================================================================================
 @user_routes.route('/show-qr')
 def show_user_qr():
     if not session.get('user_awaiting_2fa') or not session.get('show_user_qr'):
@@ -106,9 +118,9 @@ def show_user_qr():
     session.pop('show_user_qr', None)
     return render_template('user_show_qr.html', qr_data=qr_data)
 
-# ===============================
+# =====================================================================================================
 # Verifiera 2FA-kod
-# ===============================
+# =====================================================================================================
 @user_routes.route('/2fa', methods=['GET', 'POST'])
 def verify_user_2fa():
     if not session.get('user_awaiting_2fa'):
@@ -130,9 +142,9 @@ def verify_user_2fa():
         return render_template('user_two_factor.html', error="Fel kod")
     return render_template('user_two_factor.html')
 
-# ===============================
+# =====================================================================================================
 # Logga ut
-# ===============================
+# =====================================================================================================
 @user_routes.route('/logout')
 def logout():
     session.clear()
