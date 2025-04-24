@@ -1,5 +1,9 @@
+/* -------------------------------------------------------------------------
+CSS fil för hela sidan, som styr utseende och layout för alla sidor i projektet
+ ------------------------------------------------------------------------ */
+
 /* ---------------------------------------------------
-Utseende för hela sidan som finns under headern
+Utseende för allt på sidan som finns nedanför headern
 --------------------------------------------------- */
 body {
   margin: 0;
@@ -63,7 +67,7 @@ Utseende för enskilda kameror och kluster av kameror
 }
 
 
-/* För kluster */
+/* För kluster av kameror*/
 .camera-cluster {
   display: flex; 
   flex-direction: column;
@@ -89,6 +93,7 @@ Utseende för enskilda kameror och kluster av kameror
 /* ---------------------------------------------------
 Utseende för enskilda vägarbeten och kluster av vägarbeten
 --------------------------------------------------- */
+/* För enskilda vägarbeten */
 .custom-roadwork-icon {
   display: flex;
   flex-direction: column;
@@ -106,6 +111,7 @@ Utseende för enskilda vägarbeten och kluster av vägarbeten
   color: blue;
 }
 
+/* För kluster av vägarbeten */
 .roadwork-cluster {
   display: flex;
   flex-direction: column;
@@ -131,6 +137,7 @@ Utseende för enskilda vägarbeten och kluster av vägarbeten
 /* ---------------------------------------------------
 Utseende för enskilda trafikolyckor och kluster av trafikolyckor
 --------------------------------------------------- */
+/* För enskilda olyckor */
 .custom-accident-icon {
   display: flex;
   flex-direction: column;
@@ -148,6 +155,7 @@ Utseende för enskilda trafikolyckor och kluster av trafikolyckor
   color: orange;
 }
 
+/* För kluster av olyckor */
 .accident-cluster {
   display: flex;
   flex-direction: column;
@@ -172,7 +180,8 @@ Utseende för enskilda trafikolyckor och kluster av trafikolyckor
 
 
 /* ==========================================
-Styling för modalerna i ikonerna på kartan (gemensamt för olyckor och vägarbeten)
+Styling för vad som syns om man klickar på ikonerna på kartan
+(gemensamt för olyckor och vägarbeten)
 ========================================== */
 
 .impact-box {
@@ -231,7 +240,7 @@ HEADER & CONTAINER
   position: relative;
 }
 
-/* Hamburgermenyn syns bara i mobil */
+/* Hamburgermenyn syns bara på lägre upplösning */
 .menu-button {
   display: none;
   background: none;
@@ -241,7 +250,7 @@ HEADER & CONTAINER
   cursor: pointer;
 }
 
-/* Menyval (desktop) */
+/* Menyval i högre upplösning */
 .menu-items {
   display: flex;
   margin-right: 20px;
@@ -294,9 +303,6 @@ HEADER & CONTAINER
 }
 
 
-
-
-
 /* ---------------------------------------------------
 Styling för hitta min plats knapp
 --------------------------------------------------- */
@@ -315,7 +321,6 @@ Styling för hitta min plats knapp
 .locate-button:hover {
   background-color: #f0f0f0;
 }
-
 
 /* -------------------------------------------------------------------------
 Styling för Login-vy
@@ -377,7 +382,7 @@ Login-knappar
   transform: scale(1.02);
 }
 
-/* Användarknapp */
+/* Userknapp */
 .login-btn.user {
   background-color: #007bff;
 }
@@ -412,7 +417,7 @@ Fältet där man lägger till ny dagstidning (längst ner på sidan)
   max-width: 600px;
   width: 100%;
   margin-left: auto;
-  margin-right: auto;          /* ⬅ Det här centrerar kortet på sidan */
+  margin-right: auto;          /* Det här centrerar kortet på sidan */
 }
 
 /* ------------------------------------------
@@ -437,7 +442,7 @@ Formulärfält i auth-card
 }
 
 /* ------------------------------------------
-Knapp i auth-card
+Knappar i auth-card
 ------------------------------------------ */
 .auth-card button {
   width: 160px;
@@ -463,7 +468,7 @@ Knapp i auth-card
 }
 
 /* -------------------------------------------------------------------------
-Styling för Admin sida (inloggad)
+Styling för Admin sida (när man är inloggad som admin)
  ------------------------------------------------------------------------ */
 /* ---------------------------------------------------
 Utseende för admin dashboard
@@ -577,6 +582,9 @@ Stil för SMS-prenumeration (subscription.html)
   margin: 5px 0;
 }
 
+/* ---------------------------------------------------
+Klarna delen
+--------------------------------------------------- */
 #klarna-checkout-container {
   margin-top: 20px;
 }

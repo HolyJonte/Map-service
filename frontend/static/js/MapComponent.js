@@ -1,26 +1,14 @@
-// Denna fil innehåller definitionen av MapComponent som är en anpassad HTML-komponent för att visa en karta med fartkameror.
-// Kartan centereas över Sverige och innehåller en lager för fartkameror.
+// Denna fil innehåller definitionen av MapComponent som är en anpassad HTML-komponent för att visa en karta med ikoner på.
+// Kartan centereas över Sverige och innehåller tre olika lager.
+// 1. Fartkameror (CameraLayer)
+// 2. Vägarbeten (RoadworkLayer)
+// 3. Olyckor (AccidentLayer)
+// Dessutom finns det en knapp för att hämta användarens plats och visa den på kartan.
 
-
-// ============================================================
-// Kartan
-// ============================================================
-
-//Importerar fartkameralagret som är definierat i CameraLayer.js
-// Denna fil innehåller definitionen av MapComponent som är en anpassad HTML-komponent för att visa en karta med fartkameror.
-// Kartan centereas över Sverige och innehåller en lager för fartkameror.
-
-
-// ============================================================
-// Kartan
-// ============================================================
-
-//Importerar fartkameralagret som är definierat i CameraLayer.js
+//Importerar de olika lagren som används i kartan
 import { CameraLayer } from './CameraLayer.js';
 import { RoadworkLayer } from './RoadworkLayer.js';
 import { AccidentLayer } from './AccidentLayer.js';
-
-
 
 // Definierar en ny klass för komponenten map-component
 // Denna klass ärver från HTMLElement och representerar en anpassad HTML-komponent
