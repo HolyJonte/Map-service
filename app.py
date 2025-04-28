@@ -70,7 +70,9 @@ def login_choice():
 
 # Skapa en scheduler för att köra notify_accidents var 5:e minut
 scheduler = BackgroundScheduler()
-scheduler.add_job(notify_accidents, 'interval', minutes=5)
+
+# ÄNDRA DETTA TILL 5 MIN  OCH MAX_INSTANCES TILL 1!!!
+scheduler.add_job(notify_accidents, 'interval', minutes=1, max_instances=1)
 # Starta scheduler innan servern startar
 scheduler.start()
 # Om detta skript körs direkt, starta Flask-servern

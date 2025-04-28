@@ -1,17 +1,13 @@
 import requests
 import json
+import time
 from requests.auth import HTTPBasicAuth
 import sys
 import os
 ## För att kunna testa när vi kör filen enskilt
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from database.crud.sms_crud import log_sms  # Lägg till importen här
-
 print("Aktuell arbetskatalog:", os.getcwd())
-
-
-
 
 # Lagt till parametrar (Madde och Jonte)
 def send_sms(to, message, testMode=True):

@@ -2,6 +2,7 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+import time
 import json
 from smsmodul.send_sms import send_sms
 from datetime import datetime, timedelta, timezone
@@ -12,14 +13,21 @@ from database.crud.sms_crud import log_sms
 # Fil för att lagra behandlade händelse-ID:n och deras tidsstämplar
 PROCESSED_EVENTS_FILE = "processed_events.json"
 
+sms_to_send = []  # Lista för SMS som ska skickas i batch
+
+
 def load_processed_events():
     """Laddar tidigare behandlade händelse-ID:n och deras tidsstämplar från JSON-fil."""
     try:
         with open(PROCESSED_EVENTS_FILE, 'r') as f:
-            data = json.load(f)
+            content = f.read().strip()
+            if not content:
+                return []
+            data = json.loads(content)
             return data
-    except FileNotFoundError:
+    except (FileNotFoundError, json.JSONDecodeError):
         return []
+
 
 def save_processed_events(processed_events):
     """Sparar behandlade händelse-ID:n och deras tidsstämplar till JSON-fil."""
@@ -156,7 +164,8 @@ def notify_accidents():
             print(f"Hittade {len(subscribers)} prenumeranter för county ID {county}")
 
             for subscriber in subscribers:
-                phone = subscriber.phone_number
+                phone = subscriber['phone_number']
+
                 try:
                     success = send_sms(to=phone, message=message)
                     if success:
@@ -164,11 +173,12 @@ def notify_accidents():
                         sms_count += 1 ## ÖKA RÄKNAREN - TA BORT SEN
                         try:
                             log_sms(
-                                newspaper_id=subscriber.newspaper_id,
-                                subscriber_id=subscriber.id,
+                                newspaper_id=subscriber["newspaper_id"],
+                                subscriber_id=subscriber["id"],
                                 recipient=phone,
                                 message=message
                             )
+
                             print(f"SMS loggat för subscriber_id={subscriber.id}, newspaper_id={subscriber.newspaper_id}")
                         except Exception as e:
                             print(f"Fel vid loggning av SMS för {phone}: {e}")
@@ -178,6 +188,10 @@ def notify_accidents():
                             "processed_at": datetime.now(timezone.utc).isoformat()
                         })
                         save_processed_events(processed_events)
+
+                        # Vänta en sekund mellan SMS för att undvika överbelastning av API:et
+                        time.sleep(10)
+
                     else:
                         print(f"Misslyckades att skicka SMS till {phone}")
                 except Exception as e:
