@@ -20,3 +20,16 @@ def log_sms(newspaper_id, subscriber_id, recipient, message):
     ''', (newspaper_id, subscriber_id, recipient, message))
     conn.commit()
     conn.close()
+
+
+def get_sms_count_for_newspaper(newspaper_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT COUNT(*) AS sms_count
+        FROM sms_logs
+        WHERE newspaper_id = ?
+    ''', (newspaper_id,))
+    result = cursor.fetchone()
+    conn.close()
+    return result["sms_count"] if result else 0

@@ -17,6 +17,8 @@ from database.crud.pending_crud import (
     add_pending_subscriber, get_pending_subscriber, delete_pending_subscriber, get_all_pending_subscribers
 )
 
+from database.crud.sms_crud import get_sms_count_for_newspaper
+
 
 ### VI BEHÖVER: Lägga in admin inlogg och flask session hantering så att vi kan kräva inloigg
 ### ex komma åt rutter som /subscribers (alla prenumeranter)
@@ -305,3 +307,15 @@ def handle_klarna_push():
     except Exception as e:
         current_app.logger.error(f"Fel i handle_klarna_push: {e}")
         return jsonify({"error": f"Serverfel: {str(e)}"}), 500
+
+# ==========================================================================================
+# Rutt för att hantera spårning av SMS
+# ==========================================================================================
+
+@subscription_routes.route('/sms-count/<int:newspaper_id>', methods=['GET'])
+def get_sms_count(newspaper_id):
+    try:
+        count = get_sms_count_for_newspaper(newspaper_id)
+        return jsonify({"sms_count": count}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

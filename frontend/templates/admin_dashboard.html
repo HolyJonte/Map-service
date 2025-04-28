@@ -33,22 +33,68 @@
   {% endif %}
 </div>
 
+<div class="auth-card mt-4">
+  <h2>Lägg till ny dagstidning</h2>
 
-  <div class="auth-card mt-4">
-    <h2>Lägg till ny dagstidning</h2>
-  
-    {% if error %}
-      <div class="alert alert-danger">{{ error }}</div>
-    {% endif %}
-  
-    <form method="POST" class="mt-4">
-      <input type="hidden" name="action" value="add">
-      <input type="text" name="name" placeholder="Tidningens namn" required>
-      <input type="email" name="contact_email" placeholder="Kontaktmail (valfritt)">
-      <input type="number" name="sms_quota" placeholder="SMS-kvot (valfritt)">
-      <button type="submit">Lägg till</button>
-    </form>
+  {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+
+  <form method="POST" class="mt-4">
+    <input type="hidden" name="action" value="add">
+    <input type="text" name="name" placeholder="Tidningens namn" required>
+    <input type="email" name="contact_email" placeholder="Kontaktmail (valfritt)">
+    <input type="number" name="sms_quota" placeholder="SMS-kvot (valfritt)">
+    <button type="submit">Lägg till</button>
+  </form>
+</div>
+
+<!-- Modal för att visa SMS-data -->
+<div class="modal fade" id="smsModal" tabindex="-1" aria-labelledby="smsModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="smsModalLabel">SMS-Statistik</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
+      </div>
+      <div class="modal-body">
+        <p id="smsModalBody">Laddar...</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Stäng</button>
+      </div>
+    </div>
   </div>
-  
-  
+</div>
+
+<script>
+  // Vänta tills sidan laddats
+  document.addEventListener('DOMContentLoaded', function() {
+    const newspaperCards = document.querySelectorAll('.newspaper-card');
+
+    newspaperCards.forEach(card => {
+      const idInput = card.querySelector('input[name="id"]');
+      if (!idInput) return;
+
+      const newspaperId = idInput.value;
+
+      fetch(`/subscriptions/sms-count/${newspaperId}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.sms_count !== undefined) {
+            const smsInfo = document.createElement('p');
+            smsInfo.innerHTML = `<strong>Skickade SMS:</strong> ${data.sms_count}`;
+            card.querySelector('div').appendChild(smsInfo);
+          } else {
+            console.error('Kunde inte hämta SMS-data för tidning ID', newspaperId);
+          }
+        })
+        .catch(error => {
+          console.error('Fel vid hämtning av SMS-data:', error);
+        });
+    });
+  });
+  </script>
+
+
 {% endblock %}
