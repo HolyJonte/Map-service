@@ -89,7 +89,7 @@ def notify_accidents():
         # Kontrollera om händelsen redan har behandlats tidigare
         # (baserat på att ID finns i processed_events.json)
         if event_id in processed_ids:
-            print(f"Händelse ID {event_id} redan behandlad, hoppar över")
+            #print(f"Händelse ID {event_id} redan behandlad, hoppar över")
             continue
 
         start_time_str = event.get("start")
@@ -102,7 +102,7 @@ def notify_accidents():
             event_date = start_time.date()
             if event_date == today:
                 new_events.append(event)
-                print(f"Hittade ny händelse: ID {event_id} vid {event.get('location', 'okänd')}")
+                #print(f"Hittade ny händelse: ID {event_id} vid {event.get('location', 'okänd')}")
         except ValueError as e:
             print(f"Kunde inte parsa starttid för händelse ID {event_id} vid {event.get('location', 'okänd')}: {e}")
             continue
@@ -117,7 +117,7 @@ def notify_accidents():
 
     for event in new_events:
         event_id = event.get("id")
-        print(f"Behandlar ny händelse: ID {event_id}, Typ: {event.get('type', 'okänd')}")
+        #print(f"Behandlar ny händelse: ID {event_id}, Typ: {event.get('type', 'okänd')}")
 
         raw_counties = event.get("county", [])
         if not raw_counties:
@@ -130,13 +130,13 @@ def notify_accidents():
         else:
             county_ids = [id if id != 2 else 1 for id in raw_counties]
             county_ids = list(set(county_ids))  # Unika ID:n
-        print(f"Händelse ID {event_id} mappad till county IDs: {county_ids}")
+        #print(f"Händelse ID {event_id} mappad till county IDs: {county_ids}")
 
         event_type = event.get("type", "").lower()
         label_map = {"accident": "Olycka", "roadwork": "Vägarbete"}
         label = label_map.get(event_type)
         if not label:
-            print(f"Händelse ID {event_id} har okänd typ ({event_type}), hoppar över")
+            #print(f"Händelse ID {event_id} har okänd typ ({event_type}), hoppar över")
             continue
 
         severity_text = event.get("severity", "Okänd påverkan")
