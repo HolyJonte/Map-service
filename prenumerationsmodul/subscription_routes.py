@@ -55,23 +55,26 @@ def start_subscription():
     try:
         data = request.get_json(force=True)
         phone_number = data.get('phone_number')
-        county = data.get('county')
+        counties = data.get('counties', []) 
         newspaper_id = data.get('newspaper_id')
 
-        if not phone_number or not county or not newspaper_id:
-            return jsonify({"error": "Phone number, county and newspaper are required"}), 400
+        if not phone_number or not counties or not newspaper_id:
+            return jsonify({"error": "Phone number, counties and newspaper are required"}), 400
 
         user_id = session.get('user_id')
         if not user_id:
             return jsonify({"error": "User not logged in"}), 401
 
-        # Hantera tre returvärden från initiate_payment
-        session_id, client_token, client_id = initiate_payment(phone_number, county, tokenize=True)
+        # Om du behöver passa county som EN sträng (kommaseparerad) till Klarna (eller databasen)
+        counties_str = ",".join(str(c) for c in counties)
 
-        if not add_pending_subscriber(session_id, user_id, phone_number, county, newspaper_id):
+        # Skicka counties_str om Klarna behöver ett enda "county"
+        session_id, client_token, client_id = initiate_payment(phone_number, counties_str, tokenize=True)
+
+        # Skicka counties_str till add_pending_subscriber också
+        if not add_pending_subscriber(session_id, user_id, phone_number, counties_str, newspaper_id):
             return jsonify({"error": "Phone number already in process"}), 400
 
-        # Inkludera client_id i JSON-svaret
         return jsonify({
             "session_id": session_id,
             "client_token": client_token,
@@ -81,6 +84,7 @@ def start_subscription():
     except Exception as e:
         current_app.logger.error(f"Fel i start_subscription: {e}")
         return jsonify({"error": f"Serverfel: {str(e)}"}), 500
+
 
 # ==========================================================================================
 # Rutt för att verifiera betalning och aktivera prenumeration (När man klickar på "Betala" i Klarna)

@@ -608,6 +608,66 @@ Stil för SMS-prenumeration (subscription.html)
 }
 
 /* ---------------------------------------------------
+Stil för att välja län (subscription.html)
+--------------------------------------------------- */
+/* ---------------------------------------------------
+Stil för "Välj län" dropdown med checkboxar (subscription.html)
+--------------------------------------------------- */
+.dropdown {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.dropbtn {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  text-align: left;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+}
+
+.dropbtn .arrow {
+  float: right;
+  transition: transform 0.3s ease;
+}
+
+.dropbtn.open .arrow {
+  transform: rotate(180deg); /* Snurra pilen uppåt när öppnad */
+}
+
+.dropdown-content {
+  display: none; /* Starta alltid stängd */
+  position: absolute;
+  background-color: white;
+  min-width: 100%;
+  max-height: 150px; /* Scroll om fler än 4-5 alternativ */
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Liten skugga */
+  z-index: 1;
+  margin-top: 2px; /* Liten luft mellan knapp och lista */
+}
+
+.dropdown-content label {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  margin: 0; /* Ingen extra radavstånd */
+  font-weight: normal;
+}
+
+.dropdown-content label:hover {
+  background-color: #f1f1f1;
+}
+
+.show {
+  display: block; /* Visa innehållet när man klickar */
+}
+
+/* ---------------------------------------------------
 Klarna delen
 --------------------------------------------------- */
 #klarna-checkout-container {

@@ -15,8 +15,8 @@
       <label for="phone_number">Telefonnummer: (använd +46701740615 för test i Playground)</label>
       <input type="text" id="phone_number" name="phone_number" required><br><br>
 
-      <label for="county">Välj län:</label>
-      <select id="county" name="county" required></select><br><br>
+      <label for="counties">Välj län:</label>
+      <select id="counties" name="counties" multiple></select>
 
       <label for="newspaper_id">Välj tidning:</label>
       <select id="newspaper_id" name="newspaper" required></select><br><br>
@@ -52,20 +52,39 @@
   }
 
   async function loadCounties() {
-    const select = document.getElementById("county");
-    try {
-      const res = await fetch("/subscriptions/counties");
-      const counties = await res.json();
-      Object.entries(counties).forEach(([code, name]) => {
+  const select = document.getElementById("counties");
+  try {
+    const res = await fetch("/subscriptions/counties");
+    const counties = await res.json();
+
+    const addedCounties = new Set();
+
+    Object.entries(counties).forEach(([code, name]) => {
+      if (!addedCounties.has(name)) {
+        addedCounties.add(name);
         const option = document.createElement("option");
         option.value = code;
         option.textContent = name;
         select.appendChild(option);
-      });
-    } catch (err) {
-      console.error("Kunde inte hämta länslista:", err);
-    }
+      }
+    });
+
+    // Initiera Choices.js efter att vi har laddat in alla län
+    new Choices(select, {
+      removeItemButton: true,
+      searchEnabled: false,
+      placeholderValue: 'Välj län',
+      shouldSort: false,
+      noResultsText: 'Inget län hittades',
+    });
+
+  } catch (err) {
+    console.error("Kunde inte hämta länslista:", err);
   }
+}
+
+
+
 
   window.onload = function() {
     loadCounties();
@@ -75,7 +94,8 @@
   document.getElementById('subscription-form').addEventListener('submit', async (event) => {
     event.preventDefault();
     let phoneNumber = document.getElementById('phone_number').value;
-    const county = document.getElementById('county').value;
+    const counties = Array.from(document.getElementById('counties').selectedOptions)
+                      .map(option => parseInt(option.value));
     const newspaper_id = document.getElementById('newspaper_id').value;
     const responseDiv = document.getElementById('response');
 
@@ -88,7 +108,7 @@
         return;
     }
 
-    if (!phoneNumber || !county || !newspaper_id || newspaper_id === "Välj en tidning") {
+    if (!phoneNumber || counties.length === 0 || !newspaper_id || newspaper_id === "Välj en tidning") {
       responseDiv.innerHTML = `<p class="error">Vänligen fyll i telefonnummer, län och tidning.</p>`;
       return;
     }
@@ -99,7 +119,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           phone_number: phoneNumber,
-          county: parseInt(county),
+          counties: counties,
           newspaper_id: parseInt(newspaper_id),
         }),
       });
@@ -125,7 +145,7 @@
             responseDiv.innerHTML = `<p></p>`;
 
             // Fejkknappen bortkommenterad för nu
-            /*
+            
             if (!document.getElementById('klarna-fake-click')) {
               const fakeBtn = document.createElement('button');
               fakeBtn.id = 'klarna-fake-click';
@@ -172,7 +192,7 @@
 
               document.querySelector('#klarna-checkout-container').appendChild(fakeBtn);
             }
-            */
+            
           }
         });
       } else {

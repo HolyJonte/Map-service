@@ -6,9 +6,11 @@ import os
 ## För att kunna testa när vi kör filen enskilt
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+from database.crud.sms_crud import log_sms  # Lägg till importen här
 
-import os
 print("Aktuell arbetskatalog:", os.getcwd())
+
+
 
 
 # Lagt till parametrar (Madde och Jonte)
