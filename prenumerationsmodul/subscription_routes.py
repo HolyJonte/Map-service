@@ -69,7 +69,7 @@ def start_subscription():
         counties_str = ",".join(str(c) for c in counties)
 
         # Skicka counties_str om Klarna behöver ett enda "county"
-        session_id, client_token = initiate_payment(phone_number, counties_str, tokenize=True)
+        session_id, client_token = initiate_payment(phone_number, counties_str, tokenize=False)
 
         # Skicka counties_str till add_pending_subscriber också
         if not add_pending_subscriber(session_id, user_id, phone_number, counties_str, newspaper_id):
@@ -88,7 +88,7 @@ def start_subscription():
 # ==========================================================================================
 # Rutt för att verifiera betalning och aktivera prenumeration (När man klickar på "Betala" i Klarna)
 # ==========================================================================================
-@subscription_routes.route('/prenumeration-startad', methods=['GET', 'POST'])
+@subscription_routes.route('/prenumeration-startad', methods=['POST'])
 def prenumeration_startad():
     try:
         if request.method == 'POST':
@@ -96,7 +96,7 @@ def prenumeration_startad():
 
             # ✅ Läs in token från ny authorize-logik
             session_id = data.get("session_id")
-            authorization_token = data.get("authorization_token") or data.get("authorization_token")
+            authorization_token = data.get("authorization_token")
 
             if not session_id or not authorization_token:
                 return jsonify({"error": "Missing session_id or Klarna token"}), 400
