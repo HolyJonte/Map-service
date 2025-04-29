@@ -37,7 +37,7 @@ def initiate_payment(_phone_number, _county, tokenize=False, payment_method='cre
     # Skapar grundläggande betalningsdata
     payment_data = {
         "acquiring_channel": "ECOMMERCE",
-        "intet": "buy_and_tokenize",
+        "intent": "buy_and_tokenize",
         "purchase_country": "SE",
         "purchase_currency": "SEK",
         "locale": "en-SE",
