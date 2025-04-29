@@ -103,6 +103,8 @@ def prenumeration_startad():
 
             # Kontrollera pending subscriber
             result = get_pending_subscriber(session_id)
+            current_app.logger.debug(f"Pending subscriber dir: {dir(result)}")
+
             if not result:
                 return jsonify({"error": "Session ID not found"}), 404
 
@@ -119,7 +121,7 @@ def prenumeration_startad():
                 return jsonify({"error": "already_subscribed"}), 400
             
             url = f"https://api.playground.klarna.com/payments/v1/authorizations/{authorization_token}/order"
-            headers = {"Authorization": auth_header(), "Content-Type": "application/json"}
+            headers = {"Authorization": auth_header, "Content-Type": "application/json"}
             payload = {
                 "purchase_country": "SE",
                 "purchase_currency": "SEK",

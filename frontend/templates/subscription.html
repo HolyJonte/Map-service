@@ -133,9 +133,6 @@
           client_token: data.client_token
         });
 
-        // Ladda in formulär för "card" (kortbetalning)
-        // 1) Initiera med både client_id + client_token
-
 
   // 2) Ladda kort-UI:t med all betalinfo
   Klarna.Payments.load({
@@ -156,49 +153,43 @@
 
 
         // Skapa riktig "Betala" knapp
-        if (!document.getElementById('klarna-authorize-click')) {
-          const payBtn = document.createElement('button');
-          payBtn.id = 'klarna-authorize-click';
-          payBtn.textContent = 'Bekräfta köp';
-          payBtn.className = 'klarna-authorize-button';
+if (!document.getElementById('klarna-authorize-click')) {
+  const payBtn = document.createElement('button');
+  payBtn.id = 'klarna-authorize-click';
+  payBtn.textContent = 'Bekräfta köp';
+  payBtn.className = 'klarna-authorize-button';
 
-          payBtn.addEventListener('click', async () => {
-            try {
-              const authResult = await Klarna.Payments.authorize(
-                { payment_method_category: 'pay_now' },
-                {}
-              );
-              console.log('Full authResult:', JSON.stringify(authResult));
 
-              if (authResult && authResult.approved && authResult.authorization_token) {
-                console.log('Betalning godkänd');
-                // Skicka till din server för att skapa prenumeration
-                const sessionId = localStorage.getItem("klarnaSessionId");
-                const confirmation = await fetch('/subscriptions/prenumeration-startad', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    session_id: sessionId,
-                    authorization_token: authResult.authorization_token
-                  }),
-                });
+  // NY kod att klistra in istället:
+      payBtn.addEventListener('click', () => {
+        Klarna.Payments.authorize(
+          { payment_method_category: 'pay_now' },
+          {},
+          async function(res) {
+            if (res.approved) {
+              // Popup är bekräftad – skicka token till backend
+              const sessionId = localStorage.getItem('klarnaSessionId');
+              const conf = await fetch('/subscriptions/prenumeration-startad', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({
+                  status:              'AUTHORIZED',
+                  session_id:          sessionId,
+                  authorization_token: res.authorization_token
+                })
+              });
 
-                if (confirmation.redirected) {
-                  window.location.href = confirmation.url;
-                } else {
-                  const html = await confirmation.text();
-                  document.documentElement.innerHTML = html;
-                }
-
+              if (conf.redirected) {
+                window.location.href = conf.url;
               } else {
-                console.error('Betalningen nekades');
-                responseDiv.innerHTML = `<p class="error">Betalningen blev inte godkänd. Försök igen.</p>`;
+                document.documentElement.innerHTML = await conf.text();
               }
-            } catch (err) {
-              console.error('Authorize-fel:', err);
-              responseDiv.innerHTML = `<p class="error">Ett fel inträffade: ${err.message}</p>`;
+            } else {
+              responseDiv.innerHTML = '<p class="error">Betalningen nekades.</p>';
             }
-          });
+          }
+        );
+      });
 
           document.querySelector('#klarna-checkout-container').after(payBtn);
         }
