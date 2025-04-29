@@ -135,17 +135,33 @@
         });
 
         // Ladda in formulär för "card" (kortbetalning)
-        Klarna.Payments.load({
-          container: '#klarna-checkout-container',
-          payment_method_category: 'pay_now'
-        }, function (res) {
-          if (res.show_form) {
-            console.log('Kortbetalningsformulär laddat');
-            responseDiv.innerHTML = `<p>Fyll i dina kortuppgifter och klicka på "Bekräfta köp".</p>`;
-          } else if (res.error) {
-            responseDiv.innerHTML = `<p class="error">Fel vid laddning av betalningsformulär: ${res.error}</p>`;
-          }
-        });
+        // 1) Initiera med både client_id + client_token
+  Klarna.Payments.init({
+    client_id:    data.client_id,
+    client_token: data.client_token
+  });
+
+  // 2) Ladda kort-UI:t med all betalinfo
+  Klarna.Payments.load({
+    container:                 '#klarna-checkout-container',
+    payment_method_category:   'pay_now',
+    purchase_country:          'SE',     // samma som i payment_data
+    purchase_currency:         'SEK',    // samma som i payment_data
+    purchase_amount:           9900,     // samma som order_amount i payment_data
+    purchase_tax_amount:       0,        // samma som order_tax_amount
+    locale:                    'sv-SE'   // samma som locale
+  }, function(res) {
+    console.log('LOAD-RESPONSE', res);
+    if (res.show_form) {
+      // NU INJECTAR Klarna 3 IFRAME-FÄLT för kortnummer/MM/ÅÅ/CVC
+      responseDiv.innerHTML = 
+        '<p>Fyll i dina kortuppgifter och klicka på "Bekräfta köp".</p>';
+    } else {
+      responseDiv.innerHTML = 
+        `<p class="error">Fel vid laddning: ${res.error}</p>`;
+    }
+  });
+
 
         // Skapa riktig "Betala" knapp
         if (!document.getElementById('klarna-authorize-click')) {
@@ -171,7 +187,7 @@
                   body: JSON.stringify({
                     status: "AUTHORIZED",
                     session_id: sessionId,
-                    authorization_token: authResult.authorization_token || "fake-token-123"
+                    authorization_token: authResult.authorization_token
                   }),
                 });
 
