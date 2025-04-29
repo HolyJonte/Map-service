@@ -100,6 +100,8 @@ def initiate_payment(_phone_number, _county, tokenize=False, payment_method='cre
     session_data = response.json()
     session_id = session_data["session_id"]
     client_token = session_data["client_token"]
+    
+    print("FULLT SVAR FRÅN KLARNA:", session_data)
 
     return session_id, client_token, KLARNA_CLIENT_ID
 

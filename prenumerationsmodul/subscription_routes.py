@@ -94,52 +94,26 @@ def prenumeration_startad():
     if request.method == 'POST':
         data = request.get_json()
 
-        # ✅ Hantera fejksvar från test-knappen
-        if data.get("status") == "AUTHORIZED" and data.get("authorization_token") == "fake-token-123":
-            session_id = data.get("session_id")
-            klarna_token = "simulated_klarna_token_xyz"
+        # ✅ Läs in token från ny authorize-logik
+        session_id = data.get("session_id")
+        klarna_token = data.get("authorization_token") or data.get("klarna_token")
+        payment_status = data.get("status")
 
-            if not session_id:
-                return jsonify({"error": "Missing session_id"}), 400
+        if not session_id or not klarna_token:
+            return jsonify({"error": "Missing session_id or Klarna token"}), 400
 
-            result = get_pending_subscriber(session_id)
-            if not result:
-                return jsonify({"error": "Session ID not found"}), 404
-
-            user_id = session.get('user_id')
-            if not user_id:
-                return jsonify({"error": "User not logged in"}), 401
-
-
-            phone_number = result.phone_number
-            county = result.county
-            newspaper_id = result.newspaper_id
-
-            if subscriber_exists(phone_number):
-                delete_pending_subscriber(session_id)
-                return jsonify({"error": "already_subscribed"}), 400
-
-            add_subscriber(phone_number, user_id, county, newspaper_id, klarna_token)
-            delete_pending_subscriber(session_id)
-            subscriber_id = subscriber_exists(phone_number)
-
-            return render_template("confirmation.html", subscriber_id=subscriber_id)
-
-        # ✅ Hantera vanliga Klarna-svar
-        try:
-            is_valid, session_id, klarna_token = verify_payment(data)
-        except Exception as e:
-            return jsonify({"error": f"Failed to verify payment: {str(e)}"}), 500
-
-        if not is_valid or not session_id:
-            return jsonify({"message": "Payment not completed or invalid"}), 400
-
+        # Kontrollera pending subscriber
         result = get_pending_subscriber(session_id)
         if not result:
             return jsonify({"error": "Session ID not found"}), 404
 
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({"error": "User not logged in"}), 401
+
         phone_number = result.phone_number
         county = result.county
+        newspaper_id = result.newspaper_id
 
         if subscriber_exists(phone_number):
             delete_pending_subscriber(session_id)
@@ -151,8 +125,9 @@ def prenumeration_startad():
 
         return render_template("confirmation.html", subscriber_id=subscriber_id)
 
-    # GET-anrop (t.ex. direktlänk till sidan)
+    # GET – t.ex. om någon går direkt till sidan
     return render_template("confirmation.html")
+
 
 
 # ==========================================================================================
