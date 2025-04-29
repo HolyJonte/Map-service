@@ -137,7 +137,7 @@
         // Ladda in formulär för "card" (kortbetalning)
         Klarna.Payments.load({
           container: '#klarna-checkout-container',
-          payment_method_category: 'card'
+          payment_method_category: 'pay_now'
         }, function (res) {
           if (res.show_form) {
             console.log('Kortbetalningsformulär laddat');
