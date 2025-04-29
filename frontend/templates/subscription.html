@@ -188,7 +188,6 @@ if (!document.getElementById('klarna-authorize-click')) {
                 method: 'POST',
                 headers: {'Content-Type':'application/json'},
                 body: JSON.stringify({
-                  status:              'AUTHORIZED',
                   session_id:          sessionId,
                   authorization_token: res.authorization_token
                 })
