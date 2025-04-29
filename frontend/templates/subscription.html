@@ -157,7 +157,7 @@
           payBtn.addEventListener('click', async () => {
             try {
               const authResult = await Klarna.Payments.authorize(
-                { payment_method_category: 'card' },
+                { payment_method_category: 'pay_now' },
                 {}
               );
 
