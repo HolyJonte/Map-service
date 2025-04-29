@@ -677,3 +677,35 @@ Klarna delen
 #response {
   margin-top: 20px;
 }
+
+/* ---------------------------------------------------
+Styling för order-summary-card
+--------------------------------------------------- */
+
+.order-summary-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;       /* luft inuti */
+  margin-bottom: 1.5rem; /* luft under */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  max-width: 500px;      /* begränsa bredd */
+}
+
+.order-summary-card h3 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+.order-summary-card p {
+  margin: 0.5rem 0;
+  line-height: 1.4;
+  color: #555;
+}
+
+.order-summary-card em {
+  font-style: normal;
+  font-weight: bold;
+}
