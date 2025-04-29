@@ -28,7 +28,9 @@
     <div id="response"></div>
   </div>
 </div>
+
 <!-- FLYTTA UT I EGEN JS.FIl -->
+
 <script>
   async function loadNewspapers() {
     const select = document.getElementById("newspaper_id");
@@ -39,6 +41,8 @@
       select.innerHTML = "";
       const defaultOption = document.createElement("option");
       defaultOption.textContent = "Välj en tidning";
+      defaultOption.disabled = true;
+      defaultOption.selected = true;
       select.appendChild(defaultOption);
       Object.entries(newspapers).forEach(([id, name]) => {
         const option = document.createElement("option");
@@ -52,39 +56,34 @@
   }
 
   async function loadCounties() {
-  const select = document.getElementById("counties");
-  try {
-    const res = await fetch("/subscriptions/counties");
-    const counties = await res.json();
+    const select = document.getElementById("counties");
+    try {
+      const res = await fetch("/subscriptions/counties");
+      const counties = await res.json();
 
-    const addedCounties = new Set();
+      const addedCounties = new Set();
+      Object.entries(counties).forEach(([code, name]) => {
+        if (!addedCounties.has(name)) {
+          addedCounties.add(name);
+          const option = document.createElement("option");
+          option.value = code;
+          option.textContent = name;
+          select.appendChild(option);
+        }
+      });
 
-    Object.entries(counties).forEach(([code, name]) => {
-      if (!addedCounties.has(name)) {
-        addedCounties.add(name);
-        const option = document.createElement("option");
-        option.value = code;
-        option.textContent = name;
-        select.appendChild(option);
-      }
-    });
+      new Choices(select, {
+        removeItemButton: true,
+        searchEnabled: false,
+        placeholderValue: 'Välj län',
+        shouldSort: false,
+        noResultsText: 'Inget län hittades',
+      });
 
-    // Initiera Choices.js efter att vi har laddat in alla län
-    new Choices(select, {
-      removeItemButton: true,
-      searchEnabled: false,
-      placeholderValue: 'Välj län',
-      shouldSort: false,
-      noResultsText: 'Inget län hittades',
-    });
-
-  } catch (err) {
-    console.error("Kunde inte hämta länslista:", err);
+    } catch (err) {
+      console.error("Kunde inte hämta länslista:", err);
+    }
   }
-}
-
-
-
 
   window.onload = function() {
     loadCounties();
@@ -101,11 +100,11 @@
 
     phoneNumber = phoneNumber.trim();
     if (!phoneNumber.startsWith('+46')) {
-        phoneNumber = phoneNumber.replace(/^0/, '+46'); // Ersätt ledande 0 med +46
+      phoneNumber = phoneNumber.replace(/^0/, '+46');
     }
     if (!/^\+46\d{9}$/.test(phoneNumber)) {
-        responseDiv.innerHTML = `<p class="error">Ogiltigt telefonnummer. Använd formatet +46701234567.</p>`;
-        return;
+      responseDiv.innerHTML = `<p class="error">Ogiltigt telefonnummer. Använd formatet +46701234567.</p>`;
+      return;
     }
 
     if (!phoneNumber || counties.length === 0 || !newspaper_id || newspaper_id === "Välj en tidning") {
@@ -131,78 +130,80 @@
         localStorage.setItem('klarnaSessionId', data.session_id);
 
         Klarna.Payments.init({
-          clientId: data.client_id,
+          client_id: data.client_id,
           client_token: data.client_token
         });
 
+        // Ladda in formulär för "card" (kortbetalning)
         Klarna.Payments.load({
           container: '#klarna-checkout-container',
-          payment_method_category: 'card' // här kan du också ändra för att stödja andra betalmetoder
+          payment_method_category: 'card'
         }, function (res) {
-          if (res.error) {
-            responseDiv.innerHTML = `<p class="error">Fel vid laddning av Klarna: ${res.error}</p>`;
-          } else {
-            responseDiv.innerHTML = `<p></p>`;
-
-            // Fejkknappen bortkommenterad för nu
-            
-            if (!document.getElementById('klarna-fake-click')) {
-              const fakeBtn = document.createElement('button');
-              fakeBtn.id = 'klarna-fake-click';
-              fakeBtn.textContent = 'Betala';
-              fakeBtn.className = 'klarna-fake-button';
-
-              fakeBtn.addEventListener('click', async () => {
-                const sessionId = localStorage.getItem("klarnaSessionId");
-                if (!sessionId) {
-                  alert("Session saknas. Fyll i formuläret först.");
-                  return;
-                }
-
-                try {
-                  const response = await fetch('/subscriptions/prenumeration-startad', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      status: "AUTHORIZED",  // Här simulerar vi att betalningen godkänts
-                      session_id: sessionId,
-                      authorization_token: "fake-token-123"
-                    }),
-                  });
-
-                  if (!response.ok) {
-                    const data = await response.json();
-                    responseDiv.innerHTML = data.error === "already_subscribed"
-                      ? `<p class="error">Detta telefonnummer har redan en aktiv prenumeration.</p>`
-                      : `<p class="error">Fel: ${data.error || "Okänt fel"}</p>`;
-                    return;
-                  }
-
-                  if (response.redirected) {
-                    window.location.href = response.url;  // Om servern skickar tillbaka en omdirigering
-                  } else {
-                    const html = await response.text();
-                    document.documentElement.innerHTML = html;  // Byter ut hela sidan med den nya sidan
-                  }
-                } catch (err) {
-                  alert("Något gick fel: " + err.message);
-                  console.error(err);
-                }
-              });
-
-              document.querySelector('#klarna-checkout-container').appendChild(fakeBtn);
-            }
-            
+          if (res.show_form) {
+            console.log('Kortbetalningsformulär laddat');
+            responseDiv.innerHTML = `<p>Fyll i dina kortuppgifter och klicka på "Bekräfta köp".</p>`;
+          } else if (res.error) {
+            responseDiv.innerHTML = `<p class="error">Fel vid laddning av betalningsformulär: ${res.error}</p>`;
           }
         });
+
+        // Skapa riktig "Betala" knapp
+        if (!document.getElementById('klarna-authorize-click')) {
+          const payBtn = document.createElement('button');
+          payBtn.id = 'klarna-authorize-click';
+          payBtn.textContent = 'Bekräfta köp';
+          payBtn.className = 'klarna-authorize-button';
+
+          payBtn.addEventListener('click', async () => {
+            try {
+              const authResult = await Klarna.Payments.authorize(
+                { payment_method_category: 'card' },
+                {}
+              );
+
+              if (authResult.approved) {
+                console.log('Betalning godkänd');
+                // Skicka till din server för att skapa prenumeration
+                const sessionId = localStorage.getItem("klarnaSessionId");
+                const confirmation = await fetch('/subscriptions/prenumeration-startad', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    status: "AUTHORIZED",
+                    session_id: sessionId,
+                    authorization_token: authResult.authorization_token || "fake-token-123"
+                  }),
+                });
+
+                if (confirmation.redirected) {
+                  window.location.href = confirmation.url;
+                } else {
+                  const html = await confirmation.text();
+                  document.documentElement.innerHTML = html;
+                }
+
+              } else {
+                console.error('Betalningen nekades');
+                responseDiv.innerHTML = `<p class="error">Betalningen blev inte godkänd. Försök igen.</p>`;
+              }
+            } catch (err) {
+              console.error('Authorize-fel:', err);
+              responseDiv.innerHTML = `<p class="error">Ett fel inträffade: ${err.message}</p>`;
+            }
+          });
+
+          document.querySelector('#klarna-checkout-container').after(payBtn);
+        }
+
       } else {
         responseDiv.innerHTML = `<p class="error">Fel: ${data.error || "Okänt fel"}</p>`;
       }
     } catch (error) {
-      responseDiv.innerHTML = `<p class="error">Något gick fel: ${error.message}</p>`;
       console.error("Fetch error:", error);
+      responseDiv.innerHTML = `<p class="error">Något gick fel: ${error.message}</p>`;
     }
   });
 </script>
+
 
 {% endblock %}
