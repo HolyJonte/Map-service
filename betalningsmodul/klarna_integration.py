@@ -103,7 +103,7 @@ def initiate_payment(_phone_number, _county, tokenize=False, payment_method='cre
     
     print("FULLT SVAR FRÅN KLARNA:", session_data)
 
-    return session_id, client_token, KLARNA_CLIENT_ID
+    return session_id, client_token
 
 def verify_payment(data):
     #Verifierar betalningsstatus från callback

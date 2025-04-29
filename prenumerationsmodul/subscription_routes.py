@@ -55,7 +55,7 @@ def start_subscription():
     try:
         data = request.get_json(force=True)
         phone_number = data.get('phone_number')
-        counties = data.get('counties', []) 
+        counties = data.get('counties') 
         newspaper_id = data.get('newspaper_id')
 
         if not phone_number or not counties or not newspaper_id:
@@ -69,7 +69,7 @@ def start_subscription():
         counties_str = ",".join(str(c) for c in counties)
 
         # Skicka counties_str om Klarna behöver ett enda "county"
-        session_id, client_token, client_id = initiate_payment(phone_number, counties_str, tokenize=True)
+        session_id, client_token = initiate_payment(phone_number, counties_str, tokenize=True)
 
         # Skicka counties_str till add_pending_subscriber också
         if not add_pending_subscriber(session_id, user_id, phone_number, counties_str, newspaper_id):
@@ -77,8 +77,7 @@ def start_subscription():
 
         return jsonify({
             "session_id": session_id,
-            "client_token": client_token,
-            "client_id": client_id
+            "client_token": client_token
         }), 200
 
     except Exception as e:
@@ -91,42 +90,71 @@ def start_subscription():
 # ==========================================================================================
 @subscription_routes.route('/prenumeration-startad', methods=['GET', 'POST'])
 def prenumeration_startad():
-    if request.method == 'POST':
-        data = request.get_json()
+    try:
+        if request.method == 'POST':
+            data = request.get_json()
 
-        # ✅ Läs in token från ny authorize-logik
-        session_id = data.get("session_id")
-        klarna_token = data.get("authorization_token") or data.get("klarna_token")
-        payment_status = data.get("status")
+            # ✅ Läs in token från ny authorize-logik
+            session_id = data.get("session_id")
+            authorization_token = data.get("authorization_token") or data.get("authorization_token")
 
-        if not session_id or not klarna_token:
-            return jsonify({"error": "Missing session_id or Klarna token"}), 400
+            if not session_id or not authorization_token:
+                return jsonify({"error": "Missing session_id or Klarna token"}), 400
 
-        # Kontrollera pending subscriber
-        result = get_pending_subscriber(session_id)
-        if not result:
-            return jsonify({"error": "Session ID not found"}), 404
+            # Kontrollera pending subscriber
+            result = get_pending_subscriber(session_id)
+            if not result:
+                return jsonify({"error": "Session ID not found"}), 404
 
-        user_id = session.get('user_id')
-        if not user_id:
-            return jsonify({"error": "User not logged in"}), 401
+            user_id = session.get('user_id')
+            if not user_id:
+                return jsonify({"error": "User not logged in"}), 401
 
-        phone_number = result.phone_number
-        county = result.county
-        newspaper_id = result.newspaper_id
+            phone_number = result.phone_number
+            county = result.county
+            newspaper_id = result.newspaper_id
 
-        if subscriber_exists(phone_number):
+            if subscriber_exists(phone_number):
+                delete_pending_subscriber(session_id)
+                return jsonify({"error": "already_subscribed"}), 400
+            
+            url = f"https://api.playground.klarna.com/payments/v1/authorizations/{authorization_token}/order"
+            headers = {"Authorization": auth_header(), "Content-Type": "application/json"}
+            payload = {
+                "purchase_country": "SE",
+                "purchase_currency": "SEK",
+                "order_amount": 9900,
+                "order_tax_amount": 0,
+                "order_lines": [
+                    {
+                        "type": "digital",
+                        "name": "SMS-Prenumeration",
+                        "quantity": 1,
+                        "unit_price": 9900,
+                        "tax_rate": 0,
+                        "total_amount": 9900,
+                        "total_tax_amount": 0
+                    }
+                ],
+                "merchant_reference1": f"sub-{user_id}",
+                "merchant_data": {"county": str(county)}
+            }
+            response = requests.post(url, json=payload, headers=headers)
+            if response.status_code != 201:
+                return jsonify({"error": "Failed to create order: " + response.text}), 500
+
+            order_data = response.json()
+            klarna_token = order_data.get("recurring_token", authorization_token)
+
+            add_subscriber(phone_number, user_id, county, newspaper_id, klarna_token)
             delete_pending_subscriber(session_id)
-            return jsonify({"error": "already_subscribed"}), 400
+            subscriber_id = subscriber_exists(phone_number)
 
-        add_subscriber(phone_number, user_id, county, newspaper_id, klarna_token)
-        delete_pending_subscriber(session_id)
-        subscriber_id = subscriber_exists(phone_number)
-
-        return render_template("confirmation.html", subscriber_id=subscriber_id)
-
-    # GET – t.ex. om någon går direkt till sidan
-    return render_template("confirmation.html")
+            return render_template("confirmation.html", subscriber_id=subscriber_id)
+        
+    except Exception as e:
+        current_app.logger.error(f"Fel i prenumeration_startad: {e}")
+        return jsonify({"error": f"Serverfel: {str(e)}"}), 500
 
 
 
