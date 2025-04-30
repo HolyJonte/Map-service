@@ -558,54 +558,86 @@ Styling för Subscription sidan
 /* ---------------------------------------------------
 Stil för SMS-prenumeration (subscription.html)
 --------------------------------------------------- */
+/* ===========================
+ Prenumerationssida
+=========================== */
+.subscription-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 20px;
+  background-color: #f9f9f9;
+}
+
 .subscription-page h1,
 .subscription-page h2 {
   color: #333;
   margin-top: 0;
+  text-align: center;
 }
 
-.subscription-page form {
+.subscription-form-wrapper {
+  background-color: white;
+  padding: 30px 25px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  max-width: 500px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.subscription-form {
   margin-top: 20px;
 }
 
-.subscription-page label {
+.subscription-form label {
   display: block;
+  margin-top: 15px;
   margin-bottom: 5px;
 }
 
-.subscription-page input[type="text"],
-.subscription-page select {
+.subscription-form input,
+.subscription-form select,
+.subscription-form .choices__inner,
+.subscription-form button {
   width: 100%;
-  max-width: 300px;
-  padding: 8px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  max-width: 400px;
+  padding: 10px;
   font-size: 16px;
+  border-radius: 6px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
 }
 
-.subscription-page button {
-  padding: 10px 20px;
+
+.subscription-form button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
   background-color: #28a745;
   color: white;
   border: none;
-  border-radius: 5px;
-  font-size: 16px;
+  border-radius: 6px;
   cursor: pointer;
 }
 
-.subscription-page button:hover {
+.subscription-form button:hover {
   background-color: #218838;
 }
 
 .subscription-page .error {
   color: red;
+  margin-top: 10px;
 }
 
 .subscription-page .success {
   color: green;
   margin: 5px 0;
 }
+
 
 /* ---------------------------------------------------
 Stil för att välja län (subscription.html)
