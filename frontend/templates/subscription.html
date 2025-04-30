@@ -8,9 +8,10 @@
 
 <div class="subscription-page">
   <h1>Starta din SMS-prenumeration</h1>
+  <p class="form-description">Fyll i formuläret nedan för att starta din SMS-prenumeration.<br> 
+    Du kommer att få uppdateringar om trafikläget i ditt län.</p>
 
   <div class="subscription-form-wrapper">
-    <h2>Starta Prenumeration</h2>
     <form id="subscription-form" class="subscription-form">
       <label for="phone_number">Telefonnummer: (använd +46701740615 för test i Playground)</label>
       <input type="text" id="phone_number" name="phone_number" required>
@@ -56,26 +57,34 @@
   }
 
   async function loadCounties() {
-    const select = document.getElementById("counties");
-    try {
-      const res = await fetch("/subscriptions/counties");
-      const counties = await res.json();
+  const select = document.getElementById("counties");
+  try {
+    const res = await fetch("/subscriptions/counties");
+    const counties = await res.json();
 
-      const addedCounties = new Set();
-      Object.entries(counties).forEach(([code, name]) => {
-        if (!addedCounties.has(name)) {
-          addedCounties.add(name);
-          const option = document.createElement("option");
-          option.value = code;
-          option.textContent = name;
-          select.appendChild(option);
-        }
-      });
+    // Lägg till placeholder först – exakt som för tidningarna
+    const defaultOption = document.createElement("option");
+    defaultOption.textContent = "Välj ett län";
+    defaultOption.disabled = true;
+    defaultOption.selected = true;
+    select.appendChild(defaultOption);
 
-    } catch (err) {
-      console.error("Kunde inte hämta länslista:", err);
-    }
+    // Lägg till alla län
+    const addedCounties = new Set();
+    Object.entries(counties).forEach(([code, name]) => {
+      if (!addedCounties.has(name)) {
+        addedCounties.add(name);
+        const option = document.createElement("option");
+        option.value = code;
+        option.textContent = name;
+        select.appendChild(option);
+      }
+    });
+  
+  } catch (err) {
+    console.error("Kunde inte hämta länslista:", err);
   }
+}
 
   window.onload = function() {
     loadCounties();
