@@ -1,22 +1,47 @@
 {# user_profile.html #}
 {% extends "base.html" %}
-
 {% block title %}Mina sidor{% endblock %}
-
 {% block content %}
-<div>
-    <h2>Mina sidor</h2>
+<div class="profile-page">
+  <!-- 1) Ett litet header-kort med titel & beskrivning -->
+  <div class="profile-header-card">
+    <h1>Mina sidor</h1>
     <p>Här kan du hantera dina prenumerationer och inställningar.</p>
-  
-    {% if is_active_subscriber %}
-        <h3>Din prenumeration</h3>
-        <p>Du är en aktiv prenumerant med ID: {{subscriber_id}}.</p>
-        <p>Telefonnummer för din prenumeration: {{phone_number}}.</p>
-        <p>Du prenumererar på trafikinformation i: {{county}}.</p>
-    {% else %}
-        <h3>Ingen aktiv prenumeration</h3>
-        <p>Bli prenumerant för att få tillgång till exklusiva funktioner!</p>
-        <a href="{{ url_for('subscriptions.show_subscription_page') }}" class="btn btn-success">Prenumerera</a>
-    {% endif %}
+  </div>
+
+  <!-- 2) Flex-container med tre separata kort -->
+  <div class="action-cards">
+    <!-- Kort 1: Prenumerationsinfo -->
+    <div class="action-card info-card">
+      <h3>Din prenumeration</h3>
+      <ul>
+        <li><strong>ID:</strong> {{ subscriber_id }}</li>
+        <li><strong>Telefon:</strong> {{ phone_number }}</li>
+        <li><strong>Län:</strong> {{ county }}</li>
+      </ul>
+    </div>
+
+    <!-- Kort 2: Byt län -->
+    <div class="action-card change-card">
+      <h3>Byt län</h3>
+      <form action="#" method="post">
+        <label for="new_county">Välj nytt län:</label>
+        <select name="new_county" id="new_county">
+          <option value="" disabled selected>Välj län</option>
+          <option value="01">Stockholms län</option>
+          <!-- övriga län… -->
+        </select>
+        <button type="submit" class="btn-primary">Uppdatera län</button>
+      </form>
+    </div>
+
+    <!-- Kort 3: Avsluta prenumeration -->
+    <div class="action-card cancel-card">
+      <h3>Avsluta prenumeration</h3>
+      <form action="#" method="post">
+        <button type="submit" class="btn-danger">Avbryt prenumeration</button>
+      </form>
+    </div>
+  </div>
 </div>
 {% endblock %}

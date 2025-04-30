@@ -777,3 +777,151 @@ Styling för order-summary-card
   font-style: normal;
   font-weight: bold;
 }
+
+/* ─────────────────────────────────────────
+   Bakgrund + Page-container
+   ───────────────────────────────────────── */
+   .profile-page {
+    background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+    min-height: 100vh;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+  }
+  
+  /* ─────────────────────────────────────────
+     Header-kort
+     ───────────────────────────────────────── */
+  .profile-header-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    padding: 20px 30px;
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+  }
+  .profile-header-card h1 {
+    margin: 0 0 10px;
+    color: #333;
+  }
+  .profile-header-card p {
+    margin: 0;
+    color: #555;
+  }
+  
+  /* ─────────────────────────────────────────
+     Flex-wrapper för de tre korten
+     ───────────────────────────────────────── */
+  .action-cards {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    max-width: 1000px;    /* anpassa efter hur bred du vill att raden ska bli */
+    flex-wrap: wrap;      /* låter korten bryta rad på mindre skärmar */
+    justify-content: center;
+  }
+  
+  /* ─────────────────────────────────────────
+     Själva korten
+     ───────────────────────────────────────── */
+  .action-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    padding: 20px;
+    flex: 1;              /* fritt växande */
+    min-width: 250px;     /* ej smalare än så */
+  }
+  
+  .action-card h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: #333;
+    font-size: 1.1rem;
+  }
+  
+  .info-card {
+    border-left: 4px solid #28a745;
+  }
+  
+  .action-card ul {
+    list-style: none;
+    margin: 0 0 1rem;
+    padding: 0;
+  }
+  .action-card li {
+    margin-bottom: 0.5rem;
+  }
+  
+  /* ─────────────────────────────────────────
+     Forms och inputs
+     ───────────────────────────────────────── */
+  .action-card label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .action-card select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  /* ─────────────────────────────────────────
+     Knapp-stilar
+     ───────────────────────────────────────── */
+  .btn-primary {
+    display: inline-block;
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color .2s ease;
+    text-align: center;
+    text-decoration: none;
+  }
+  .btn-primary:hover {
+    background-color: #218838;
+  }
+  
+  .btn-danger {
+    display: inline-block;
+    width: 100%;
+    padding: 10px;
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color .2s ease;
+    text-align: center;
+    cursor: pointer;
+  }
+  .btn-danger:hover {
+    background-color: #c82333;
+  }
+  
+  /* ─────────────────────────────────────────
+     Responsivt: stapla korten under 800px
+     ───────────────────────────────────────── */
+     @media (max-width: 800px) {
+      .action-cards {
+        flex-direction: column;
+        align-items: stretch;  /* se till att barnen kan växa i bredd */
+      }
+      .action-card {
+        /* När vi staplar, ge varje kort full bredd */
+        width: 100%;
+        max-width: none;       /* ta bort min/max-bredder som kan begränsa */
+        flex: none;            /* avaktivera flex:1 så de inte flexar olika */
+      }
+    }
+    

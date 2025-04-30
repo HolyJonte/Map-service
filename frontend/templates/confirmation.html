@@ -4,13 +4,22 @@
 {% block title %}Prenumeration Bekräftad{% endblock %}
 
 {% block content %}
-<h1>Tack för din prenumeration!</h1>
-<p class="success">Din betalning är godkänd!<br>Din prenumeration är startad!</p>
-{% if subscriber_id %}
-  <p>Ditt ID är: <strong>{{ subscriber_id }}</strong></p>
-  <p>Spara detta ID om du vill avbryta prenumerationen senare.</p>
-{% else %}
-  <p>Vi kunde inte hitta ditt ID.</p>
-{% endif %}
-<a href="/">Tillbaka till startsidan</a>
+<div class="confirmation-page">
+  <div class="confirmation-card">
+    <h1>Tack för din prenumeration!</h1>
+    <p class="success">
+      Betalningen är godkänd och din prenumeration för trafikinformation<br>
+      i valt län är startad!
+    </p>
+
+    {% if subscriber_id %}
+      <p>Ditt ID är: <strong>{{ subscriber_id }}</strong></p>
+      <p>Spara detta ID om du vill avbryta prenumerationen senare.</p>
+    {% else %}
+      <p class="error">Vi kunde inte hitta ditt ID.</p>
+    {% endif %}
+
+    <a href="/" class="btn-secondary">Tillbaka till startsidan</a>
+  </div>
+</div>
 {% endblock %}
