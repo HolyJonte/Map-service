@@ -1,4 +1,5 @@
 import requests
+import json
 from flask import Blueprint, request, jsonify, render_template, current_app, session, redirect, url_for
 from datetime import datetime, timedelta
 
@@ -139,10 +140,13 @@ def prenumeration_startad():
                     }
                 ],
                 "merchant_reference1": f"sub-{user_id}",
-                "merchant_data": {"county": str(county)}
+                "merchant_data": json.dumps({"county": str(county)})
             }
+            current_app.logger.debug("Payload som skickas till Klarna:")
+            current_app.logger.debug(json.dumps(payload, indent=2))
+            
             response = requests.post(url, json=payload, headers=headers)
-            if response.status_code != 201:
+            if response.status_code not in [200, 201]:
                 return jsonify({"error": "Failed to create order: " + response.text}), 500
 
             order_data = response.json()
