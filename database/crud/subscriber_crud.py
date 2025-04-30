@@ -38,7 +38,7 @@ def add_subscriber(phone_number, user_id, county, newspaper_id, klarna_token):
     try:
         cursor.execute('''
             INSERT INTO subscribers (phone_number, user_id, county, newspaper_id, active, subscription_start, last_payment, klarna_token) 
-            VALUES (?, ?, ?, 1, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, 1, ?, ?, ?)
         ''', (phone_number, user_id, county, newspaper_id, datetime.now(), datetime.now(), klarna_token))
         conn.commit()
         return True
@@ -172,3 +172,14 @@ def remove_inactive_subscribers():
     ''', (one_year_ago,))
     conn.commit()
     conn.close()
+
+#===============================================================================================================================
+# Hämta subscriber baserat på user_id
+#===============================================================================================================================
+def get_subscriber_by_user_id(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM subscribers WHERE user_id = ?', (user_id,))
+    row = cursor.fetchone()
+    conn.close()
+    return Subscriber(**dict(row)) if row else None

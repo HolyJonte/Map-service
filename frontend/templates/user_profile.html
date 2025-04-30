@@ -1,0 +1,22 @@
+{# user_profile.html #}
+{% extends "base.html" %}
+
+{% block title %}Mina sidor{% endblock %}
+
+{% block content %}
+<div>
+    <h2>Mina sidor</h2>
+    <p>Här kan du hantera dina prenumerationer och inställningar.</p>
+  
+    {% if is_active_subscriber %}
+        <h3>Din prenumeration</h3>
+        <p>Du är en aktiv prenumerant med ID: {{subscriber_id}}.</p>
+        <p>Telefonnummer för din prenumeration: {{phone_number}}.</p>
+        <p>Du prenumererar på trafikinformation i: {{county}}.</p>
+    {% else %}
+        <h3>Ingen aktiv prenumeration</h3>
+        <p>Bli prenumerant för att få tillgång till exklusiva funktioner!</p>
+        <a href="{{ url_for('subscriptions.show_subscription_page') }}" class="btn btn-success">Prenumerera</a>
+    {% endif %}
+</div>
+{% endblock %}

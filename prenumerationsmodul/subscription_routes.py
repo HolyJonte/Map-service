@@ -239,6 +239,10 @@ def man_add_subscriber():
 
     if not phone_number or not county:
         return jsonify({"error": "Phone number and county are required"}), 400
+    # Kolla att active är 0 eller 1
+    if active not in (0, 1):
+        current_app.logger.error(f"Ogiltigt active-värde: {active}")
+        return jsonify({"error": "Active must be 0 or 1"}), 400
 
     if manual_add_subscriber(phone_number, county, newspaper_id, active, subscription_start, last_payment, klarna_token):
         return jsonify({"message": f"Subscriber {phone_number} added successfully"}), 201

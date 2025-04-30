@@ -16,6 +16,8 @@ from users.user_logic import (
     validate_login,
     verify_totp_code
 )
+from database.crud.subscriber_crud import get_subscriber_by_user_id
+from database.county_utils import get_counties
 
 
 # Skapar en Bluepring för användarrelaterade rutter
@@ -142,6 +144,27 @@ def verify_user_2fa():
         return render_template('user_two_factor.html', error="Fel kod")
     return render_template('user_two_factor.html')
 
+# =====================================================================================================
+# Mina sidor
+# =====================================================================================================
+@user_routes.route('/profile')
+def profile():
+    user_id = session.get('user_id')
+
+    subscriber = get_subscriber_by_user_id(user_id)
+    is_active_subscriber = subscriber and subscriber.active == 1
+
+    # Mappa numeriskt county-värde till text
+    county_map = get_counties()
+    county_text = county_map.get(subscriber.county, "Okänt län") if subscriber else None
+
+    subscriber_data = {
+        'is_active_subscriber': is_active_subscriber,
+        'subscriber_id': subscriber.id if subscriber else None,
+        'phone_number': subscriber.phone_number if subscriber else None,
+        'county': county_text  # Skicka text istället för siffra
+    }
+    return render_template('user_profile.html', **subscriber_data)
 # =====================================================================================================
 # Logga ut
 # =====================================================================================================
