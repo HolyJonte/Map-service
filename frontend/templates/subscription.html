@@ -141,13 +141,13 @@
         </div>
       `;
 
-  // 3) Infoga summaryHtml precis ovanför Klarna-containern
-  const klarnaContainer = document.getElementById('klarna-checkout-container');
-  klarnaContainer.insertAdjacentHTML('beforebegin', summaryHtml);
-        Klarna.Payments.init({
-          client_id: data.client_id,
-          client_token: data.client_token
-        });
+      // 3) Infoga summaryHtml precis ovanför Klarna-containern
+      const klarnaContainer = document.getElementById('klarna-checkout-container');
+      klarnaContainer.insertAdjacentHTML('beforebegin', summaryHtml);
+            Klarna.Payments.init({
+              client_id: data.client_id,
+              client_token: data.client_token
+            });
 
   // 2) Ladda kort-UI:t med all betalinfo
   Klarna.Payments.load({
@@ -168,11 +168,11 @@
 
 
         // Skapa riktig "Betala" knapp
-if (!document.getElementById('klarna-authorize-click')) {
-  const payBtn = document.createElement('button');
-  payBtn.id = 'klarna-authorize-click';
-  payBtn.textContent = 'Bekräfta köp';
-  payBtn.className = 'klarna-authorize-button';
+    if (!document.getElementById('klarna-authorize-click')) {
+      const payBtn = document.createElement('button');
+      payBtn.id = 'klarna-authorize-click';
+      payBtn.textContent = 'Bekräfta köp';
+      payBtn.className = 'klarna-authorize-button';
 
 
   // NY kod att klistra in istället:
@@ -217,6 +217,5 @@ if (!document.getElementById('klarna-authorize-click')) {
     }
   });
 </script>
-
 
 {% endblock %}
