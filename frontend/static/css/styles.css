@@ -578,19 +578,21 @@ Stil för SMS-prenumeration (subscription.html)
 
 .subscription-form-wrapper {
   background-color: white;
-  padding: 30px 25px;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
   max-width: 500px;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 30px;
 }
 
+
 .subscription-form {
-  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
 }
+
 
 .subscription-form label {
   display: block;
@@ -600,17 +602,14 @@ Stil för SMS-prenumeration (subscription.html)
 
 .subscription-form input,
 .subscription-form select,
-.subscription-form .choices__inner,
 .subscription-form button {
   width: 100%;
-  max-width: 400px;
   padding: 10px;
   font-size: 16px;
   border-radius: 6px;
   box-sizing: border-box;
   margin-bottom: 10px;
 }
-
 
 .subscription-form button {
   margin-top: 20px;
