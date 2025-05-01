@@ -183,3 +183,19 @@ def get_subscriber_by_user_id(user_id):
     row = cursor.fetchone()
     conn.close()
     return Subscriber(**dict(row)) if row else None
+
+#========================================================================================================================
+# Uppdaterar en prenumerants län
+#========================================================================================================================
+def update_subscriber_county(subscriber_id, phone_number, new_county):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        UPDATE subscribers
+        SET county = ?
+        WHERE id = ? AND phone_number = ?
+    ''', (new_county, subscriber_id, phone_number))
+    success = cursor.rowcount > 0
+    conn.commit()
+    conn.close()
+    return success

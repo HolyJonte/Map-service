@@ -1,4 +1,3 @@
-{# user_profile.html #}
 {% extends "base.html" %}
 {% block title %}Mina sidor{% endblock %}
 {% block content %}
@@ -24,15 +23,17 @@
     <!-- Kort 2: Byt län -->
     <div class="action-card change-card">
       <h3>Byt län</h3>
-      <form action="#" method="post">
+      <form id="change-county-form" method="post">
+        {% if csrf_token %}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% endif %}
         <label for="new_county">Välj nytt län:</label>
-        <select name="new_county" id="new_county">
+        <select name="new_county" id="new_county" required>
           <option value="" disabled selected>Välj län</option>
-          <option value="01">Stockholms län</option>
-          <!-- övriga län… -->
         </select>
         <button type="submit" class="btn-primary">Uppdatera län</button>
       </form>
+      <div id="county-response"></div>
     </div>
 
     <!-- Kort 3: Avsluta prenumeration -->
@@ -44,4 +45,67 @@
     </div>
   </div>
 </div>
+
+<!-- JavaScript för att hantera "Byt Län"-funktionalitet -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Hämta CSRF-token från formuläret (om det finns)
+  const csrfToken = document.querySelector('input[name="csrf_token"]')?.value;
+
+  const changeForm = document.getElementById('change-county-form');
+  const select = document.getElementById('new_county');
+  const countyResponseDiv = document.getElementById('county-response');
+
+  async function loadCountiesForProfile() {
+    try {
+      const res = await fetch("/subscriptions/counties");
+      if (!res.ok) throw new Error("Kunde inte hämta län");
+      const counties = await res.json();
+
+      select.innerHTML = '<option value="" disabled selected>Välj län</option>';
+      Object.entries(counties).forEach(([code, name]) => {
+        const option = document.createElement("option");
+        option.value = code;
+        option.textContent = name;
+        select.appendChild(option);
+      });
+    } catch (err) {
+      countyResponseDiv.innerHTML = `<p class="error">Fel vid laddning av län: ${err.message}</p>`;
+    }
+  }
+
+  changeForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const newCounty = select.value;
+    if (!newCounty) {
+      countyResponseDiv.innerHTML = `<p class="error">Vänligen välj ett län.</p>`;
+      return;
+    }
+
+    try {
+      const headers = { 'Content-Type': 'application/json' };
+      if (csrfToken) {
+        headers['X-CSRF-Token'] = csrfToken;
+      }
+      const response = await fetch('/users/profile/update-county', {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify({ county: newCounty })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        countyResponseDiv.innerHTML = `<p class="success">Län uppdaterat till ${data.county_name}!</p>`;
+        document.querySelector('.info-card li:nth-child(3)').innerHTML = `<strong>Län:</strong> ${data.county_name}`;
+      } else {
+        countyResponseDiv.innerHTML = `<p class="error">Fel: ${data.error || "Okänt fel"}</p>`;
+      }
+    } catch (error) {
+      countyResponseDiv.innerHTML = `<p class="error">Något gick fel: ${error.message}</p>`;
+    }
+  });
+
+  loadCountiesForProfile();
+});
+</script>
 {% endblock %}

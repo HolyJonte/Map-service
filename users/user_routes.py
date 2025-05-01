@@ -6,7 +6,7 @@
 # - Utloggning
 
 # Flask-importer
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify
 
 # Importerar funktioner från lokigen i user_logic.py
 from users.user_logic import (
@@ -16,7 +16,7 @@ from users.user_logic import (
     validate_login,
     verify_totp_code
 )
-from database.crud.subscriber_crud import get_subscriber_by_user_id
+from database.crud.subscriber_crud import get_subscriber_by_user_id, update_subscriber_county
 from database.county_utils import get_counties
 
 
@@ -165,6 +165,39 @@ def profile():
         'county': county_text  # Skicka text istället för siffra
     }
     return render_template('user_profile.html', **subscriber_data)
+
+# =====================================================================================================
+# Uppdatering av län på Mina sidor
+# =====================================================================================================
+@user_routes.route('/profile/update-county', methods=['POST'])
+def update_county():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "Du måste vara inloggad"}), 401
+
+    subscriber = get_subscriber_by_user_id(user_id)
+    if not subscriber or not subscriber.active:
+        return jsonify({"error": "Ingen aktiv prenumeration hittades"}), 404
+
+    data = request.get_json()
+    new_county = data.get('county')
+    if not new_county:
+        return jsonify({"error": "Inget län angivet"}), 400
+
+    try:
+        new_county_int = int(new_county)
+    except (ValueError, TypeError):
+        return jsonify({"error": "Ogiltigt län (måste vara ett nummer)"}), 400
+
+    county_map = get_counties()
+    if new_county_int not in county_map:
+        return jsonify({"error": "Ogiltigt län"}), 400
+
+    success = update_subscriber_county(subscriber.id, subscriber.phone_number, new_county_int)
+    if success:
+        return jsonify({"message": "Län uppdaterat", "county_name": county_map[new_county_int]}), 200
+    else:
+        return jsonify({"error": "Kunde inte uppdatera län"}), 500
 # =====================================================================================================
 # Logga ut
 # =====================================================================================================
