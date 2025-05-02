@@ -40,6 +40,62 @@ body.index-page .main-content {
   padding: 0;
 }
 
+/* ─────────────────────────────────────────
+    Knapp-stilar
+    ───────────────────────────────────────── */
+  .btn-primary {
+  display: inline-block;
+  width: 200px;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background-color .2s ease;
+  text-align: center;
+  text-decoration: none;
+}
+.btn-primary:hover {
+  background-color: #0069d9;
+}
+
+/* Grå sekundärknapp */
+.btn-secondary {
+  display: inline-block;
+  width: 200px;
+  padding: 10px;
+  background-color: #6c757d;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background-color .2s ease;
+  text-align: center;
+  text-decoration: none;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+
+.btn-danger {
+  display: inline-block;
+  width: 180px;
+  padding: 10px;
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background-color .2s ease;
+  text-align: center;
+  cursor: pointer;
+}
+.btn-danger:hover {
+  background-color: #c82333;
+}
 
 /* -------------------------------------------------------------------------
 Styling för Kartans ikoner
@@ -375,7 +431,7 @@ Autentiseringskort för admin (inloggning, 2FA, QR)
 /* ------------------------------------------
 Fältet där man lägger till ny dagstidning (längst ner på sidan)
 ------------------------------------------ */
-.auth-card {
+.card {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -548,8 +604,7 @@ Stil för SMS-prenumeration (subscription.html)
 }
 
 .subscription-form input,
-.subscription-form select,
-.subscription-form button {
+.subscription-form select {
   width: 100%;
   padding: 10px;
   font-size: 16px;
@@ -558,22 +613,7 @@ Stil för SMS-prenumeration (subscription.html)
   margin-bottom: 10px;
 }
 
-.subscription-form button {
-  margin-top: 20px;
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  font-weight: bold;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
 
-.subscription-form button:hover {
-  background-color: #218838;
-}
 
 .subscription-page .error {
   color: red;
@@ -807,64 +847,6 @@ Styling för order-summary-card
     border-radius: 4px;
   }
   
-  /* ─────────────────────────────────────────
-     Knapp-stilar
-     ───────────────────────────────────────── */
-  .btn-primary {
-    display: inline-block;
-    width: 180px;
-    padding: 10px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    transition: background-color .2s ease;
-    text-align: center;
-    text-decoration: none;
-  }
-  .btn-primary:hover {
-    background-color: #0069d9;
-  }
-
-  /* Grå sekundärknapp */
-  .btn-secondary {
-    display: inline-block;
-    width: 180px;
-    padding: 10px;
-    background-color: #6c757d;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    transition: background-color .2s ease;
-    text-align: center;
-    text-decoration: none;
-  }
-
-  .btn-secondary:hover {
-    background-color: #5a6268;
-    color: #fff;
-    width: 180px;
-  }
-
-
-  .btn-danger {
-    display: inline-block;
-    width: 180px;
-    padding: 10px;
-    background-color: #dc3545;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    transition: background-color .2s ease;
-    text-align: center;
-    cursor: pointer;
-  }
-  .btn-danger:hover {
-    background-color: #c82333;
-  }
   
   /* ─────────────────────────────────────────
      Responsivt: stapla korten under 800px

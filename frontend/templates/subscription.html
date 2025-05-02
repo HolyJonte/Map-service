@@ -6,12 +6,12 @@
 
 <!-- OBS! Styling för subscription sidan finns nu i css:en (längst ner) istället-->
 
-<div class="subscription-page">
-  <h1>Starta din SMS-prenumeration</h1>
-  <p class="form-description">Fyll i formuläret nedan för att starta din SMS-prenumeration.<br> 
-    Du kommer att få uppdateringar om trafikläget i ditt län.</p>
+<div>
+  <div class="subscription-form-wrapper card">
+    <h1>Starta din SMS-prenumeration</h1>
+    <p class="form-description">Fyll i formuläret nedan för att starta din SMS-prenumeration.<br> 
+      Du kommer att få uppdateringar om trafikläget i ditt län.</p>
 
-  <div class="subscription-form-wrapper">
     <form id="subscription-form" class="subscription-form">
       <label for="phone_number">Telefonnummer: (använd +46701740615 för test i Playground)</label>
       <input type="text" id="phone_number" name="phone_number" required>
@@ -21,8 +21,11 @@
 
       <label for="newspaper_id">Välj tidning:</label>
       <select id="newspaper_id" name="newspaper_id" required></select><br><br>
-
-      <button type="submit">Starta Prenumeration</button>
+      <div class="d-flex justify-content-center gap-3 mt-4">
+        
+      <div class="d-flex justify-content-center gap-3 mt-4">
+        <button type="submit" class="btn btn-primary">Starta Prenumeration</button>
+      </div>
     </form>
 
     <div id="klarna-checkout-container"></div> <!-- Klarna-widgeten kommer här -->
