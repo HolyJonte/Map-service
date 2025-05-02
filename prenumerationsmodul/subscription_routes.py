@@ -65,6 +65,11 @@ def start_subscription():
         user_id = session.get('user_id')
         if not user_id:
             return jsonify({"error": "User not logged in"}), 401
+        
+         # Kontrollera om telefonnumret redan är registrerat
+        if subscriber_exists(phone_number):
+            return jsonify({"error": "already_subscribed"}), 400
+
 
         # Om du behöver passa county som EN sträng (kommaseparerad) till Klarna (eller databasen)
         counties_str = ",".join(str(c) for c in counties)
@@ -116,10 +121,6 @@ def prenumeration_startad():
             phone_number = result.phone_number
             county = result.county
             newspaper_id = result.newspaper_id
-
-            if subscriber_exists(phone_number):
-                delete_pending_subscriber(session_id)
-                return jsonify({"error": "already_subscribed"}), 400
             
             url = f"https://api.playground.klarna.com/payments/v1/authorizations/{authorization_token}/order"
             headers = {"Authorization": auth_header, "Content-Type": "application/json"}
