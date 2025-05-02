@@ -80,7 +80,8 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        user = validate_user_login(email, password)
+        user = validate_login(email, password)
+
 
         if user:
             # Spara användarinfo i session
