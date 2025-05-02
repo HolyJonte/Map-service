@@ -12,7 +12,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from admin.admin_logic import (
     get_all_newspapers,
     add_newspaper,
-    delete_newspaper
+    delete_newspaper,
+    update_admin_password
 )
 
 # Skapar en Blueprint för admin-rutter och kopplar till templates-mappen
@@ -45,6 +46,15 @@ def admin_dashboard():
             if newspaper_id:
                 delete_newspaper(int(newspaper_id))
 
+        elif action == 'change_password':
+            pw1 = request.form.get('new_password')
+            pw2 = request.form.get('confirm_password')
+            if pw1 and pw2 and pw1 == pw2:
+                update_admin_password(pw1)
+            else:
+                return render_template('admin_dashboard.html', newspapers=get_all_newspapers(), error="Lösenorden matchar inte.")
+
+
 
     newspapers = get_all_newspapers()
     return render_template('admin_dashboard.html', newspapers=newspapers)
@@ -56,3 +66,4 @@ def admin_dashboard():
 def admin_logout():
     session.pop('admin_logged_in', None)
     return redirect(url_for('serve_index'))
+

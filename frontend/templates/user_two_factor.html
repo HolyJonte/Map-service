@@ -9,10 +9,13 @@
   {% if error %}
     <div class="alert alert-danger">{{ error }}</div>
   {% endif %}
+  <p class="text-muted mt-3">Här fyller du i den koden du fått från authenticator appen i din mobiltelefon.</p>
+  <p class="text-muted">Koden är giltig i 30 sekunder.</p>
   <form method="POST">
     <input type="text" name="code" placeholder="Kod från app" required>
-    <button type="submit">Verifiera</button>
+    <div class="d-flex justify-content-center gap-3 mt-4">
+      <button type="submit" class="btn btn-primary">Verifiera</button>
+    </div>
   </form>
-  <p class="text-muted mt-3">Använd Google Authenticator eller liknande för att hämta koden.</p>
 </div>
 {% endblock %}

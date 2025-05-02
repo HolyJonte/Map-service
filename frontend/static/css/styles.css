@@ -369,64 +369,6 @@ Kort för login-vy
   font-size: 24px;
   color: #222;
 }
-
-/* ------------------------------------------
-Login-knappar
------------------------------------------- */
-.login-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.login-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px;
-  font-size: 16px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: background-color 0.2s, transform 0.2s;
-  color: white;
-}
-
-.login-btn i {
-  font-size: 20px;
-}
-
-/* Admin-knapp */
-.login-btn.admin {
-  background-color: #343a40;
-}
-
-.login-btn.admin:hover {
-  background-color: #23272b;
-  transform: scale(1.02);
-}
-
-/* Userknapp */
-.login-btn.user {
-  background-color: #007bff;
-}
-
-.login-btn.user:hover {
-  background-color: #0069d9;
-  transform: scale(1.02);
-}
-
-/* Registrera-knapp */
-.login-btn.register {
-  background-color: #28a745;
-}
-
-.login-btn.register:hover {
-  background-color: #218838;
-  transform: scale(1.02);
-}
-
 /* -------------------------------------------------------------------------
 Autentiseringskort för admin (inloggning, 2FA, QR)
 ------------------------------------------------------------------------- */
@@ -436,13 +378,13 @@ Fältet där man lägger till ny dagstidning (längst ner på sidan)
 .auth-card {
   display: flex;
   flex-direction: column;
-  align-items: center;         /* Centrera innehåll inne i kortet */
+  align-items: center;
   margin-top: 40px;
   margin-bottom: 40px;
   max-width: 600px;
   width: 100%;
   margin-left: auto;
-  margin-right: auto;          /* Det här centrerar kortet på sidan */
+  margin-right: auto;
 }
 
 /* ------------------------------------------
@@ -469,21 +411,7 @@ Formulärfält i auth-card
 /* ------------------------------------------
 Knappar i auth-card
 ------------------------------------------ */
-.auth-card button {
-  width: 160px;
-  padding: 10px;
-  font-size: 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
 
-.auth-card button:hover {
-  background-color: #0069d9;
-  transform: scale(1.02);
-}
 
 .auth-card form input,
 .auth-card form button,
@@ -501,8 +429,8 @@ Utseende för admin dashboard
 .dashboard {
   display: flex;
   flex-direction: column;
-  align-items: center; /* ⬅ centrera allt horisontellt */
-  box-sizing: border-box; /* Inkludera padding i totalhöjd och bredd */
+  align-items: center;
+  box-sizing: border-box;
   padding: 20px;
 }
 
@@ -510,7 +438,6 @@ Utseende för admin dashboard
   display: flex;
   flex-direction: column;
   gap: 20px;
-
 }
 
 .newspaper-card {
@@ -520,7 +447,11 @@ Utseende för admin dashboard
   border-radius: 10px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
   border-left: 5px solid #007bff;
-}
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center; /* om du även vill centrera texten */}
 
 .newspaper-card h5 {
   margin-top: 0;
@@ -533,6 +464,8 @@ Utseende för admin dashboard
   margin: 0;
   font-size: 14px;
   color: #333;
+  align-items: center;
+
 }
 
 /* Stil för "Ta bort"-knappen */
@@ -544,6 +477,8 @@ Utseende för admin dashboard
   border-radius: 6px;
   font-size: 14px;
   transition: background-color 0.2s, transform 0.2s;
+  align-items: center;
+
 }
 
 .newspaper-card .btn-danger:hover {
@@ -832,8 +767,8 @@ Styling för order-summary-card
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     padding: 20px;
-    flex: 1;              /* fritt växande */
-    min-width: 250px;     /* ej smalare än så */
+    flex: 1;
+    min-width: 250px;
   }
   
   .action-card h3 {
@@ -877,9 +812,9 @@ Styling för order-summary-card
      ───────────────────────────────────────── */
   .btn-primary {
     display: inline-block;
-    width: 100%;
+    width: 180px;
     padding: 10px;
-    background-color: #28a745;
+    background-color: #007bff;
     color: #fff;
     border: none;
     border-radius: 6px;
@@ -889,12 +824,34 @@ Styling för order-summary-card
     text-decoration: none;
   }
   .btn-primary:hover {
-    background-color: #218838;
+    background-color: #0069d9;
   }
-  
+
+  /* Grå sekundärknapp */
+  .btn-secondary {
+    display: inline-block;
+    width: 180px;
+    padding: 10px;
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color .2s ease;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .btn-secondary:hover {
+    background-color: #5a6268;
+    color: #fff;
+    width: 180px;
+  }
+
+
   .btn-danger {
     display: inline-block;
-    width: 100%;
+    width: 180px;
     padding: 10px;
     background-color: #dc3545;
     color: #fff;
