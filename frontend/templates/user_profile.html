@@ -11,6 +11,7 @@
   <!-- 2) Flex-container med tre separata kort -->
   <div class="action-cards">
     <!-- Kort 1: Prenumerationsinfo -->
+    {% if is_active_subscriber %}
     <div class="action-card info-card">
       <h3>Din prenumeration</h3>
       <ul>
@@ -48,7 +49,17 @@
       <div id="unsubscribe-response"></div> <!-- För att visa meddelanden -->
     </div>
   </div>
+
+  {% else %}
+  <!-- Inget prenumerationskort -->
+  <div class="action-card info-card">
+    <h3>Ingen prenumeration</h3>
+    <p>Du har ingen aktiv prenumeration. <a href="{{ url_for('subscriptions.show_subscription_page')}}">Starta en prenumeration</a>.</p>
+  </div>
+  {% endif %}
+  </div>
 </div>
+
 
 <!-- JavaScript för att hantera "Byt Län"-funktionalitet -->
 <script>
