@@ -53,7 +53,8 @@ def get_user_by_email(email):
             id=row["id"],
             email=row["email"],
             password=row["password"],
-            totp_secret=row["totp_secret"]
+            totp_secret=row["totp_secret"],
+            is_admin=row["is_admin"]
         )
     return None
 
@@ -64,10 +65,13 @@ def get_user_by_email(email):
 #=============================================================================================
 def validate_user_login(email, password):
     user = get_user_by_email(email)
-    if user and check_password_hash(user.password, password):
-        return user
-    return None
 
+    if not user:
+        return None
+
+    if not check_password_hash(user.password, password):
+        return None
+    return user
 
 
 # =============================================================================================
