@@ -39,9 +39,13 @@
     <!-- Kort 3: Avsluta prenumeration -->
     <div class="action-card cancel-card">
       <h3>Avsluta prenumeration</h3>
-      <form action="#" method="post">
+      <form id="unsubscribe-form" method="post">
+        {% if csrf_token %}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% endif %}
         <button type="submit" class="btn-danger">Avbryt prenumeration</button>
       </form>
+      <div id="unsubscribe-response"></div> <!-- För att visa meddelanden -->
     </div>
   </div>
 </div>
@@ -106,6 +110,37 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch (error) {
       countyResponseDiv.innerHTML = `<p class="error">Något gick fel: ${error.message}</p>`;
+    }
+  });
+
+    // Hämta element för avsluta prenumeration
+  const unsubscribeForm = document.getElementById('unsubscribe-form');
+  const unsubscribeResponseDiv = document.getElementById('unsubscribe-response');
+
+  unsubscribeForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    try {
+      const headers = { 'Content-Type': 'application/json' };
+      if (csrfToken) {
+        headers['X-CSRF-Token'] = csrfToken;
+      }
+      const response = await fetch('/users/profile/unsubscribe', {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify({}) // Inget behov av data i body för denna rutt
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        unsubscribeResponseDiv.innerHTML = `<p class="success">${data.message}</p>`;
+        // Ladda om sidan efter 1 sekund för att visa icke-prenumerationsläge
+        setTimeout(() => window.location.reload(), 1000);
+      } else {
+        unsubscribeResponseDiv.innerHTML = `<p class="error">Fel: ${data.error || "Okänt fel"}</p>`;
+      }
+    } catch (error) {
+      unsubscribeResponseDiv.innerHTML = `<p class="error">Något gick fel: ${error.message}</p>`;
     }
   });
 
