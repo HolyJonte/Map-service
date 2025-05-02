@@ -22,7 +22,7 @@ auth_header = "Basic " + base64.b64encode(auth_string.encode()).decode("ascii")
 #Tar emot parametrar från subscription_routes.py, parametrarna används inte
 # men behöver tas emot här ändå eftersom de kommer från formuläret. Ev kan vi ta bort senare?
 ## MÅSTE VI TA EMOT newspaper_id OCKSÅ??
-def initiate_payment(_phone_number, _county, tokenize=False, payment_method='credit_card'):
+def initiate_payment(_phone_number, _county, tokenize=True, payment_method='credit_card'):
     headers = {
         "Authorization": auth_header,
         "Content-Type": "application/json"
@@ -37,7 +37,7 @@ def initiate_payment(_phone_number, _county, tokenize=False, payment_method='cre
     # Skapar grundläggande betalningsdata
     payment_data = {
         "acquiring_channel": "ECOMMERCE",
-        "intent": "buy",
+        "intent": "buy_and_tokenize",
         "purchase_country": "SE",
         "purchase_currency": "SEK",
         "locale": "sv-SE",
