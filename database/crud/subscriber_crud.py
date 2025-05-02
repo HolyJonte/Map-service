@@ -199,3 +199,30 @@ def update_subscriber_county(subscriber_id, phone_number, new_county):
     conn.commit()
     conn.close()
     return success
+
+#========================================================================================================================
+# Ta bort prenumerant
+#========================================================================================================================
+def delete_subscriber(subscriber_id):
+    try:
+        # Kontrollera att subscriber_id är ett heltal
+        if not isinstance(subscriber_id, int):
+            try:
+                subscriber_id = int(subscriber_id)  # Försök konvertera till int
+            except (TypeError, ValueError):
+                print(f"Ogiltig subscriber_id-typ: {type(subscriber_id)}, värde: {subscriber_id}")
+                return False
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('''
+            DELETE FROM subscribers
+            WHERE id = ?
+        ''', (subscriber_id,))  # Använd korrekt tuple-syntax
+        success = cursor.rowcount > 0
+        conn.commit()
+        conn.close()
+        return success
+    except Exception as e:
+        print(f"Fel i delete_subscriber: {str(e)}")
+        return False

@@ -16,8 +16,7 @@ from users.user_logic import (
     validate_login,
     verify_totp_code
 )
-from database.crud.subscriber_crud import get_subscriber_by_user_id, update_subscriber_county
-from database.crud.user_crud import validate_user_login
+from database.crud.subscriber_crud import get_subscriber_by_user_id, update_subscriber_county, delete_subscriber
 from database.county_utils import get_counties
 
 
@@ -175,8 +174,6 @@ def profile():
 @user_routes.route('/profile/update-county', methods=['POST'])
 def update_county():
     user_id = session.get('user_id')
-    if not user_id:
-        return jsonify({"error": "Du måste vara inloggad"}), 401
 
     subscriber = get_subscriber_by_user_id(user_id)
     if not subscriber or not subscriber.active:
@@ -201,6 +198,36 @@ def update_county():
         return jsonify({"message": "Län uppdaterat", "county_name": county_map[new_county_int]}), 200
     else:
         return jsonify({"error": "Kunde inte uppdatera län"}), 500
+    
+#=====================================================================================================
+# Avsluta prenumeration
+# =====================================================================================================
+@user_routes.route('/profile/unsubscribe', methods=['POST'])
+def unsubscribe():
+    try:
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({"error": "Användaren är inte inloggad"}), 401
+
+        subscriber = get_subscriber_by_user_id(user_id)
+        if not subscriber:
+            return jsonify({"error": "Ingen aktiv prenumeration hittades"}), 404
+
+        # Logga subscriber.id för felsökning
+        print(f"Subscriber ID: {subscriber.id}, Typ: {type(subscriber.id)}")
+
+        if not subscriber.active:
+            return jsonify({"error": "Ingen aktiv prenumeration hittades"}), 404
+
+        success = delete_subscriber(subscriber.id)
+        if not success:
+            return jsonify({"error": "Kunde inte avsluta prenumerationen"}), 500
+
+        return jsonify({"message": "Prenumeration avslutad", "reload": True}), 200
+    except Exception as e:
+        print(f"Fel i unsubscribe: {str(e)}")
+        return jsonify({"error": f"Serverfel: {str(e)}"}), 500
+
 # =====================================================================================================
 # Logga ut
 # =====================================================================================================
