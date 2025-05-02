@@ -62,12 +62,16 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!res.ok) throw new Error("Kunde inte hämta län");
       const counties = await res.json();
 
+      const addedCounties = new Set();
       select.innerHTML = '<option value="" disabled selected>Välj län</option>';
       Object.entries(counties).forEach(([code, name]) => {
-        const option = document.createElement("option");
-        option.value = code;
-        option.textContent = name;
-        select.appendChild(option);
+        if (!addedCounties.has(name)) { 
+          addedCounties.add(name); 
+          const option = document.createElement("option");
+          option.value = code;
+          option.textContent = name;
+          select.appendChild(option);
+        }
       });
     } catch (err) {
       countyResponseDiv.innerHTML = `<p class="error">Fel vid laddning av län: ${err.message}</p>`;
