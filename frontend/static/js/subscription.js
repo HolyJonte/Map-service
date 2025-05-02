@@ -124,56 +124,83 @@ async function loadNewspapers() {
         }, function(res) {
           if (res.show_form) {
             console.log('Betalningsformulär laddat');
-            responseDiv.innerHTML = 
+            responseDiv.innerHTML =
               '<p>Om du godkänner prenumerationen dirigeras du till Klarna "Bekräfta köp".</p>';
           } else if (res.error) {
             console.error('Fel vid laddning:', res.error);
-            responseDiv.innerHTML = 
+            responseDiv.innerHTML =
               `<p class="error">Fel vid laddning: ${res.error}</p>`;
           }
         });
 
 
         // Skapa riktig "Betala" knapp
-    if (!document.getElementById('klarna-authorize-click')) {
-      const payBtn = document.createElement('button');
-      payBtn.id = 'klarna-authorize-click';
-      payBtn.textContent = 'Bekräfta köp';
-      payBtn.className = 'klarna-authorize-button';
+      if (!document.getElementById('klarna-authorize-click')) {
+        // Skapa wrapper-div
+        const wrapper = document.createElement('div');
+        wrapper.className = 'd-flex justify-content-center mt-3';
+
+        // Skapa knappen
+        const payBtn = document.createElement('button');
+        payBtn.id = 'klarna-authorize-click';
+        payBtn.textContent = 'Bekräfta köp';
+        payBtn.className = 'klarna-authorize-button';
+
+        // Lägg knappen i wrappern
+        wrapper.appendChild(payBtn);
+
+        // Lägg wrappern efter Klarna-container
+        document.querySelector('#klarna-checkout-container').after(wrapper);
 
 
-  // NY kod att klistra in istället:
-      payBtn.addEventListener('click', () => {
-        Klarna.Payments.authorize(
-          { payment_method_category: 'pay_now' },
-          {},
-          async function(res) {
-            if (res.approved) {
-              // Popup är bekräftad – skicka token till backend
-              const sessionId = localStorage.getItem('klarnaSessionId');
-              const conf = await fetch('/subscriptions/prenumeration-startad', {
-                method: 'POST',
-                headers: {'Content-Type':'application/json'},
-                body: JSON.stringify({
-                  session_id:          sessionId,
-                  authorization_token: res.authorization_token
-                })
-              });
+      // NY kod att klistra in istället:
+      if (!document.getElementById('klarna-authorize-click')) {
+        // Skapa wrapper-div
+        const wrapper = document.createElement('div');
+        wrapper.className = 'd-flex justify-content-center mt-3';
 
-              if (conf.redirected) {
-                window.location.href = conf.url;
+        // Skapa knappen
+        const payBtn = document.createElement('button');
+        payBtn.id = 'klarna-authorize-click';
+        payBtn.textContent = 'Bekräfta köp';
+        payBtn.className = 'klarna-authorize-button';
+
+        // Lägg knappen i wrappern
+        wrapper.appendChild(payBtn);
+
+        // Lägg wrappern efter Klarna-container
+        document.querySelector('#klarna-checkout-container').after(wrapper);
+      }
+
+        // Lägg till eventlyssnare
+        payBtn.addEventListener('click', () => {
+          Klarna.Payments.authorize(
+            { payment_method_category: 'pay_now' },
+            {},
+            async function(res) {
+              if (res.approved) {
+                const sessionId = localStorage.getItem('klarnaSessionId');
+                const conf = await fetch('/subscriptions/prenumeration-startad', {
+                  method: 'POST',
+                  headers: {'Content-Type':'application/json'},
+                  body: JSON.stringify({
+                    session_id:          sessionId,
+                    authorization_token: res.authorization_token
+                  })
+                });
+
+                if (conf.redirected) {
+                  window.location.href = conf.url;
+                } else {
+                  document.documentElement.innerHTML = await conf.text();
+                }
               } else {
-                document.documentElement.innerHTML = await conf.text();
+                responseDiv.innerHTML = '<p class="error">Betalningen nekades.</p>';
               }
-            } else {
-              responseDiv.innerHTML = '<p class="error">Betalningen nekades.</p>';
             }
-          }
-        );
-      });
-
-          document.querySelector('#klarna-checkout-container').after(payBtn);
-        }
+          );
+        });
+      }
 
       } else if (!response.ok) {
         // Hantera fel, inklusive already_subscribed

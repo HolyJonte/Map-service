@@ -97,6 +97,9 @@ body.index-page .main-content {
   background-color: #c82333;
 }
 
+/* ------------------------------------------
+Utseende för card
+------------------------------------------ */
 .card {
   display: flex;
   flex-direction: column;
