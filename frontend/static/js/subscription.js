@@ -101,7 +101,7 @@ async function loadNewspapers() {
 
         // 2) Bygg summary-card HTML
         const summaryHtml = `
-          <div id="order-summary" class="order-summary-card">
+          <div id="order-summary" class="order-summary-card mt-4">
             <h3>Din prenumeration</h3>
             <p>Du tecknar en SMS-prenumeration för 99 SEK i <strong>${countyText}</strong> för att få uppdateringar om trafikläget i ditt län.</p>
             <p>När du klickar på <em>"Bekräfta köp"</em> kommer du att dirigeras till Klarna för att slutföra betalningen.</p>
