@@ -35,9 +35,24 @@ def initialize_database():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             email TEXT NOT NULL UNIQUE,
             password TEXT NOT NULL,
-            totp_secret TEXT NOT NULL
+            totp_secret TEXT NOT NULL,
+            is_admin INTEGER DEFAULT 0
         )
     ''')
+
+    # Lägger in en adminanvändare med hashat lösenord för 'hemligt123'
+    admin_user = (
+        "admin@trafikvida.se",
+        "scrypt:32768:8:1$uXeUgDr1LfYWGC8l$05f8c449a9d7b48aea4e0dfd30de987969406a591abc7323372c1c81bdbdd9483c6dc384a5644671a7af923750039932cfbbc4ebc033a8b6834263048f59e472",
+        "GJLQJC35LECNNZE6SYSR6HNSSBVJOPN6",
+        1
+    )
+
+    cursor.execute('''
+        INSERT OR IGNORE INTO users (email, password, totp_secret, is_admin)
+        VALUES (?, ?, ?, ?)
+    ''', admin_user)
+
 
     # Skapar subscribers-tabellen
     cursor.execute('''

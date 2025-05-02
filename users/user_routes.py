@@ -82,18 +82,14 @@ def login():
         password = request.form['password']
         user = validate_login(email, password)
 
+
         if user:
-            # Spara användaruppgifter i session
-            session['user_email'] = email
+            # Spara användarinfo i session
+            session['user_email'] = user.email
             session['user_awaiting_2fa'] = True
+            session['is_admin'] = user.is_admin
             session['show_user_qr'] = True
 
-            # Kontrollera om vi har en redirect-sida sparad
-            next_page = session.pop('next', None)
-            if next_page:
-                session['after_2fa_redirect'] = next_page
-
-            # Skicka till QR-sidan för 2FA
             return redirect(url_for('user_routes.show_user_qr'))
 
         return render_template('user_login.html', error="Fel e-post eller lösenord")
@@ -133,16 +129,23 @@ def verify_user_2fa():
 
     if request.method == 'POST':
         code = request.form.get('code')
+
         if user and verify_totp_code(user, code):
             session.pop('user_awaiting_2fa', None)
             session['user_logged_in'] = True
             session['user_id'] = user.id
+
+            if session.get('is_admin'):
+                session['admin_logged_in'] = True
+                return redirect(url_for('admin.admin_dashboard'))
+
             redirect_url = session.pop('after_2fa_redirect', '/')
             return redirect(redirect_url)
 
-
         return render_template('user_two_factor.html', error="Fel kod")
+
     return render_template('user_two_factor.html')
+
 
 # =====================================================================================================
 # Mina sidor
