@@ -179,7 +179,8 @@ def notify_accidents():
                                 message=message
                             )
 
-                            print(f"SMS loggat för subscriber_id={subscriber.id}, newspaper_id={subscriber.newspaper_id}")
+                            print(f"SMS loggat för subscriber_id={subscriber['id']}, newspaper_id={subscriber['newspaper_id']}")
+
                         except Exception as e:
                             print(f"Fel vid loggning av SMS för {phone}: {e}")
                         # Lägg till och spara direkt efter lyckat SMS
@@ -196,7 +197,7 @@ def notify_accidents():
                         print(f"Misslyckades att skicka SMS till {phone}")
                 except Exception as e:
                     print(f"Fel vid SMS-sändning för {phone}: {e}")
-                    
+
     ## SKRIV UT ANTALET SMS SOM SKICKATS - TA BORT SEN
     if sms_count > 0:
         print(f"Totalt skickade {sms_count} SMS.")

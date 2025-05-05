@@ -40,20 +40,6 @@ def initialize_database():
         )
     ''')
 
-    # Lägger in en adminanvändare med hashat lösenord för 'hemligt123'
-    admin_user = (
-        "admin@trafikvida.se",
-        "scrypt:32768:8:1$uXeUgDr1LfYWGC8l$05f8c449a9d7b48aea4e0dfd30de987969406a591abc7323372c1c81bdbdd9483c6dc384a5644671a7af923750039932cfbbc4ebc033a8b6834263048f59e472",
-        "GJLQJC35LECNNZE6SYSR6HNSSBVJOPN6",
-        1
-    )
-
-    cursor.execute('''
-        INSERT OR IGNORE INTO users (email, password, totp_secret, is_admin)
-        VALUES (?, ?, ?, ?)
-    ''', admin_user)
-
-
     # Skapar subscribers-tabellen
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS subscribers (
@@ -98,6 +84,23 @@ def initialize_database():
             FOREIGN KEY (subscriber_id) REFERENCES subscribers(id)
         )
     ''')
+
+# =========================================================================================
+# Skapar en admin och lägger in den i databasen (ska vara kvar i slutversionen)
+# =========================================================================================
+
+    # Lägger in en adminanvändare med hashat lösenord för 'hemligt123'
+    admin_user = (
+        "admin@trafikvida.se",
+        "scrypt:32768:8:1$uXeUgDr1LfYWGC8l$05f8c449a9d7b48aea4e0dfd30de987969406a591abc7323372c1c81bdbdd9483c6dc384a5644671a7af923750039932cfbbc4ebc033a8b6834263048f59e472",
+        "GJLQJC35LECNNZE6SYSR6HNSSBVJOPN6",
+        1
+    )
+
+    cursor.execute('''
+        INSERT OR IGNORE INTO users (email, password, totp_secret, is_admin)
+        VALUES (?, ?, ?, ?)
+    ''', admin_user)
 
 # =========================================================================================
 # Fyller tabellen med innehåll (för testning)

@@ -39,20 +39,25 @@ def serve_login_choice():
 def register():
     if request.method == 'POST':
         email = request.form['email']
+        confirm_email = request.form['confirm_email']
         password = request.form['password']
+        confirm_password = request.form['confirm_password']
+
+        if email != confirm_email:
+            return render_template('user_register.html', error="E-postadresserna matchar inte")
+
+        if password != confirm_password:
+            return render_template('user_register.html', error="Lösenorden matchar inte")
 
         if find_user_by_email(email):
             return render_template('user_register.html', error="E-post finns redan")
 
-        # Skapa användaren
         register_user(email, password)
 
-        # Spara session
         session['user_email'] = email
         session['user_awaiting_2fa'] = True
         session['show_user_qr'] = True
 
-        # Kolla om vi har en sparad redirect efter 2FA
         next_page = session.pop('next', None)
         if next_page:
             session['after_2fa_redirect'] = next_page
