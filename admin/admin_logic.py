@@ -1,6 +1,7 @@
 # Denna modul innehåller logik för admin-funktioner i Trafikvida
 # Den ansvarar för:
 # - Hantering av tidningar via databasen (CRUD), (Hämta, lägga till och ta bort dagstidningar från adminpanelen)
+# - Hantering av adminlösenord (uppdatera lösenord för adminanvändare)
 
 # Importerar databasmoduler för CRUD-operationer
 from database.crud.newspaper_crud import (
