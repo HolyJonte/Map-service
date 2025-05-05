@@ -11,7 +11,7 @@ import sqlite3
 # Funktion för att öppna en databasanslutning (finns i database.py)
 from database.database import get_db_connection
 
-from database.models.sms_model import Subscriber
+#from database.models.sms_model import Subscriber
 # Importerar modellen som representerar en prenumerant
 from database.models.subscriber_model import Subscriber
 # Importerar datetime och timedelta för att hantera datum och tid

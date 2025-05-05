@@ -21,7 +21,7 @@ def log_sms(newspaper_id, subscriber_id, recipient, message):
     conn.commit()
     conn.close()
 
-
+# Denna funktion hämtar alla SMS-loggar från databasen.
 def get_sms_count_for_newspaper(newspaper_id):
     conn = get_db_connection()
     cursor = conn.cursor()
