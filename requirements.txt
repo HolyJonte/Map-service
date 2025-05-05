@@ -22,6 +22,11 @@ python-dateutil==2.9.0.post0
 #git clean -fd
 #git pull
 
+#VIKTIGT!!!
+#Varje gång man har gjort en uppdatering i CSS koden måste man ändra versionsnummer.
+#Detta görs i base.html på den raden där CSS filen laddas in, skriv v=+1 från tidigare nr.
+
+
 
 #För att titta vad som finns i databasen, kör:
 #python inspect_db.py
