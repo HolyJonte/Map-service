@@ -4,15 +4,52 @@ import time
 from requests.auth import HTTPBasicAuth
 import sys
 import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from dotenv import load_dotenv
+
+load_dotenv()
 ## För att kunna testa när vi kör filen enskilt
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 print("Aktuell arbetskatalog:", os.getcwd())
 
+
+def send_email (to, subject, message):
+     # Hämta SMTP-konfiguration från miljövariabler
+    smtp_server = os.getenv("EMAIL_SERVER")
+    smtp_port = int(os.getenv("EMAIL_PORT"))
+    smtp_user = os.getenv("EMAIL_USER")
+    smtp_password = os.getenv("EMAIL_PASS")
+    default_sender = os.getenv("EMAIL_DEFAULT_SENDER")
+
+    # Skapa e-postmeddelande
+    msg = MIMEMultipart()
+    msg['From'] = default_sender
+    msg['To'] = to
+    msg['Subject'] = subject
+    msg.attach(MIMEText(message, 'plain'))
+
+    try:
+        # Anslut till SMTP-servern
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()  # Aktivera TLS
+        server.login(smtp_user, smtp_password)
+        server.send_message(msg)
+        server.quit()
+        print(f"E-post skickad till {to} med ämne: {subject}")
+        return True
+    except Exception as e:
+        print(f"Fel vid skickande av e-post till {to}: {e}")
+        return False
+
+
+
 # Lagt till parametrar (Madde och Jonte)
 def send_sms(to, message, testMode=True):
     # Ange rätt endpoint-URL från HelloSMS-dokumentationen
-    url = "https://api.hellosms.se/v1/sms/send/"  # OBS: Ändra till den korrekta API-URL:en beroende på om det är test eller äkta
+    url = os.getenv("SMS_API_URL")  # OBS: Ändra till den korrekta API-URL:en beroende på om det är test eller äkta
 
     # Exempelpayload för testning: verifiera integration och kostnadsuppdelning
     payload = {
@@ -28,8 +65,8 @@ def send_sms(to, message, testMode=True):
         "Content-Type": "application/json",
     }
 
-    api_username = "t85457034225838g5781392b"  # Byt ut mot ditt användarnamn
-    api_password = "UrUjA8u6AdedAZajyNYR"  # Byt ut mot ditt lösenord
+    api_username = os.getenv("SMS_API_USER")  # Byt ut mot ditt användarnamn
+    api_password = os.getenv("SMS_API_PASS")  # Byt ut mot ditt lösenord
 
     try:
         # Skicka POST-anropet
