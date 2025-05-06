@@ -46,6 +46,7 @@ def send_sms(to, message, testMode=True):
         print("Något gick fel:", e)
         return False
 
+
 if __name__ == '__main__':
     pass
 # Lägg till testkod här vid behov (istället för pass)
