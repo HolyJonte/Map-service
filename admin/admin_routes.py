@@ -1,13 +1,13 @@
 # Denna modul innehåller Flask-rutter för adminflödet i Trafikvida
 # Den ansvarar för:
-# - Att styra flödet genom sessionhantering (lösenord, QR och TOTP)
-# - Att rendera adminpanelen med funktioner för att hantera tidningar
-# - Adminpanel för att hantera tidningar (lägga till/ ta bort / se lista med tidningar)
+# - Att styra flödet genom sessionhantering (lösenord och QR)
+# - Adminpanel för att hantera tidningar (lägga till/ ta bort / se lista med tidningar / antal SMS per tidning)
 # - Utloggning
-
 
 # Flask-importer
 from flask import Blueprint, render_template, request, redirect, url_for, session
+
+# Importerar funktioner från admin_logic
 from admin.admin_logic import (
     get_all_newspapers,
     add_newspaper,
@@ -17,7 +17,6 @@ from admin.admin_logic import (
 
 # Skapar en Blueprint för admin-rutter och kopplar till templates-mappen
 admin_routes = Blueprint('admin', __name__, template_folder='../frontend/templates')
-
 
 # ==============================================================================================
 # Adminpanel för tidningar
@@ -30,6 +29,7 @@ def admin_dashboard():
     if request.method == 'POST':
         action = request.form.get('action')
 
+        # Lägg till tidning
         if action == 'add':
             name = request.form.get('name')
             contact_email = request.form.get('contact_email')
@@ -38,13 +38,13 @@ def admin_dashboard():
             if name:
                 add_newspaper(name, contact_email, sms_quota_int)
 
-        #  Funktion för att ta bort tidning (har print för debugning)
+        # Ta bort tidning
         elif action == 'delete':
             newspaper_id = request.form.get('id')
-            print("🗑️ Försöker ta bort id:", newspaper_id)  # <-- debug
             if newspaper_id:
                 delete_newspaper(int(newspaper_id))
 
+        # Ändra lösenord
         elif action == 'change_password':
             pw1 = request.form.get('new_password')
             pw2 = request.form.get('confirm_password')
@@ -53,8 +53,7 @@ def admin_dashboard():
             else:
                 return render_template('admin_dashboard.html', newspapers=get_all_newspapers(), error="Lösenorden matchar inte.")
 
-
-
+    # Hämtar alla tidningar
     newspapers = get_all_newspapers()
     return render_template('admin_dashboard.html', newspapers=newspapers)
 
