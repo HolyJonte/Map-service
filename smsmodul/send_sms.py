@@ -15,7 +15,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 print("Aktuell arbetskatalog:", os.getcwd())
 
-
+# Funktion för att skicka e-post
 def send_email (to, subject, message):
      # Hämta SMTP-konfiguration från miljövariabler
     smtp_server = os.getenv("EMAIL_SERVER")
@@ -84,6 +84,6 @@ def send_sms(to, message, testMode=True):
         return False
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pass
 # Lägg till testkod här vid behov (istället för pass)
