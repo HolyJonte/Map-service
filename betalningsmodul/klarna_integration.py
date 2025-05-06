@@ -52,7 +52,14 @@ def initiate_payment(_phone_number, _county, tokenize=True, payment_method='cred
                 "tax_rate": 0,
                 "total_amount": 9900,
                 "total_tax_amount": 0,
+                
+                "subscription": {
+                "name": "Prenumeration trafikhändelser",
+                "interval": "YEAR",
+                "interval_count": 1
+                }
             }
+
         ],
         "customer": {
             "first_name": "Alice",
@@ -114,6 +121,24 @@ def verify_payment(data):
     if payment_status == "completed" and klarna_token:
         return True, session_id, klarna_token
     return False, None, None
+#def create_customer_token(klarna_token):
+    #url = f"{KLARNA_API_URL}/payments/v1/authorizations/{klarna_token}/customer-token"
+    #headers = {
+      #  "Authorization": auth_header,
+       # "Content-Type": "application/json"
+    #},
+    body: JSON.stringify({
+      description: 'string',
+      intended_use: 'SUBSCRIPTION',
+      locale: 'sv-SE',
+      purchase_country: 'SE',
+      purchase_currency: 'SEK'
+     })
+    #resp = requests.post(url, json=body, headers=headers, timeout=10)
+    #resp.raise_for_status()
+    #data = resp.json()
+    #token_id = data.get("token_id")
+    #return token_id
 
 def create_recurring_order(klarna_token, amount):
     #Skapar en återkommande betalning i Playground
