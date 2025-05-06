@@ -152,7 +152,6 @@ def prenumeration_startad():
 
             order_data = response.json()
             klarna_token = order_data.get( authorization_token)
-            #token_id= create_customer_token(klarna_token=klarna_token)
 
             add_subscriber(phone_number, user_id, county, newspaper_id, klarna_token)
             delete_pending_subscriber(session_id)
