@@ -1,6 +1,5 @@
 # Denna modul innehåller Flask-rutter för adminflödet i Trafikvida
 # Den ansvarar för:
-# - Att visa inloggningssidan och hanterera POST-anrop
 # - Att styra flödet genom sessionhantering (lösenord, QR och TOTP)
 # - Att rendera adminpanelen med funktioner för att hantera tidningar
 # - Adminpanel för att hantera tidningar (lägga till/ ta bort / se lista med tidningar)

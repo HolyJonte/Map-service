@@ -1,6 +1,6 @@
 # Denna modul hanterar alla routes för användarinloggning, registrering och 2FA-verifiering i Trafikvida.
 # Funktionalitet:
-# - Registrering av ny användare
+# - Registrering
 # - Inloggning med lösenord
 # - 2FA med TOTP + QR-kod
 # - Utloggning

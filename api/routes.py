@@ -1,4 +1,4 @@
-# Denna modul innehåller API-rutter för att hämta trafikdata från Trafikverket.
+# Denna modul styr rutter för hemsidan för data hämtat från Trafikverkets api.
 
 # Importerar nödvändiga moduler
 from flask import Blueprint, jsonify

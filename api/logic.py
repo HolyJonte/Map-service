@@ -1,4 +1,4 @@
-# Denna modul innehåller funktioner för att hämta och bearbeta data från Trafikverkets API.
+# Denna modul innehåller funktioner för att bearbeta data från Trafikverkets API.
 
 # Importerar funktioner för att hämta data från Trafikverket
 from api.fetch_data import fetch_cameras, fetch_situations
