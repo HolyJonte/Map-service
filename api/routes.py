@@ -2,8 +2,7 @@
 
 # Importerar nödvändiga moduler
 from flask import Blueprint, jsonify
-from api.logic import get_all_cameras, get_all_roadworks, get_all_accidents, get_cached_cameras, get_cached_roadworks, get_cached_accidents
-
+from api.logic import get_cached_cameras, get_cached_roadworks, get_cached_accidents
 
 # Skapar en Blueprint för att definiera API-rutter som kan användas i Flask-applikationen
 trafik_bp = Blueprint('api', __name__)
