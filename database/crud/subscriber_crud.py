@@ -50,6 +50,7 @@ def add_subscriber(phone_number, user_id, county, newspaper_id, klarna_token):
 
 
 #========================================================================================================================
+# KANSKE ÖVERFLÖDIG???
 # Uppdaterar en befintlig prenumerants status och betalningsdatum
 #========================================================================================================================
 def update_subscriber(phone_number, klarna_token):
@@ -226,3 +227,24 @@ def delete_subscriber(subscriber_id):
     except Exception as e:
         print(f"Fel i delete_subscriber: {str(e)}")
         return False
+    
+#========================================================================================================================
+# Uppdater inaktiv prenumerant till aktiv
+#========================================================================================================================
+def update_inactive_subscriber(subscriber_id, phone_number, county, newspaper_id, klarna_token):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute('''
+            UPDATE subscribers
+            SET phone_number = ?, county = ?, newspaper_id = ?, active = 1, 
+                subscription_start = ?, last_payment = ?, klarna_token = ?
+            WHERE id = ?
+        ''', (phone_number, county, newspaper_id, datetime.now(), datetime.now(), klarna_token, subscriber_id))
+        conn.commit()
+        return cursor.rowcount > 0
+    except sqlite3.IntegrityError:
+        conn.rollback()
+        return False
+    finally:
+        conn.close()

@@ -44,7 +44,7 @@ def initialize_database():
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS subscribers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
+            user_id INTEGER NOT NULL UNIQUE,
             phone_number TEXT UNIQUE NOT NULL,
             county INTEGER NOT NULL,
             newspaper_id INTEGER NOT NULL,

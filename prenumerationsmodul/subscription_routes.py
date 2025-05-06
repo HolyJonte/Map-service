@@ -11,7 +11,8 @@ from database.crud.newspaper_crud import get_all_newspaper_names
 from database.crud.subscriber_crud import (
     add_subscriber, update_subscriber, subscriber_exists,
     deactivate_subscriber, manual_add_subscriber, get_all_subscribers,
-    get_subscriber_klarna_token, remove_inactive_subscribers
+    get_subscriber_klarna_token, remove_inactive_subscribers, get_subscriber_by_user_id, 
+    update_inactive_subscriber
 )
 
 from database.crud.pending_crud import (
@@ -65,6 +66,27 @@ def start_subscription():
         user_id = session.get('user_id')
         if not user_id:
             return jsonify({"error": "User not logged in"}), 401
+        
+        # Kontrollera om användaren redan har en aktiv prenumeration
+        subscriber = get_subscriber_by_user_id(user_id)
+        if subscriber:
+            if subscriber.active == 1:
+                current_app.logger.info(f"User {user_id} attempted to start a new subscription but already has an active one")
+                return jsonify({"error": "Du har redan en aktiv prenumeration."}), 400
+            else:
+                # Uppdatera inaktiv prenumeration istället för att skapa en ny
+                counties_str = ",".join(str(c) for c in counties)
+                # Kontrollera om det nya telefonnumret redan används
+                if subscriber.phone_number != phone_number and subscriber_exists(phone_number):
+                    return jsonify({"error": "Telefonnumret används redan."}), 400
+                # Skicka counties_str om Klarna behöver ett enda "county"
+                session_id, client_token = initiate_payment(phone_number, counties_str, tokenize=False)
+                # Uppdatera befintlig prenumerant
+                update_inactive_subscriber(subscriber.id, phone_number, counties_str, newspaper_id, session_id)
+                return jsonify({
+                    "session_id": session_id,
+                    "client_token": client_token,
+                }), 200
         
          # Kontrollera om telefonnumret redan är registrerat
         if subscriber_exists(phone_number):
