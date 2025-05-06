@@ -120,6 +120,7 @@ def create_recurring_order(klarna_token, amount):
     headers = {
         "Authorization": auth_header,
         "Content-Type": "application/json"
+        #Lägg till "Klarna-Idempotency-Key": str(uuid.uuid1())
     }
     order_data = {
         "purchase_country": "SE",
@@ -128,6 +129,7 @@ def create_recurring_order(klarna_token, amount):
         "order_tax_amount": 0,
         "order_lines": [
             {
+                #"auto_capture": true,
                 "type": "digital",
                 "name": "SMS-prenumeration förnyelse",
                 "quantity": 1,

@@ -1,4 +1,15 @@
+/*
+ * subscription_form.js
+ 
+  Hanterar SMS-prenumerationsformuläret:
+  - Hämtar och fyller dropdowns för tidningar och län
+  - Validerar telefonnummer (+46-format) och obligatoriska fält
+  - Initierar och laddar Klarna-betalning
+  - Visar order-sammanfattning och hanterar betalningssvar
+ */
 
+
+//Hämtar och fyller dropdown med tidningar från servern
 async function loadNewspapers() {
     const select = document.getElementById("newspaper_id");
     try {
@@ -21,7 +32,7 @@ async function loadNewspapers() {
       console.error("Kunde inte hämta tidningar:", err);
     }
   }
-
+  // Hämtar län och lägger till den i select-elementet
   async function loadCounties() {
   const select = document.getElementById("counties");
   try {
@@ -56,9 +67,11 @@ async function loadNewspapers() {
     loadCounties();
     loadNewspapers();
   };
-
+  // Hantering av formulärets submit
   document.getElementById('subscription-form').addEventListener('submit', async (event) => {
     event.preventDefault();
+
+     // Läs in användarens telefonnummer och valda alternativ
     let phoneNumber = document.getElementById('phone_number').value;
     const counties = Array.from(document.getElementById('counties').selectedOptions)
                       .map(option => parseInt(option.value));
@@ -69,17 +82,19 @@ async function loadNewspapers() {
     if (!phoneNumber.startsWith('+46')) {
       phoneNumber = phoneNumber.replace(/^0/, '+46');
     }
+     // Validera telefonformat
     if (!/^\+46\d{9}$/.test(phoneNumber)) {
       responseDiv.innerHTML = `<p class="error">Ogiltigt telefonnummer. Använd formatet +46701234567.</p>`;
       return;
     }
-
+     // Kontrollera att alla fält är ifyllda
     if (!phoneNumber || counties.length === 0 || !newspaper_id || newspaper_id === "Välj en tidning") {
       responseDiv.innerHTML = `<p class="error">Vänligen fyll i telefonnummer, län och tidning.</p>`;
       return;
     }
 
     try {
+       // Skicka start-subscription till servern
       const response = await fetch('/subscriptions/start-subscription', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -93,9 +108,11 @@ async function loadNewspapers() {
       const data = await response.json();
 
       if (response.ok) {
+        // Spara session och telefon i localStorage
         localStorage.setItem('phoneNumber', phoneNumber);
         localStorage.setItem('klarnaSessionId', data.session_id);
 
+        // Bygg och visa order-sammanfattning
         const countySelect = document.getElementById('counties');
         const countyText   = countySelect.options[countySelect.selectedIndex].textContent;
 
@@ -111,6 +128,8 @@ async function loadNewspapers() {
         // 3) Infoga summaryHtml precis ovanför Klarna-containern
         const klarnaContainer = document.getElementById('klarna-checkout-container');
         klarnaContainer.insertAdjacentHTML('beforebegin', summaryHtml);
+        
+         // Initiera Klarna och ladda betalningsformuläret
               Klarna.Payments.init({
                 client_id: data.client_id,
                 client_token: data.client_token
