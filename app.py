@@ -17,6 +17,7 @@ from prenumerationsmodul.subscription_routes import subscription_routes
 from admin.admin_routes import admin_routes
 
 from users.user_routes import user_routes
+from smsmodul.notification_service import notification_bp
 
 # Importerar APScheduler för schemaläggning
 
@@ -49,6 +50,7 @@ app.register_blueprint(subscription_routes, url_prefix='/subscriptions')
 app.register_blueprint(admin_routes)
 
 app.register_blueprint(user_routes, url_prefix='/users')
+app.register_blueprint(notification_bp, url_prefix='/notification')
 
 # Definierar en route för att servera index.html-filen från frontend-mappen
 @app.route('/')
