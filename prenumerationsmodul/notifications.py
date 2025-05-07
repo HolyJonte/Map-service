@@ -4,10 +4,10 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import time
 import json
-from smsmodul.send_sms import send_sms
+from smsmodul.send_sms import send_sms, send_email
 from datetime import datetime, timedelta, timezone
 from api.logic import get_all_accidents, get_all_roadworks
-from database.crud.subscriber_crud import get_subscribers_by_county
+from database.crud.subscriber_crud import get_subscribers_by_county, get_subscribers_expiring_in
 from database.crud.sms_crud import log_sms
 
 # Fil för att lagra behandlade händelse-ID:n och deras tidsstämplar
@@ -208,6 +208,15 @@ def notify_accidents():
         print("Inga nya händelser hittades för idag.")
     processed_events = clean_old_events(processed_events, days_to_keep=30)
     save_processed_events(processed_events)
+
+""" def check_expiring_subscriptions():
+    expiring = get_subscribers_expiring_in(days=14)
+
+    for sub_id, phone in expiring:
+        subject = "Prenumerationspåminnelse"
+        message = "Hej! Din prenumeration löper ut om 14 dagar. Förnya gärna i tid!"
+       # create_notification(sub_id, message) - BEHÖVS KANSKE INTE, ÄR OM VI LOGGAR I DATABASEN ATT MAIL GÅTT UT.
+        send_email(phone,subject, message) """
 
 if __name__ == "__main__":
     notify_accidents()

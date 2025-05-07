@@ -248,3 +248,29 @@ def update_inactive_subscriber(subscriber_id, phone_number, county, newspaper_id
         return False
     finally:
         conn.close()
+        
+#========================================================================================================================
+# Hämta prenumeranter med prenumeration som går ut om 14 dagar
+#========================================================================================================================
+#def get_subscribers_expiring_in(days=14):
+    """
+    Hämtar alla aktiva prenumeranter vars prenumeration
+    slutar om exakt `days` dagar (räknat från today).
+    """
+"""     today = datetime.now().date()
+    warning_date = today + timedelta(days=days)
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # SQLite-funktionen date() för att räkna 365 dagar från subscription_start:
+    cursor.execute('''
+        SELECT id, phone_number
+        FROM subscribers
+        WHERE active = 1
+          AND date(subscription_start, '+365 days') = ?
+    ''', (warning_date.isoformat(),))
+    
+    result = cursor.fetchall()
+    conn.close()
+    return result """
