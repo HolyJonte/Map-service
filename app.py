@@ -8,6 +8,7 @@ import sys
 import os
 # Importerar Flask och render_template
 from flask import Flask, render_template, send_from_directory
+from flask_cors import CORS
 from apscheduler.schedulers.background import BackgroundScheduler
 # Importerar trafik_bp från routes-modulen, som innehåller kameror-endpointen
 from api.routes import trafik_bp
@@ -39,6 +40,8 @@ app = Flask(
     static_folder='frontend/static',
     template_folder='frontend/templates'
     )
+# Aktiverar CORS för alla domäner och alla endpoints
+CORS(app, resources={r"/notification/*": {"origins": "*"}})
 
 app.secret_key = "byt-ut-till-något-säkert"
 
@@ -79,8 +82,10 @@ scheduler.add_job(notify_accidents, 'interval', minutes=5, max_instances=1)
 scheduler.start()
 # Om detta skript körs direkt, starta Flask-servern
 if __name__ == '__main__':
+    
     try:
-        app.run(debug=True)
+        app.run(host="0.0.0.0", port=8000, debug=True)
+
     except (KeyboardInterrupt, SystemExit):
         # Stäng av scheduler vid avbrott
         scheduler.shutdown()

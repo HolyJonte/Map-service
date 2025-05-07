@@ -6,6 +6,7 @@ pillow
 apscheduler==3.11.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.0
+Flask-Cors==5.0.1
 
 
 #För att installera alla beroenden, kör följande kommando i terminalen:
@@ -22,6 +23,10 @@ python-dotenv==1.1.0
 #git reset --hard HEAD
 #git clean -fd
 #git pull
+
+# För att installera CORS, kör följande i terminalen:
+# pip install flask-cors
+
 
 #VIKTIGT!!!
 #Varje gång man har gjort en uppdatering i CSS koden måste man ändra versionsnummer.

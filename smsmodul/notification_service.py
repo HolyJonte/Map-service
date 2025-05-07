@@ -19,11 +19,6 @@ print("Aktuell arbetskatalog:", os.getcwd())
 # Skapa ett Blueprint för notifikationsrelaterade rutter
 notification_bp = Blueprint('notification', __name__)
 
-
-#-------------
-## LÄGGA TILL CORS HÄR??
-#--------------
-
 # Funktion för att skicka e-post
 def send_email (to, subject, message):
      # Hämta SMTP-konfiguration från miljövariabler
