@@ -269,7 +269,7 @@ def update_inactive_subscriber(subscriber_id, phone_number, county, newspaper_id
         FROM subscribers
         WHERE active = 1
           AND date(subscription_start, '+365 days') = ?
-    ''', (warning_date.isoformat(),))
+    ''', (warning_date.strftime('%Y-%m-%d'),))
     
     result = cursor.fetchall()
     conn.close()
