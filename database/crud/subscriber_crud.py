@@ -32,14 +32,14 @@ def subscriber_exists(phone_number):
 #=====================================================================================================================
 # Lägger till en ny prenumerant i subscribers-tabellen
 #=====================================================================================================================
-def add_subscriber(phone_number, user_id, county, newspaper_id, klarna_token):
+def add_subscriber(phone_number, email, user_id, county, newspaper_id, klarna_token):
     conn = get_db_connection()
     cursor = conn.cursor()
     try:
         cursor.execute('''
-            INSERT INTO subscribers (phone_number, user_id, county, newspaper_id, active, subscription_start, last_payment, klarna_token) 
-            VALUES (?, ?, ?, ?, 1, ?, ?, ?)
-        ''', (phone_number, user_id, county, newspaper_id, datetime.now(), datetime.now(), klarna_token))
+            INSERT INTO subscribers (phone_number, email, user_id, county, newspaper_id, active, subscription_start, last_payment, klarna_token) 
+            VALUES (?, ?, ?, ?, ?, 1, ?, ?, ?)
+        ''', (phone_number, email, user_id, county, newspaper_id, datetime.now(), datetime.now(), klarna_token))
         conn.commit()
         return True
     except sqlite3.IntegrityError:
@@ -81,6 +81,7 @@ def get_subscriber_klarna_token(subscriber_id, phone_number):
     return result[0] if result else None
 
 #==========================================================================================================================
+# Schemalägga, behöver köras när det gått ett år och fortfarande inactive
 # Avaktiverar en prenumerant genom att sätta status till inaktiv
 #==========================================================================================================================
 def deactivate_subscriber(subscriber_id, phone_number):
@@ -98,7 +99,7 @@ def deactivate_subscriber(subscriber_id, phone_number):
 #============================================================================================================================
 # Lägger till en prenumerant manuellt för t.ex. test eller backup
 #============================================================================================================================
-def manual_add_subscriber(phone_number, user_id, county, newspaper_id, active=1, subscription_start=None, last_payment=None, klarna_token=None):
+def manual_add_subscriber(phone_number, email, user_id, county, newspaper_id, active=1, subscription_start=None, last_payment=None, klarna_token=None):
     if subscription_start is None:
         subscription_start = datetime.now().isoformat()
     if last_payment is None:
@@ -108,9 +109,9 @@ def manual_add_subscriber(phone_number, user_id, county, newspaper_id, active=1,
     cursor = conn.cursor()
     try:
         cursor.execute('''
-            INSERT INTO subscribers (phone_number, user_id, county, newspaper_id, active, subscription_start, last_payment, klarna_token)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (phone_number, user_id, county, newspaper_id, active, subscription_start, last_payment, klarna_token))
+            INSERT INTO subscribers (phone_number, email, user_id, county, newspaper_id, active, subscription_start, last_payment, klarna_token)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (phone_number, email, user_id, county, newspaper_id, active, subscription_start, last_payment, klarna_token))
         conn.commit()
         return True
     except sqlite3.IntegrityError:
@@ -231,16 +232,16 @@ def delete_subscriber(subscriber_id):
 #========================================================================================================================
 # Uppdater inaktiv prenumerant till aktiv
 #========================================================================================================================
-def update_inactive_subscriber(subscriber_id, phone_number, county, newspaper_id, klarna_token):
+def update_inactive_subscriber(subscriber_id, phone_number, email, county, newspaper_id, klarna_token):
     conn = get_db_connection()
     cursor = conn.cursor()
     try:
         cursor.execute('''
             UPDATE subscribers
-            SET phone_number = ?, county = ?, newspaper_id = ?, active = 1, 
+            SET phone_number = ?, email = ?, county = ?, newspaper_id = ?, active = 1, 
                 subscription_start = ?, last_payment = ?, klarna_token = ?
             WHERE id = ?
-        ''', (phone_number, county, newspaper_id, datetime.now(), datetime.now(), klarna_token, subscriber_id))
+        ''', (phone_number, email, county, newspaper_id, datetime.now(), datetime.now(), klarna_token, subscriber_id))
         conn.commit()
         return cursor.rowcount > 0
     except sqlite3.IntegrityError:
@@ -252,12 +253,12 @@ def update_inactive_subscriber(subscriber_id, phone_number, county, newspaper_id
 #========================================================================================================================
 # Hämta prenumeranter med prenumeration som går ut om 14 dagar
 #========================================================================================================================
-#def get_subscribers_expiring_in(days=14):
+def get_subscribers_expiring_in(days=14):
     """
     Hämtar alla aktiva prenumeranter vars prenumeration
     slutar om exakt `days` dagar (räknat från today).
     """
-"""     today = datetime.now().date()
+    today = datetime.now().date()
     warning_date = today + timedelta(days=days)
 
     conn = get_db_connection()
@@ -265,7 +266,7 @@ def update_inactive_subscriber(subscriber_id, phone_number, county, newspaper_id
 
     # SQLite-funktionen date() för att räkna 365 dagar från subscription_start:
     cursor.execute('''
-        SELECT id, email
+        SELECT email
         FROM subscribers
         WHERE active = 1
           AND date(subscription_start, '+365 days') = ?
@@ -273,4 +274,4 @@ def update_inactive_subscriber(subscriber_id, phone_number, county, newspaper_id
     
     result = cursor.fetchall()
     conn.close()
-    return result """
+    return result 

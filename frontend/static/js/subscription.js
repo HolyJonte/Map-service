@@ -111,6 +111,7 @@ async function loadNewspapers() {
         // Spara session och telefon i localStorage
         localStorage.setItem('phoneNumber', phoneNumber);
         localStorage.setItem('klarnaSessionId', data.session_id);
+        localStorage.setItem('email', data.email);
 
         // Bygg och visa order-sammanfattning
         const countySelect = document.getElementById('counties');

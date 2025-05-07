@@ -19,7 +19,7 @@ from database.models.pending_model import PendingSubscriber
 # ===================================================================================================
 # Lägg till en väntande prenumerant
 # ===================================================================================================
-def add_pending_subscriber(session_id, user_id, phone_number, county, newspaper_id):
+def add_pending_subscriber(session_id, user_id, phone_number, email, county, newspaper_id):
     conn = get_db_connection()
     cursor = conn.cursor()
     try:
@@ -28,9 +28,9 @@ def add_pending_subscriber(session_id, user_id, phone_number, county, newspaper_
         ''', (phone_number,))
 
         cursor.execute('''
-            INSERT INTO pending_subscribers (session_id, user_id, phone_number, county, newspaper_id)
-            VALUES (?, ?, ?, ?, ?)
-        ''', (session_id, user_id, phone_number, county, newspaper_id))
+            INSERT INTO pending_subscribers (session_id, user_id, phone_number, email, county, newspaper_id)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (session_id, user_id, phone_number, email, county, newspaper_id))
 
         conn.commit()
         return True
@@ -48,7 +48,7 @@ def get_pending_subscriber(session_id):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('''
-        SELECT session_id, user_id, phone_number, county, newspaper_id, created_at
+        SELECT session_id, user_id, phone_number, email, county, newspaper_id, created_at
         FROM pending_subscribers
         WHERE session_id = ?
     ''', (session_id,))
@@ -60,6 +60,7 @@ def get_pending_subscriber(session_id):
             session_id=row["session_id"],
             user_id=row["user_id"],
             phone_number=row["phone_number"],
+            email=row["email"],
             county=row["county"],
             newspaper_id=row["newspaper_id"],
             created_at=row["created_at"]

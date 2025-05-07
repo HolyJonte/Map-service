@@ -209,14 +209,15 @@ def notify_accidents():
     processed_events = clean_old_events(processed_events, days_to_keep=30)
     save_processed_events(processed_events)
 
-""" def check_expiring_subscriptions():
+def check_expiring_subscriptions():
     expiring = get_subscribers_expiring_in(days=14)
 
-    for sub_id, email in expiring:
+    for email in expiring:
+        to = email
         subject = "Prenumerationspåminnelse"
         message = "Hej! Din prenumeration löper ut om 14 dagar. Förnya gärna i tid!"
-       # create_notification(sub_id, message) - BEHÖVS KANSKE INTE, ÄR OM VI LOGGAR I DATABASEN ATT MAIL GÅTT UT.
-        send_email(phone,subject, message) """
+    # create_notification(sub_id, message) - BEHÖVS KANSKE INTE, ÄR OM VI LOGGAR I DATABASEN ATT MAIL GÅTT UT.
+        send_email(to, subject, message)
 
 if __name__ == "__main__":
     notify_accidents()

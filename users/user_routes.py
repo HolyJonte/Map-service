@@ -170,6 +170,7 @@ def profile():
         'is_active_subscriber': is_active_subscriber,
         'subscriber_id': subscriber.id if subscriber else None,
         'phone_number': subscriber.phone_number if subscriber else None,
+        'email': subscriber.email if subscriber else None,
         'county': county_text  # Skicka text istället för siffra
     }
     return render_template('user_profile.html', **subscriber_data)

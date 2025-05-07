@@ -54,11 +54,13 @@ def prenumerera_check():
 # ==========================================================================================
 @subscription_routes.route('/start-subscription', methods=['POST'])
 def start_subscription():
+    
     try:
         data = request.get_json(force=True)
         phone_number = data.get('phone_number')
         counties = data.get('counties') 
         newspaper_id = data.get('newspaper_id')
+        email = session.get('user_email')
 
         if not phone_number or not counties or not newspaper_id:
             return jsonify({"error": "Phone number, counties and newspaper are required"}), 400
@@ -67,31 +69,17 @@ def start_subscription():
         if not user_id:
             return jsonify({"error": "User not logged in"}), 401
         
+  
         # Kontrollera om användaren redan har en aktiv prenumeration
         subscriber = get_subscriber_by_user_id(user_id)
-        if subscriber:
-            if subscriber.active == 1:
-                current_app.logger.info(f"User {user_id} attempted to start a new subscription but already has an active one")
-                return jsonify({"error": "Du har redan en aktiv prenumeration."}), 400
-            else:
-                # Uppdatera inaktiv prenumeration istället för att skapa en ny
-                counties_str = ",".join(str(c) for c in counties)
-                # Kontrollera om det nya telefonnumret redan används
-                if subscriber.phone_number != phone_number and subscriber_exists(phone_number):
-                    return jsonify({"error": "Telefonnumret används redan."}), 400
-                # Skicka counties_str om Klarna behöver ett enda "county"
-                session_id, client_token = initiate_payment(phone_number, counties_str, tokenize=False)
-                # Uppdatera befintlig prenumerant
-                update_inactive_subscriber(subscriber.id, phone_number, counties_str, newspaper_id, session_id)
-                return jsonify({
-                    "session_id": session_id,
-                    "client_token": client_token,
-                }), 200
+        if subscriber and subscriber.active == 1:
+            current_app.logger.info(f"Användare {user_id} försökte starta en ny prenumeration men har redan en aktiv.")
+            return jsonify({"error": "Du har redan en aktiv prenumeration."}), 400
         
-         # Kontrollera om telefonnumret redan är registrerat
+        # Kontrollera om telefonnumret redan är registrerat
         if subscriber_exists(phone_number):
-            return jsonify({"error": "already_subscribed"}), 400
-
+            current_app.logger.info(f"Telefonnummer {phone_number} används redan.")
+            return jsonify({"error": "Telefonnumret används redan."}), 400
 
         # Om du behöver passa county som EN sträng (kommaseparerad) till Klarna (eller databasen)
         counties_str = ",".join(str(c) for c in counties)
@@ -100,7 +88,7 @@ def start_subscription():
         session_id, client_token = initiate_payment(phone_number, counties_str, tokenize=False)
 
         # Skicka counties_str till add_pending_subscriber också
-        if not add_pending_subscriber(session_id, user_id, phone_number, counties_str, newspaper_id):
+        if not add_pending_subscriber(session_id, user_id, phone_number, email, counties_str, newspaper_id):
             return jsonify({"error": "Phone number already in process"}), 400
 
         return jsonify({
@@ -141,6 +129,7 @@ def prenumeration_startad():
                 return jsonify({"error": "User not logged in"}), 401
 
             phone_number = result.phone_number
+            email = result.email
             county = result.county
             newspaper_id = result.newspaper_id
             
@@ -175,7 +164,7 @@ def prenumeration_startad():
             order_data = response.json()
             klarna_token = order_data.get( authorization_token)
 
-            add_subscriber(phone_number, user_id, county, newspaper_id, klarna_token)
+            add_subscriber(phone_number, email, user_id, county, newspaper_id, klarna_token)
             delete_pending_subscriber(session_id)
             subscriber_id = subscriber_exists(phone_number)
 
@@ -253,6 +242,7 @@ def get_newspaper_names():
 def man_add_subscriber():
     data = request.json
     phone_number = data.get('phone_number')
+    email = data.get('email')
     county = data.get('county')
     newspaper_id = data.get('newspaper_id')
     active = data.get('active', 1)
@@ -267,7 +257,7 @@ def man_add_subscriber():
         current_app.logger.error(f"Ogiltigt active-värde: {active}")
         return jsonify({"error": "Active must be 0 or 1"}), 400
 
-    if manual_add_subscriber(phone_number, county, newspaper_id, active, subscription_start, last_payment, klarna_token):
+    if manual_add_subscriber(phone_number, email, county, newspaper_id, active, subscription_start, last_payment, klarna_token):
         return jsonify({"message": f"Subscriber {phone_number} added successfully"}), 201
     else:
         return jsonify({"error": "Phone number already exists"}), 400
@@ -332,13 +322,14 @@ def handle_klarna_push():
 
             # Aktivera prenumeration
             user_id = result["user_id"]
+            email = result["email"]
             county = result["county"]
             newspaper_id = result["newspaper_id"]
             klarna_token = order_data.get("recurring_token")
             if not klarna_token:
                 return jsonify({"error": "No recurring token found"}), 400
 
-            add_subscriber(phone_number, user_id, county, newspaper_id, klarna_token)
+            add_subscriber(phone_number, email, user_id, county, newspaper_id, klarna_token)
 
             # Radera pending_subscriber en gång efter hantering
             delete_pending_subscriber(result["session_id"])
