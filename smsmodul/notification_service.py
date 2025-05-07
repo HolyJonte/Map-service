@@ -128,7 +128,25 @@ def api_send_sms():
     status_code = 200 if success else 500
     return jsonify(payload), status_code
 
+
+@notification_bp.route('/send-email', methods=['POST'])
+def api_send_email():
+    data = request.get_json(force=True)
+    to = data.get('to')
+    subject = data.get('subject')
+    message = data.get('message')
+
+    if not to or not subject or not message:
+        return jsonify(error="Missing 'to', 'subject', or 'message'"), 400
+
+    success = send_email(to, subject, message)
+    status_code = 200 if success else 500
+    payload = {
+        "status": "success" if success else "error",
+        "statusText": "E-post skickad framgångsrikt" if success else "Misslyckades att skicka e-post"
+    }
+    return jsonify(payload), status_code
+
 if __name__ == "__main__":
-    
     pass
 # Lägg till testkod här vid behov (istället för pass)
