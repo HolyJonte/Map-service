@@ -212,7 +212,7 @@ def notify_accidents():
 """ def check_expiring_subscriptions():
     expiring = get_subscribers_expiring_in(days=14)
 
-    for sub_id, phone in expiring:
+    for sub_id, email in expiring:
         subject = "Prenumerationspåminnelse"
         message = "Hej! Din prenumeration löper ut om 14 dagar. Förnya gärna i tid!"
        # create_notification(sub_id, message) - BEHÖVS KANSKE INTE, ÄR OM VI LOGGAR I DATABASEN ATT MAIL GÅTT UT.

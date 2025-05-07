@@ -265,7 +265,7 @@ def update_inactive_subscriber(subscriber_id, phone_number, county, newspaper_id
 
     # SQLite-funktionen date() för att räkna 365 dagar från subscription_start:
     cursor.execute('''
-        SELECT id, phone_number
+        SELECT id, email
         FROM subscribers
         WHERE active = 1
           AND date(subscription_start, '+365 days') = ?
