@@ -4,7 +4,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import time
 import json
-from smsmodul.send_sms import send_sms, send_email
+from smsmodul.notification_service import send_sms, send_email
 from datetime import datetime, timedelta, timezone
 from api.logic import get_all_accidents, get_all_roadworks
 from database.crud.subscriber_crud import get_subscribers_by_county, get_subscribers_expiring_in
