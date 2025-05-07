@@ -2,82 +2,100 @@
 {% block title %}Mina sidor{% endblock %}
 {% block content %}
 
-<div class="container-fluid profile-page">
-  <!-- 1) Header -->
-  <div class="profile-header-card mb-4">
-    <h1>Mina sidor</h1>
-    <p>Här kan du hantera dina prenumerationer och inställningar.</p>
+<div class="container profile-page py-4">
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card profile-header-card">
+        <div class="card-body">
+          <h1 class="card-title">Mina sidor</h1>
+          <p class="card-text">Här kan du hantera dina prenumerationer och inställningar.</p>
+        </div>
+      </div>
+    </div>
   </div>
 
   {% if is_active_subscriber %}
-  <div class="row action-cards">
-    <!-- Kort 1: Din prenumeration (hälften av bredden, tar hela höjden) -->
-    <div class="col-md-6 mb-3">
-      <div class="card info-card h-100">
-        <div class="card-body">
-          <h5 class="card-title">Din prenumeration</h5>
-          <ul class="list-unstyled">
-            <li><strong>ID:</strong> {{ subscriber_id }}</li>
-            <li><strong>Telefon:</strong> {{ phone_number }}</li>
-            <li><strong>Län:</strong> {{ county }}</li>
-          </ul>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="card info-card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Din prenumeration</h5>
+            <p class="mb-4">Du får SMS-uppdateringar med de senaste trafikuppdateringarna 
+              i ditt valda län - olyckor, vägarbeten och större trafikstörningar.</p>
+              <hr>
+            <ul class="list-unstyled mb-4">
+              <li><strong>ID-nummer:</strong> {{ subscriber_id }}</li>
+              <li><strong>Telefonnummer:</strong> {{ phone_number }}</li>
+              <li><strong>Mejladress:</strong> {{ email }}</li>
+              <li><strong>Valt län:</strong> {{ county }}</li>
+              <li><strong>Startdatum:</strong> {{ subscription_start }}</li>
+              <li><strong>Slutdatum:</strong> {{ subscription_end }}</li>
+            </ul>
+            <hr>
+            <p class="mb-0 text-muted" style="font-size:.9em">
+              Har du några frågor? Ha ditt ID-nummer nära tillhands.<br>
+              <a href="/support">Kontakta kundsupport</a>.
+            </p>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Kort 2+3: Byt län & Avsluta, staplade i högra halvan -->
-    <div class="col-md-6 d-flex flex-column">
-      <!-- Byt län -->
-      <div class="card change-card mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Byt län</h5>
-          <form id="change-county-form" method="post">
-            {% if csrf_token %}
-              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            {% endif %}
-            <div class="mb-2">
-              <label for="new_county" class="form-label">Välj nytt län:</label>
-              <select class="form-select" name="new_county" id="new_county" required>
-                <option value="" disabled selected>Välj län</option>
-              </select>
+      <div class="col-md-6">
+        <div class="row g-3">
+          <div class="col-12">
+            <div class="card change-card">
+              <div class="card-body">
+                <h5 class="card-title mb-2">Välj län för SMS-prenumeration</h5>
+                <form id="change-county-form" method="post">
+                  {% if csrf_token %}
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  {% endif %}
+                  <div class="mb-2">
+                    <label for="new_county" class="form-label">Här kan du ange vilket län du vill ha notiser från.</label>
+                    <select class="form-select w-auto" name="new_county" id="new_county" required>
+                      <option value="" disabled selected>Välj län</option>
+                    </select>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Uppdatera</button>
+                </form>
+                <div id="county-response" class="mt-2"></div>
+              </div>
             </div>
-            <button type="submit" class="btn btn-primary">Uppdatera län</button>
-          </form>
-          <div id="county-response" class="mt-2"></div>
-        </div>
-      </div>
-
-      <!-- Avsluta prenumeration -->
-      <div class="card cancel-card">
-        <div class="card-body">
-          <h5 class="card-title">Avsluta prenumeration</h5>
-          <form id="unsubscribe-form" method="post">
-            {% if csrf_token %}
-              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            {% endif %}
-            <button type="submit" class="btn btn-danger">Avbryt prenumeration</button>
-          </form>
-          <div id="unsubscribe-response" class="mt-2"></div>
+          </div>
+          
+          <div class="col-12">
+            <div class="card cancel-card h-100">
+              <div class="card-body">
+                <h5 class="card-title">Avsluta prenumeration</h5>
+                <form id="unsubscribe-form" method="post">
+                  {% if csrf_token %}
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  {% endif %}
+                  <button type="submit" class="btn btn-danger text-nowrap">Avsluta</button>
+                </form>
+                <div id="unsubscribe-response" class="mt-2"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
   {% else %}
-  <!-- Ingen aktiv prenumeration -->
-  <div class="row">
-    <div class="col-12">
-      <div class="card info-card">
-        <div class="card-body">
-          <h5 class="card-title">Ingen prenumeration</h5>
-          <p>Du har ingen aktiv prenumeration. 
-            <a href="{{ url_for('subscriptions.show_subscription_page') }}">Starta en prenumeration</a>.
-          </p>
+    <div class="row">
+      <div class="col-12">
+        <div class="card info-card">
+          <div class="card-body">
+            <h5 class="card-title">Ingen prenumeration</h5>
+            <p>Du har ingen aktiv prenumeration. 
+              <a href="{{ url_for('subscriptions.show_subscription_page') }}">Starta en prenumeration</a>.
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
   {% endif %}
+
 </div>
 
 <script src="{{ url_for('static', filename='js/user_profile.js') }}"></script>
