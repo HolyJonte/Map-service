@@ -768,20 +768,45 @@ Styling för order-summary-card
      Header-kort
      ───────────────────────────────────────── */
   .profile-header-card {
+    position: relative;
+    background-image: url("../landingpageimg.png");    
+    background-size: cover;
+    background-position: center;
     width: 100%;
     margin: 0 auto;
     padding: 20px 30px;
     text-align: center;
-  
-    
+    color: white
   }
+
+  .profile-header-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 0;
+  }
+
+  .profile-header-card .card-body {
+    position: relative;
+    z-index: 1;
+  }
+
   .profile-header-card h1 {
-    margin: 0 0 10px;
-    color: #333;
+    font-size: 4rem;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+    color: white;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+
+
   }
   .profile-header-card p {
+    font-size: 1.25rem;
+    line-height: 1.5;
     margin: 0;
-    color: #555;
+    color: #eee;
+    ;
   }
 
 
