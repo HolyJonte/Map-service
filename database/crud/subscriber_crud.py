@@ -81,8 +81,7 @@ def get_subscriber_klarna_token(subscriber_id, phone_number):
     return result[0] if result else None
 
 #==========================================================================================================================
-# Schemalägga, behöver köras när det gått ett år och fortfarande inactive
-# Avaktiverar en prenumerant genom att sätta status till inaktiv
+# Avaktiverar en prenumerant manuellt att sätta status till inaktiv, använder subscriber_id och telefonnummer
 #==========================================================================================================================
 def deactivate_subscriber(subscriber_id, phone_number):
     conn = get_db_connection()
@@ -95,6 +94,20 @@ def deactivate_subscriber(subscriber_id, phone_number):
     conn.commit()
     conn.close()
 
+#==========================================================================================================================
+# Avaktiverar en prenumerant automatiskt om den har varit inaktiv i mer än ett år, använder tid och last_payment
+#==========================================================================================================================
+def deactivate_expired_subscribers():
+    cutoff = datetime.now() - timedelta(days=365)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        UPDATE subscribers
+        SET active = 0
+        WHERE active = 1 AND last_payment < ?
+    ''', (cutoff,))
+    conn.commit()
+    conn.close()
 
 #============================================================================================================================
 # Lägger till en prenumerant manuellt för t.ex. test eller backup
@@ -140,10 +153,10 @@ def get_subscribers_by_county(county):
     conn = get_db_connection()
     cursor = conn.cursor()
     county_str = str(county)
-    like_pattern = f"%,{county_str},%"  # Mellan två kommatecken
-    like_start = f"{county_str},%"      # I början
-    like_end = f"%,{county_str}"         # I slutet
-    like_exact = f"{county_str}"         # Enda värdet
+    like_pattern = f"%,{county_str},%"
+    like_start = f"{county_str},%"
+    like_end = f"%,{county_str}"
+    like_exact = f"{county_str}"
 
     cursor.execute('''
         SELECT * FROM subscribers
@@ -162,12 +175,12 @@ def get_subscribers_by_county(county):
 
 
 #===============================================================================================================================
-# Tar bort prenumeranter som är inaktiva och vars sista betalning var för mer än ett år sedan
+# Tar bort prenumeranter som redan är inaktiva och inte betalat på mer än två år
 #===============================================================================================================================
 def remove_inactive_subscribers():
     conn = get_db_connection()
     cursor = conn.cursor()
-    one_year_ago = datetime.now() - timedelta(days=365)
+    one_year_ago = datetime.now() - timedelta(days=730)
     cursor.execute('''
         DELETE FROM subscribers
         WHERE active = 0 AND last_payment < ?
@@ -203,14 +216,14 @@ def update_subscriber_county(subscriber_id, phone_number, new_county):
     return success
 
 #========================================================================================================================
-# Ta bort prenumerant
+# Ta bort prenumerant (KANSKE INTE ANVÄNDS?)
 #========================================================================================================================
 def delete_subscriber(subscriber_id):
     try:
         # Kontrollera att subscriber_id är ett heltal
         if not isinstance(subscriber_id, int):
             try:
-                subscriber_id = int(subscriber_id)  # Försök konvertera till int
+                subscriber_id = int(subscriber_id)
             except (TypeError, ValueError):
                 print(f"Ogiltig subscriber_id-typ: {type(subscriber_id)}, värde: {subscriber_id}")
                 return False
@@ -220,7 +233,7 @@ def delete_subscriber(subscriber_id):
         cursor.execute('''
             DELETE FROM subscribers
             WHERE id = ?
-        ''', (subscriber_id,))  # Använd korrekt tuple-syntax
+        ''', (subscriber_id,))
         success = cursor.rowcount > 0
         conn.commit()
         conn.close()
@@ -254,10 +267,6 @@ def update_inactive_subscriber(subscriber_id, phone_number, email, county, newsp
 # Hämta prenumeranter med prenumeration som går ut om 14 dagar
 #========================================================================================================================
 def get_subscribers_expiring_in(days=14):
-    """
-    Hämtar alla aktiva prenumeranter vars prenumeration
-    slutar om exakt `days` dagar (räknat från today).
-    """
     today = datetime.now().date()
     warning_date = today + timedelta(days=days)
 

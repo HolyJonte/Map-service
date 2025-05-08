@@ -177,7 +177,7 @@ def prenumeration_startad():
 
 
 # ==========================================================================================
-# Rutt för att avbryta prenumeration
+# Rutt för att avbryta prenumeration manuellt (Alltså klickar på "Avbryt prenumeration" knappen)
 # ==========================================================================================
 @subscription_routes.route('/cancel-subscription', methods=['POST'])
 def cancel_subscription():
