@@ -105,6 +105,7 @@ Utseende för card
   flex-direction: column;
   align-items: stretch;
   width: 100%;
+  min-width: 400px;  
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
@@ -841,6 +842,14 @@ Styling för order-summary-card
      Responsivt: stapla korten under 800px
      ───────────────────────────────────────── */
 
+/* Låt profile-page-containern vara 100% bredd tills vi når 992px */
+@media (max-width: 991.98px) {
+  .profile-page.container {
+    max-width: 100% !important;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
 
 
     
