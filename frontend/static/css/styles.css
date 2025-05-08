@@ -44,20 +44,27 @@ body.index-page .main-content {
     Knapp-stilar
     ───────────────────────────────────────── */
   .btn-primary {
-  display: inline-block;
+    width: 200px;
+    box-shadow:
+      0 4px 8px rgba(0,0,0,0.2),
+      0 8px 16px rgba(0,0,0,0.25);
+  }
+
+/* Outline-primary */
+
+.btn-outline-primary {
   width: 200px;
-  padding: 10px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  transition: background-color .2s ease;
-  text-align: center;
-  text-decoration: none;
+  box-shadow:
+    0 4px 12px rgba(0,0,0,0.06),
+    0 8px 24px rgba(0,0,0,0.08);
 }
-.btn-primary:hover {
-  background-color: #0069d9;
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  background-color: #007bff; 
+  color: #ffffff;
+  border-color: #007bff;
+  text-decoration: none;
 }
 
 /* Grå sekundärknapp */
@@ -449,27 +456,46 @@ Styling för hitta min plats knapp
 }
 
 /* -------------------------------------------------------------------------
-Styling för Login-vy
+Styling för Login-choice-vy
  ------------------------------------------------------------------------ */
 
-/* ------------------------------------------ 
-Kort för login-vy
------------------------------------------- */
-.login-card {
-  max-width: 600px;
-  margin: 60px auto;
-  background-color: white;
-  padding: 40px 30px;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  text-align: center;
+/* Container som håller de två korten */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
-.login-card h2 {
-  margin-bottom: 30px;
-  font-size: 24px;
-  color: #222;
+/* Själva korten */
+.login-card {
+  width: 280px; 
+  padding: 20px;
+  text-align: center;
+  margin: 0 auto; 
 }
+
+/* Själva korten */
+.register-card {
+  width: 280px; 
+  padding: 20px;
+  text-align: center;
+  margin: 0 auto; 
+}
+
+/* Beskrivande text */
+.login-card p {
+  color: #555;
+  margin-bottom: 20px;
+}
+
+/* Återanvänd dina knapp-klasser */
+.btn-primary,
+.btn-tertiery {
+  width: 100%;
+}
+
 /* -------------------------------------------------------------------------
 Styling för Admin sida (när man är inloggad som admin)
  ------------------------------------------------------------------------ */

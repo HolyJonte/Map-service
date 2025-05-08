@@ -1,21 +1,49 @@
 {% extends "base.html" %}
-
 {% block title %}Välj inloggning{% endblock %}
-
 {% block content %}
-<div class="login-card">
-  <h2>Välj inloggningstyp</h2>
-  <p class="info-text">
-    För att kunna prenumerera behöver du logga in.<br>
-    Har du inget konto behöver du registrera dig.
-  </p>
-  <div class="login-buttons">
-    <a href="{{ url_for('user_routes.login') }}" class="btn-primary user">
-      <i class="bi bi-person-circle"></i> Logga in
-    </a>
-    <a href="{{ url_for('user_routes.register') }}" class="btn-secondary register">
-      <i class="bi bi-person-plus"></i> Registrera
-    </a>
+<div class="container py-5">
+  <div class="row justify-content-center g-4 align-items-stretch">
+
+    <!-- Inloggningskort -->
+    <div class="col-sm-8 col-md-6 col-lg-4">
+      <div class="card login-card h-100">
+        <img src="{{ url_for('static', filename='sign-in.jpg') }}"
+          class="card-img-top"
+          alt="Dekorativ inloggningsbild">
+        <div class="card-body d-flex flex-column text-center">
+          <h5 class="card-title fs-3 fw-bold mb-4">
+            <i class="bi bi-person-circle me-2"></i>Logga in
+          </h5>
+          <p class="mb-1">Har du redan ett konto?</p>
+          <p>Logga in här för att fortsätta till Mina sidor.</p>
+          <a href="{{ url_for('user_routes.login') }}"
+             class="btn btn-primary w-100 mt-auto">
+            Logga in
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Registreringskort -->
+    <div class="col-sm-8 col-md-6 col-lg-4">
+      <div class="card register-card h-100">
+        <img src="{{ url_for('static', filename='register.jpg') }}"
+          class="card-img-top"
+          alt="Dekorativ registreringsbild">
+        <div class="card-body d-flex flex-column text-center">
+          <h5 class="card-title fs-3 fw-bold mb-4">
+            <i class="bi bi-person-plus me-2"></i>Registrera
+          </h5>
+          <p class="mb-1">Har du inget konto?</p>
+          <p>Registrera dig för att börja prenumerera.</p>
+          <a href="{{ url_for('user_routes.register') }}"
+             class="btn btn-outline-primary w-100 mt-auto">
+            Registrera
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
 {% endblock %}
