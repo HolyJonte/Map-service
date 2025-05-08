@@ -153,7 +153,6 @@ async function loadNewspapers() {
           }
         });
 
-
         // Skapa riktig "Betala" knapp
       if (!document.getElementById('klarna-authorize-click')) {
         // Skapa wrapper-div
