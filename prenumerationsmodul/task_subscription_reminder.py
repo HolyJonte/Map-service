@@ -4,6 +4,12 @@
 # 3. Tar bort inaktiva prenumerationer som inte betalat på två år.
 # Dessa körs i bakgrunden på PythonAnywhere, automatiskt en gång per dag.
 
+import sys
+import os
+sys.path.append("/home/MaMaJoViDa/Map-service")
+os.chdir("/home/MaMaJoViDa/Map-service")
+
+
 from notifications import check_expiring_subscriptions
 from database.crud.subscriber_crud import (
     deactivate_expired_subscribers,
