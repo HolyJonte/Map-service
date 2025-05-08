@@ -8,7 +8,9 @@ python-dateutil==2.9.0.post0
 python-dotenv==1.1.0
 Flask-Cors==5.0.1
 
-
+#===========================================================
+#Dessa är safe to use:
+#===========================================================
 #För att installera alla beroenden, kör följande kommando i terminalen:
 #cd ~/Map-service
 
@@ -18,24 +20,22 @@ Flask-Cors==5.0.1
 # För installation på lokal dator:
 #py -3.12 -m pip install --user -r requirements.txt
 
-
-#För att kunna hämta de senaste ändringarna från GitHub, kör följande kommando i terminalen:
-#git reset --hard HEAD
-#git clean -fd
+#För att hämta de senaste ändringarna från GitHub, kör följande kommando i terminalen:
 #git pull
-
-# För att installera CORS, kör följande i terminalen:
-# pip install flask-cors
-
 
 #VIKTIGT!!!
 #Varje gång man har gjort en uppdatering i CSS koden måste man ändra versionsnummer.
 #Detta görs i base.html på den raden där CSS filen laddas in, skriv v=+1 från tidigare nr.
 
-
-
 #För att titta vad som finns i databasen, kör:
 #python inspect_db.py
+
+#===========================================================
+#Dessa används sparsamt:
+#===========================================================
+#För att lösa fel med lokala ändringar i tex databasen, kör följande kommando i terminalen:
+#git reset --hard HEAD
+#git clean -fd
 
 #För att tömma databasen på gammal data som redan är borttagen, kör:
 #import sqlite3

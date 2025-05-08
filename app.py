@@ -72,7 +72,7 @@ def login_choice():
 
 
 
-
+"""""
 # Skapa en scheduler för att köra notify_accidents var 5:e minut
 scheduler = BackgroundScheduler()
 
@@ -81,11 +81,14 @@ scheduler.add_job(notify_accidents, 'interval', minutes=5, max_instances=1)
 # Starta scheduler innan servern startar
 scheduler.start()
 # Om detta skript körs direkt, starta Flask-servern
+"""
+
 if __name__ == '__main__':
-    
+
     try:
         app.run(host="0.0.0.0", port=8000, debug=True)
 
     except (KeyboardInterrupt, SystemExit):
         # Stäng av scheduler vid avbrott
-        scheduler.shutdown()
+        #scheduler.shutdown()
+        print("Scheduler shut down.")

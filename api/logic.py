@@ -184,8 +184,6 @@ def get_cached_accidents():
 
 # Starta med en direkt cacheuppdatering när servern startas om
 def preload_cache():
-    print("▶ Startar cacheuppdatering...")
-
     # Kör detta om sidan körs på PythonAnywhere
     if "PYTHONANYWHERE_DOMAIN" in os.environ:
         update_cache()
