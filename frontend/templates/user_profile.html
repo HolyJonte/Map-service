@@ -15,32 +15,74 @@
   </div>
 
   {% if is_active_subscriber %}
-    <div class="row g-3">
-      <div class="col-md-6">
+    <div class="row g-3 align-items-stretch">
+
+      <div class="col-md-4">
         <div class="card info-card h-100">
-          <div class="card-body">
-            <h5 class="card-title">Din prenumeration</h5>
-            <p class="mb-4">Du får SMS-uppdateringar med de senaste trafikuppdateringarna 
-              i ditt valda län - olyckor, vägarbeten och större trafikstörningar.</p>
-              <hr>
-            <ul class="list-unstyled mb-4">
-              <li><strong>ID-nummer:</strong> {{ subscriber_id }}</li>
-              <li><strong>Telefonnummer:</strong> {{ phone_number }}</li>
-              <li><strong>Mejladress:</strong> {{ email }}</li>
-              <li><strong>Valt län:</strong> {{ county }}</li>
-              <li><strong>Startdatum:</strong> {{ subscription_start }}</li>
-              <li><strong>Slutdatum:</strong> {{ subscription_end }}</li>
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title mb-4">Välkommen till TrafikViDa</h5>
+            <p class="mb-2">
+              Med vår SMS-prenumeration får du:
+            </p>
+            <ul class="mb-3">
+              <li>Omedelbara trafikvarningar vid olyckor och vägarbeten med stor trafikpåverkan.</li>
+              <li>Möjlighet att snabbt byta län och få uppdateringar där du befinner dig.</li>
+              <li>Möjlighet att byta län eller avbryta prenumerationen när du vill.</li>
             </ul>
             <hr>
-            <p class="mb-0 text-muted" style="font-size:.9em">
-              Har du några frågor? Ha ditt ID-nummer nära tillhands.<br>
-              <a href="/support">Kontakta kundsupport</a>.
+            <p class="flex-grow-1 mb-3 small text-muted">
+              Du kan när som helst:
             </p>
+            <ul class="small mb-4">
+              <li><strong>Byta län:</strong> Klicka på “Byt län” i högerkolumnen</li>
+              <li><strong>Avsluta:</strong> Klicka “Avsluta” för att säga upp din prenumeration</li>
+              <li><strong>Kontakta oss:</strong> <a href="/support">support@trafikvida.se</a></li>
+            </ul>
+            <a href="{{ url_for('subscriptions.show_subscription_page') }}" 
+               class="mt-auto btn btn-outline-primary w-100">
+              Se fler inställningar
+            </a>
           </div>
         </div>
       </div>
 
-      <div class="col-md-6">
+      <div class="col-md-4">
+        <div class="card info-card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Din prenumeration</h5>
+            <p class="mb-4"></p>
+              
+              <ul class="list-group list-group-flush mb-4">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  ID-nummer
+                  <span class="fw-bold">{{ subscriber_id }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Telefonnummer
+                  <span class="fw-bold">{{ phone_number }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Mejladress
+                  <span class="fw-bold">{{ email }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Valt län
+                  <span class="fw-bold">{{ county }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Startdatum
+                  <span class="fw-bold">{{ subscription_start }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Slutdatum
+                  <span class="fw-bold">{{ subscription_end }}</span>
+                </li>
+              </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
         <div class="row g-3">
           <div class="col-12">
             <div class="card change-card">
@@ -51,7 +93,7 @@
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                   {% endif %}
                   <div class="mb-2">
-                    <label for="new_county" class="form-label">Här kan du ange vilket län du vill ha notiser från.</label>
+                    <label for="new_county" class="form-label">Här anger du det län för vilket du vill ha SMS-uppdatering från.</label>
                     <select class="form-select w-auto" name="new_county" id="new_county" required>
                       <option value="" disabled selected>Välj län</option>
                     </select>
@@ -67,6 +109,8 @@
             <div class="card cancel-card h-100">
               <div class="card-body">
                 <h5 class="card-title">Avsluta prenumeration</h5>
+                <p>Här kan du avsluta din prenumeration. OBS! När du klickat på <strong>Avsluta</strong> 
+                  kan du inte ångra dig och måste skapa en prenumeration på nytt.</p>
                 <form id="unsubscribe-form" method="post">
                   {% if csrf_token %}
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">

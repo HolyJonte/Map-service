@@ -776,7 +776,8 @@ Styling för order-summary-card
     margin: 0 auto;
     padding: 20px 30px;
     text-align: center;
-    color: white
+    color: white;
+    overflow: hidden;
   }
 
   .profile-header-card::before {
@@ -827,9 +828,15 @@ Styling för order-summary-card
     }
   
   /* ─────────────────────────────────────────
-     Alignment och spacing
+      Divider
      ───────────────────────────────────────── */
 
+     .divider {
+      width: 2px;
+      background-color: rgb(226, 220, 220)
+      /* vh-75-utility gör den 75% av höjden på row:en */
+    }
+    
   /* ─────────────────────────────────────────
      Responsivt: stapla korten under 800px
      ───────────────────────────────────────── */
