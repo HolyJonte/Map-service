@@ -145,7 +145,8 @@ cache = {
         "accidents": [],
         "last_updated": None
     },
-    "updating": False  # Förhindrar flera samtidiga uppdateringar
+    # Förhindrar flera samtidiga uppdateringar
+    "updating": False
 }
 
 def update_cache():
@@ -171,15 +172,15 @@ def update_cache():
 
 def get_cached_cameras():
     if not cache["active"]["last_updated"] or datetime.now() - cache["active"]["last_updated"] > timedelta(seconds=60):
-        threading.Thread(target=update_cache).start()  # Kör i bakgrunden
+        threading.Thread(target=update_cache).start()
     return cache["active"]["cameras"]
 
 def get_cached_roadworks():
-    get_cached_cameras()  # Trigger eventuell uppdatering
+    get_cached_cameras()
     return cache["active"]["roadworks"]
 
 def get_cached_accidents():
-    get_cached_cameras()  # Trigger eventuell uppdatering
+    get_cached_cameras()
     return cache["active"]["accidents"]
 
 # Starta med en direkt cacheuppdatering när servern startas om
