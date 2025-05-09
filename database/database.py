@@ -5,10 +5,13 @@
 # =========================================================================================
 import sqlite3
 
+
+# Funktion för att hämta en databasanslutning
 def get_db_connection():
     conn = sqlite3.connect("trafikvida.db")
-    conn.row_factory = sqlite3.Row  # så vi får dict-aktiga rader
-    conn.execute("PRAGMA foreign_keys = ON")  # Aktiverar stöd för FOREIGN KEY
+    conn.row_factory = sqlite3.Row
+    # Aktiverar stöd för FOREIGN KEY
+    conn.execute("PRAGMA foreign_keys = ON")
     return conn
 
 
@@ -99,6 +102,7 @@ def initialize_database():
         1
     )
 
+    # Kolla om adminanvändaren redan finns
     cursor.execute('''
         INSERT OR IGNORE INTO users (email, password, totp_secret, is_admin)
         VALUES (?, ?, ?, ?)
