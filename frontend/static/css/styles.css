@@ -56,7 +56,6 @@ body.index-page .main-content {
   }
 
 /* Outline-primary */
-
 .btn-outline-primary {
   width: 200px;
   box-shadow:
@@ -83,7 +82,7 @@ body.index-page .main-content {
 .btn-secondary:hover {
   background-color: #5a6268;
 }
-
+/* Röd varningsknapp */
 .btn-danger {
   width: 200px;
   cursor: pointer;
@@ -93,7 +92,6 @@ body.index-page .main-content {
 }
 .btn-danger:hover {
   background-color: #c82333;
-
 }
 
 /* ------------------------------------------
@@ -141,7 +139,6 @@ Utseende för enskilda kameror och kluster av kameror
   justify-content: center;
   color: darkred;
 }
-
 
 /* För kluster av kameror*/
 .camera-cluster {
@@ -209,7 +206,6 @@ Utseende för enskilda vägarbeten och kluster av vägarbeten
   font-weight: bold;
 }
 
-
 /* ---------------------------------------------------
 Utseende för enskilda trafikolyckor och kluster av trafikolyckor
 --------------------------------------------------- */
@@ -249,11 +245,9 @@ Utseende för enskilda trafikolyckor och kluster av trafikolyckor
   font-size: 20px;
 }
 
-
 .accident-cluster span {
   font-weight: bold;
 }
-
 
 /* ==========================================
 Styling för vad som syns om man klickar på ikonerna på kartan
@@ -290,7 +284,7 @@ HEADER & CONTAINER
 .navbar {
   background-color: #222;
   color: white;
-  height: 100px;
+  height: 70px;
   display: flex;
   align-items: center;
   padding: 0 20px;
@@ -305,8 +299,8 @@ HEADER & CONTAINER
 
 /* === LOGOTYP === */
 .navbar-container img {
-  height: 80px;
-  margin-left: 20px;
+  height: 50px;
+  margin-left: 10px;
 }
 
 /* === MENY === */
@@ -504,16 +498,10 @@ Utseende för admin dashboard
   transform: scale(1.02);
 }
 
-
 /* -------------------------------------------------------------------------
 Styling för Subscription sidan
  ------------------------------------------------------------------------ */
-/* ---------------------------------------------------
-Stil för SMS-prenumeration (subscription.html)
---------------------------------------------------- */
-/* ===========================
- Prenumerationssida
-=========================== */
+
 .subscription-page {
   display: flex;
   flex-direction: column;
@@ -584,67 +572,6 @@ Stil för SMS-prenumeration (subscription.html)
   color: green;
   margin: 5px 0;
 }
-
-
-/* ---------------------------------------------------
-Stil för att välja län (subscription.html)
---------------------------------------------------- */
-/* ---------------------------------------------------
-Stil för "Välj län" dropdown med checkboxar (subscription.html)
---------------------------------------------------- */
-/* .dropdown {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-}
-
-.dropbtn {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  text-align: left;
-  border: 1px solid #ccc;
-  background-color: white;
-  cursor: pointer;
-} */
-
-.dropbtn .arrow {
-  float: right;
-  transition: transform 0.3s ease;
-}
-
-.dropbtn.open .arrow {
-  transform: rotate(180deg); /* Snurra pilen uppåt när öppnad */
-}
-
-/* .dropdown-content {
-  display: none; 
-  position: absolute;
-  background-color: white;
-  min-width: 100%;
-  max-height: 150px; 
-  overflow-y: auto;
-  border: 1px solid #ccc;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
-  z-index: 1;
-  margin-top: 2px; 
-} */
-
-/* .dropdown-content label {
-  display: flex;
-  align-items: center;
-  padding: 5px 10px;
-  margin: 0; 
-  font-weight: normal;
-}
-
-.dropdown-content label:hover {
-  background-color: #f1f1f1;
-} */
-
-/* .show {
-  display: block;
-} */
 
 /* ---------------------------------------------------
 Klarna delen
