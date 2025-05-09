@@ -40,6 +40,12 @@ body.index-page .main-content {
   padding: 0;
 }
 
+/* Gör så att alla element räknar padding+border i sin bredd/höjd (för dessa responsiva cards) */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+
 /* ─────────────────────────────────────────
     Knapp-stilar
     ───────────────────────────────────────── */
@@ -111,8 +117,6 @@ Utseende för card
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  width: 100%;
-  min-width: 400px;  
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
@@ -459,43 +463,18 @@ Styling för hitta min plats knapp
 Styling för Login-choice-vy
  ------------------------------------------------------------------------ */
 
-/* Container som håller de två korten */
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
 /* Själva korten */
-.login-card {
-  width: 280px; 
-  padding: 20px;
-  text-align: center;
-  margin: 0 auto; 
-}
-
-/* Själva korten */
+.login-card,
 .register-card {
-  width: 280px; 
-  padding: 20px;
-  text-align: center;
-  margin: 0 auto; 
+  padding: 1.25rem;
+  min-width: 280px;
 }
 
 /* Beskrivande text */
-.login-card p {
+.login-card p 
+.register-card p {
   color: #555;
-  margin-bottom: 20px;
 }
-
-/* Återanvänd dina knapp-klasser */
-.btn-primary,
-.btn-tertiery {
-  width: 100%;
-}
-
 /* -------------------------------------------------------------------------
 Styling för Admin sida (när man är inloggad som admin)
  ------------------------------------------------------------------------ */
