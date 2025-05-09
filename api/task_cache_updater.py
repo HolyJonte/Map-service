@@ -1,24 +1,27 @@
 # Denna fil hanterar schemalagda uppgifter för att uppdatera cache-minnet.
+# Den körs kontinuerligt och uppdaterar cachen var 5:e minut och loggar resultatet i en textfil.
 
-import sys
-import os
 import time
 from datetime import datetime
+import sys
+import os
 
-# Se till att rätt mapp används
 sys.path.append("/home/MaMaJoViDa/Map-service")
-os.chdir("/home/MaMaJoViDa/Map-service")
-
 from api.logic import update_cache
+
+LOG_FILE = "/home/MaMaJoViDa/Map-service/cache_log.txt"
+
+def log(message):
+    with open(LOG_FILE, "a") as f:
+        f.write(f"[{datetime.now()}] {message}\n")
 
 if __name__ == "__main__":
     while True:
-        print(f"[{datetime.now()}] ▶ Kör cacheuppdatering...")
+        log("▶ Kör cacheuppdatering...")
         try:
             update_cache()
-            print(f"[{datetime.now()}] Cache uppdaterad")
+            log("✔ Cache uppdaterad")
         except Exception as e:
-            print(f"[{datetime.now()}] Fel vid cacheuppdatering: {str(e)}")
-
+            log(f"❌ Fel vid cacheuppdatering: {str(e)}")
         time.sleep(300)  # Vänta 5 minuter
 

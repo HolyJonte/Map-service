@@ -10,7 +10,7 @@ sys.path.append("/home/MaMaJoViDa/Map-service")
 os.chdir("/home/MaMaJoViDa/Map-service")
 
 
-from notifications import check_expiring_subscriptions
+from prenumerationsmodul.notifications import check_expiring_subscriptions
 from database.crud.subscriber_crud import (
     deactivate_expired_subscribers,
     remove_inactive_subscribers
