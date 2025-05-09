@@ -4,22 +4,31 @@
 {% block title %}Prenumeration Bekräftad{% endblock %}
 
 {% block content %}
-<div class="confirmation-page">
-  <div class="card">
-    <h1>Tack för din prenumeration!</h1>
-    <p class="success">
-      Betalningen är godkänd och din prenumeration för trafikinformation<br>
-      i valt län är startad!
-    </p>
+<div class="container py-5 d-flex justify-content-center">
+  <div class="card login-card w-100" style="max-width: 30rem;">
+    <div class="card-body text-center d-flex flex-column">
+      <h1 class="card-title fw-bold mb-3">Tack för din prenumeration!</h1>
+      <p class="success mb-4">
+        Betalningen är godkänd och din prenumeration för trafikinformation<br>
+        i valt län är startad!
+      </p>
 
-    {% if subscriber_id %}
-      <p>Ditt ID är: <strong>{{ subscriber_id }}</strong></p>
-      <p>Spara detta ID om du vill avbryta prenumerationen senare.</p>
-    {% else %}
-      <p class="error">Vi kunde inte hitta ditt ID.</p>
-    {% endif %}
+      {% if subscriber_id %}
+        <p class="mb-2">
+          <strong>Ditt ID är:</strong> {{ subscriber_id }}
+        </p>
+        <p class="mb-4 small text-muted">
+          Information om din prenumeration hittar du op Mina sidor.
+        </p>
+      {% else %}
+        <p class="error mb-4">Vi kunde inte hitta ditt ID.</p>
+      {% endif %}
 
-    <a href="/" class="btn btn-secondary">Tillbaka till startsidan</a>
+      <a href="{{ url_for('serve_index') }}"
+         class="btn btn-primary mt-auto w-100">
+        Tillbaka till startsidan
+      </a>
+    </div>
   </div>
 </div>
 {% endblock %}
