@@ -1,42 +1,58 @@
+{# subscription.html #}
 {% extends "base.html" %}
 
 {% block title %}Prenumerera{% endblock %}
 
 {% block content %}
+<div class="container py-5 d-flex justify-content-center">
+  <div class="card login-card w-100" style="max-width: 38rem; min-width: 24rem;">
+    <div class="card-body">
+      <h5 class="card-title fw-bold mb-4">Starta din SMS-prenumeration</h5>
+      <p class="form-description text-muted mb-4">
+        Ange ditt telefonnummer och välj län nedan för att akrivera din SMS-prenumeration.
+        Du får trafikvarningar om olyckor och vägarbeten med stor trafikpåverkan direkt i mobilen.
+        Glöm inte att ange telefonnummer med formatet +467xxxxxxxx.
+      </p>
 
-<!-- OBS! Styling för subscription sidan finns nu i css:en (längst ner) istället-->
-
-<div>
-  <div class="subscription-form-wrapper card">
-    <div>
-      <h1>Starta din SMS-prenumeration</h1>
-      <p class="form-description">Fyll i formuläret nedan för att starta din SMS-prenumeration.<br> 
-        Du kommer att få uppdateringar om trafikläget i ditt län.</p>
-
-      <form id="subscription-form" class="subscription-form">
-        <label for="phone_number">Telefonnummer: (använd +46701740615 för test i Playground)</label>
-        <input type="text" id="phone_number" name="phone_number" required>
-
-        <label for="counties">Välj län:</label>
-        <select id="counties" name="counties" required></select>
-
-        <label for="newspaper_id">Välj tidning:</label>
-        <select id="newspaper_id" name="newspaper_id" required></select><br><br>
-
-        <div class="d-flex justify-content-center">
-          <button type="submit" class="btn btn-primary">Starta Prenumeration</button>
+      <form id="subscription-form" class="d-flex flex-column">
+        <div class="mb-1">
+          <input type="text"
+                 id="phone_number"
+                 name="phone_number"
+                 class="form-control"
+                 placeholder="Telefonnummer"
+                 required>
         </div>
+
+        <div class="mb-3">
+          <select id="counties"
+                  name="counties"
+                  class="form-select"
+                  required>
+          </select>
+        </div>
+
+        <div class="mb-4">
+          <select id="newspaper_id"
+                  name="newspaper_id"
+                  class="form-select"
+                  required>
+          </select>
+        </div>
+
+        <button type="submit"
+                class="btn btn-primary mt-auto w-100">
+          Starta prenumeration
+        </button>
       </form>
-    </div>
-    <div>
-      <div id="klarna-checkout-container"></div>
-      <div id="response"></div>
+
+      <div class="mt-4">
+        <div id="klarna-checkout-container"></div>
+        <div id="response"></div>
+      </div>
     </div>
   </div>
-
 </div>
 
-
 <script src="{{ url_for('static', filename='js/subscription.js') }}"></script>
-
 {% endblock %}
