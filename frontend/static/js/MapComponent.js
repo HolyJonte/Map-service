@@ -33,15 +33,20 @@ class MapComponent extends HTMLElement {
 
   // Denna metod initierar Leaflet-kartan och lägger till fartkameralagret
   initMap() {
+    // ⇓ läs av data-attribut från själva <map-component>:
+    const lat  = parseFloat(this.dataset.lat)  || 62.0;
+    const lng  = parseFloat(this.dataset.lng)  || 15.0;
+    const zoom = parseInt(this.dataset.zoom, 10) || 6;
+  
     this.map = L.map('map', {
-      center: [62.0, 15.0],  // Centrera kartan på Sverige
-      zoom: 6                // Zoomnivå för att visa Sverige
-    });
+      center: [lat, lng],      // ⇑ använd dynamiskt
+      zoom: zoom               // ⇑ använd dynamiskt
+    });  
 
     // Lägg till OpenStreetMap som bakgrundskarta
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors',
-      maxZoom: 18
+      maxZoom: 14
     }).addTo(this.map);
 
     // Skapar ett nytt lager för fartkameror och vägarbeten och kopplar det till kartan

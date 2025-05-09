@@ -1,0 +1,249 @@
+/* ---------- Grundinställningar ---------- */
+body {
+    background: #f5f2eb;
+    margin: 0;
+    font-family: 'Georgia', serif;
+    color: #222;
+  }
+  
+  .newspaper {
+    max-width: 900px;
+    margin: 2rem auto;
+    background: #fff;
+    padding: 2rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  
+  /* Masthead */
+  .masthead {
+    text-align: center;
+    border-bottom: 2px solid #333;
+    margin-bottom: 2rem;
+  }
+  .masthead h1 {
+    margin: 0;
+    font-size: 2.5rem;
+  }
+  .masthead .subtitle {
+    font-style: italic;
+    color: #555;
+  }
+  
+  /* Kolumnlayout */
+  .article-columns {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+  }
+  @media (max-width: 768px) {
+    .article-columns {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  /* Huvudartikel */
+  .main-article h2 {
+    margin-top: 0;
+  }
+  .caption {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.5rem;
+  }
+  .subscription img {
+    max-width: 180px;
+    display: block;
+    margin: 1rem auto;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    background: #f9f9f9;
+    padding: 1rem;
+    border-left: 2px solid #ddd;
+  }
+  .sidebar h3 {
+    margin-top: 0;
+  }
+  .sidebar ul {
+    list-style: square inside;
+    padding: 0;
+    margin: 0;
+  }
+  .sidebar li {
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Footer */
+  .footer {
+    text-align: center;
+    border-top: 1px solid #ddd;
+    padding-top: 1rem;
+    font-size: 0.8rem;
+    color: #666;
+  }
+  
+  /* Se till att din map-component fyller sin spalt */
+  .er-preview-map {
+    display: block;
+    width: 100%;
+  }
+  map-component.er-preview-map > div#map {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* För enskilda kameror */
+.custom-camera-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: darkred;
+  }
+  
+  .custom-camera-icon i {
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: darkred;
+  }
+  
+  /* För kluster av kameror*/
+  .camera-cluster {
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    font-size: 15px;
+    color: darkred;
+    text-align: center;
+    padding: 0;
+    line-height: 1;
+  }
+  
+  .camera-cluster i {
+    font-size: 20px;
+  }
+  
+  .camera-cluster span {
+    font-weight: bold;
+  }
+  
+  /* ---------------------------------------------------
+  Utseende för enskilda vägarbeten och kluster av vägarbeten
+  --------------------------------------------------- */
+  /* För enskilda vägarbeten */
+  .custom-roadwork-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: blue;
+  }
+  
+  .custom-roadwork-icon i {
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: blue;
+  }
+  
+  /* För kluster av vägarbeten */
+  .roadwork-cluster {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    font-size: 15px;
+    color: blue;
+    text-align: center;
+    padding: 0;
+    line-height: 1;
+  }
+  
+  .roadwork-cluster i {
+    font-size: 20px;
+  }
+  
+  .roadwork-cluster span {
+    font-weight: bold;
+  }
+  
+  /* ---------------------------------------------------
+  Utseende för enskilda trafikolyckor och kluster av trafikolyckor
+  --------------------------------------------------- */
+  /* För enskilda olyckor */
+  .custom-accident-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: orange;
+  }
+  
+  .custom-accident-icon i {
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: orange;
+  }
+  
+  /* För kluster av olyckor */
+  .accident-cluster {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    font-size: 15px;
+    color: orange;
+    text-align: center;
+    padding: 0;
+    line-height: 1;
+  }
+  
+  .accident-cluster i {
+    font-size: 20px;
+  }
+  
+  .accident-cluster span {
+    font-weight: bold;
+  }
+  
+  /* ==========================================
+  Styling för vad som syns om man klickar på ikonerna på kartan
+  (gemensamt för olyckor och vägarbeten)
+  ========================================== */
+  
+  .impact-box {
+    padding: 4px;
+    font-weight: bold;
+    text-align: center;
+    color: black;
+  }
+  
+  .impact-none {
+    background-color: green;
+  }
+  
+  .impact-low {
+    background-color: yellow;
+  }
+  
+  .impact-high {
+    background-color: red;
+  }
+  
+  .impact-unknown {
+    background-color: gray;
+  }
+  

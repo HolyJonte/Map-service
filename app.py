@@ -60,7 +60,6 @@ app.register_blueprint(notification_bp, url_prefix='/notification')
 def serve_index():
     return render_template("index.html")
 
-
 # Definierar en route för att servera andra statiska filer (tex JS, CSS) från frontend-mappen
 @app.route('/<path:filename>')
 def serve_static(filename):
@@ -69,6 +68,20 @@ def serve_static(filename):
 @app.route('/login')
 def login_choice():
     return render_template("login_choice.html")
+
+# För att visa förhandsvisning av karta på webbsajt för kund
+@app.route('/embed/<path:filename>')
+def embed_files(filename):
+    # Använd Flask-konfigurationens static_folder istället för hardkodad
+    embed_dir = os.path.join(app.static_folder, 'embed')
+    return send_from_directory(embed_dir, filename)
+
+# För att visa förhandsvisning av karta på webbsajt för kund
+@app.route('/embed-preview')
+def embed_preview():
+    return render_template('embed_preview.html')
+
+
 
 
 

@@ -33,6 +33,10 @@ Flask-Cors==5.0.1
 #Ska man köra detta via Python Anywhere så behöver man först öppna en bash och skriva:
 #sqlite3 trafikvida.db
 
+# För att visa förhandsgranskning av en inbäddad karta, kör följande kommando i terminalen:
+# python app.py och surfa sedan in på länken nedan
+# http://localhost:8000/embed-preview
+
 
 #===========================================================
 #Dessa används sparsamt:

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Embed-preview – Tidningslayout</title>
+
+  <!-- 1. Tidnings-CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='embed/embedprew.css') }}">
+
+  <!-- 2. Leaflet CSS och MarkerCluster CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css"/>
+
+  <!-- 3. Ikoner (Bootstrap Icons eller liknande) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"/>
+</head>
+<body>
+  <div class="newspaper">
+    <header class="masthead">
+      <h1>Ystads Allehanda</h1>
+      <p class="subtitle">Din lokala trafikguide</p>
+    </header>
+
+    <section class="article-columns">
+      <article class="main-article">
+        <h2>Senaste trafikläget i Ystad</h2>
+
+        <div class="ratio ratio-4x3 mx-auto" style="max-width: 600px;">
+          <map-component
+            class="er-preview-map w100 h-100"
+            data-lat="55.4293"
+            data-lng="13.8208"
+            data-zoom="15"
+            style="height:300px; margin:0 auto;">
+          </map-component>
+        </div>
+        <p class="caption">
+          Klicka på “Prenumerera” för SMS-uppdateringar.
+        </p>
+        <div class="subscription">
+          <a href="https://trafikvida.ddns.net" target="_blank">
+            <img src="{{ url_for('static', filename='embed/subscribe-btn.png') }}"
+                 alt="Prenumerera"/>
+          </a>
+        </div>
+      </article>
+
+      <aside class="sidebar">
+        <h3>Notiser</h3>
+        <ul>
+          <li>Vägarbete på E65 – risk för köer.</li>
+          <li>Olycka vid centrum – omledning.</li>
+          <li>Extra fartkameror vid skolan.</li>
+        </ul>
+      </aside>
+    </section>
+
+    <footer class="footer">
+      <p>© TrafikViDa 2025 – Demo av er kart-widget</p>
+    </footer>
+  </div>
+
+  <!-- 4. Leaflet JS och MarkerCluster JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+
+  <!-- 5. Din MapComponent (ESM-modul) -->
+  <script type="module" src="{{ url_for('static', filename='js/MapComponent.js') }}"></script>
+</body>
+</html>
