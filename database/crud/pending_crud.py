@@ -1,5 +1,5 @@
 # Denna modul hanterar  CRUD-operationer för tabellen "pending_subscribers" i databasen.
-# som används för att lagra prenumeranter som ännu inte bekräftats.
+# Används för att lagra prenumeranter som ännu inte bekräftats.
 # Funktionerna i denna modul inkluderar:
 # - Lägga till en väntande prenumerant
 # - Hämta eller ta bort en väntande prenumerant baserat på session_id

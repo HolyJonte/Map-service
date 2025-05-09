@@ -9,8 +9,9 @@ from database.database import get_db_connection
 
 # =========================================================================================
 # SMS-log funktion
-# Lagrar information om ett skickat SMS i tabellen sms_logs.
 # =========================================================================================
+
+# Denna funktion loggar ett SMS-meddelande i databasen.
 def log_sms(newspaper_id, subscriber_id, recipient, message):
     conn = get_db_connection()
     cursor = conn.cursor()
