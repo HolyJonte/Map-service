@@ -2,11 +2,11 @@
 {% block title %}Välj inloggning{% endblock %}
 {% block content %}
 <div class="container py-5">
-  <div class="row justify-content-center g-4 align-items-stretch">
+  <div class="row justify-content-center g-4">
 
     <!-- Inloggningskort -->
-    <div class="col-sm-8 col-md-6 col-lg-4">
-      <div class="card login-card h-100">
+    <div class="col-sm-10 col-md-6 col-lg-4 d-flex">
+      <div class="card login-card w-100">
         <img src="{{ url_for('static', filename='sign-in.jpg') }}"
           class="card-img-top"
           alt="Dekorativ inloggningsbild">
@@ -15,7 +15,7 @@
             <i class="bi bi-person-circle me-2"></i>Logga in
           </h5>
           <p class="mb-1">Har du redan ett konto?</p>
-          <p>Logga in här för att fortsätta till Mina sidor.</p>
+          <p class="mb-5">Logga in här för att fortsätta till Mina sidor.</p>
           <a href="{{ url_for('user_routes.login') }}"
              class="btn btn-primary w-100 mt-auto">
             Logga in
@@ -25,8 +25,8 @@
     </div>
 
     <!-- Registreringskort -->
-    <div class="col-sm-8 col-md-6 col-lg-4">
-      <div class="card register-card h-100">
+    <div class="col-sm-10 col-md-6 col-lg-4 d-flex">
+      <div class="card register-card w-100">
         <img src="{{ url_for('static', filename='register.jpg') }}"
           class="card-img-top"
           alt="Dekorativ registreringsbild">
@@ -35,7 +35,7 @@
             <i class="bi bi-person-plus me-2"></i>Registrera
           </h5>
           <p class="mb-1">Har du inget konto?</p>
-          <p>Registrera dig för att börja prenumerera.</p>
+          <p class="mb-5">Registrera dig för att börja prenumerera.</p>
           <a href="{{ url_for('user_routes.register') }}"
              class="btn btn-outline-primary w-100 mt-auto">
             Registrera
