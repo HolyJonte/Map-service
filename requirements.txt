@@ -30,6 +30,10 @@ Flask-Cors==5.0.1
 #För att titta vad som finns i databasen, kör:
 #python inspect_db.py
 
+#Ska man köra detta via Python Anywhere så behöver man först öppna en bash och skriva:
+#sqlite3 trafikvida.db
+
+
 #===========================================================
 #Dessa används sparsamt:
 #===========================================================
