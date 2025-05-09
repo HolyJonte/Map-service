@@ -87,9 +87,13 @@ body.index-page .main-content {
 .btn-danger {
   width: 200px;
   cursor: pointer;
+  box-shadow:
+      0 4px 8px rgba(0,0,0,0.2),
+      0 8px 16px rgba(0,0,0,0.25);
 }
 .btn-danger:hover {
   background-color: #c82333;
+
 }
 
 /* ------------------------------------------
@@ -571,8 +575,6 @@ Stil för SMS-prenumeration (subscription.html)
   margin-bottom: 10px;
 }
 
-
-
 .subscription-page .error {
   color: red;
   margin-top: 10px;
@@ -590,7 +592,7 @@ Stil för att välja län (subscription.html)
 /* ---------------------------------------------------
 Stil för "Välj län" dropdown med checkboxar (subscription.html)
 --------------------------------------------------- */
-.dropdown {
+/* .dropdown {
   position: relative;
   display: inline-block;
   width: 100%;
@@ -604,7 +606,7 @@ Stil för "Välj län" dropdown med checkboxar (subscription.html)
   border: 1px solid #ccc;
   background-color: white;
   cursor: pointer;
-}
+} */
 
 .dropbtn .arrow {
   float: right;
@@ -615,34 +617,34 @@ Stil för "Välj län" dropdown med checkboxar (subscription.html)
   transform: rotate(180deg); /* Snurra pilen uppåt när öppnad */
 }
 
-.dropdown-content {
-  display: none; /* Starta alltid stängd */
+/* .dropdown-content {
+  display: none; 
   position: absolute;
   background-color: white;
   min-width: 100%;
-  max-height: 150px; /* Scroll om fler än 4-5 alternativ */
+  max-height: 150px; 
   overflow-y: auto;
   border: 1px solid #ccc;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Liten skugga */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
   z-index: 1;
-  margin-top: 2px; /* Liten luft mellan knapp och lista */
-}
+  margin-top: 2px; 
+} */
 
-.dropdown-content label {
+/* .dropdown-content label {
   display: flex;
   align-items: center;
   padding: 5px 10px;
-  margin: 0; /* Ingen extra radavstånd */
+  margin: 0; 
   font-weight: normal;
 }
 
 .dropdown-content label:hover {
   background-color: #f1f1f1;
-}
+} */
 
-.show {
-  display: block; /* Visa innehållet när man klickar */
-}
+/* .show {
+  display: block;
+} */
 
 /* ---------------------------------------------------
 Klarna delen
