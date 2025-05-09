@@ -4,21 +4,47 @@
 {% block title %}Registrera konto{% endblock %}
 
 {% block content %}
-<div class="card">
-  <h2 class="mt-4">Registrera dig</h2>
-  {% if error %}
-    <div class="alert alert-danger">{{ error }}</div>
-  {% endif %}
-  <form method="POST">
-    <input type="email" name="email" placeholder="E-post" required>
-    <input type="email" name="confirm_email" placeholder="Bekräfta e-post" required>
+<div class="container py-5 d-flex justify-content-center">
+  <div class="card login-card w-100" style="max-width: 30rem;">
+    <img src="{{ url_for('static', filename='register.jpg') }}"
+        class="card-img-top img-fluid mx-auto d-block"
+        style="max-height: 12rem; object-fit: cover;"
+        alt="Registrerings-dekoration">
+    <div class="card-body d-flex flex-column">
+      <h2 class="card-title text-center fw-bold mt-3 mb-5">Registrera konto</h2>
 
-    <input type="password" name="password" placeholder="Lösenord" required>
-    <input type="password" name="confirm_password" placeholder="Bekräfta lösenord" required>
+      {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+      {% endif %}
 
-    <div class="d-flex justify-content-center mt-2">
-      <button type="submit" class="btn btn-primary justify-content-center">Skapa konto</button>
+      <form method="POST" class="d-flex flex-column">
+
+        <div class="mb-2">
+          <input type="email" id="email" name="email"
+                 class="form-control" placeholder="E-post" required>
+        </div>
+        
+        <div class="mb-2">
+          <input type="email" id="confirm_email" name="confirm_email"
+                 class="form-control" placeholder="Bekräfta e-post" required>
+        </div>
+
+        <div class="mb-2">
+          <input type="password" id="password" name="password"
+                 class="form-control" placeholder="Lösenord" required>
+        </div>
+        
+        <div class="mb-4">
+          <input type="password" id="confirm_password" name="confirm_password"
+                 class="form-control" placeholder="Bekräfta lösenord" required>
+        </div>
+
+        <button type="submit"
+                class="btn btn-primary mt-auto w-100">
+          Skapa konto
+        </button>
+      </form>
     </div>
-  </form>
+  </div>
 </div>
 {% endblock %}

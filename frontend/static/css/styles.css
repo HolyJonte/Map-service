@@ -17,7 +17,7 @@ body.index-page html {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden;  /* fixar sista lilla scrollen */
+  overflow: hidden;
 }
 
 body.index-page .main-content,
@@ -44,7 +44,6 @@ body.index-page .main-content {
 *, *::before, *::after {
   box-sizing: border-box;
 }
-
 
 /* ─────────────────────────────────────────
     Knapp-stilar
@@ -75,17 +74,10 @@ body.index-page .main-content {
 
 /* Grå sekundärknapp */
 .btn-secondary {
-  display: inline-block;
   width: 200px;
-  padding: 10px;
-  background-color: #6c757d;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  transition: background-color .2s ease;
-  text-align: center;
-  text-decoration: none;
+  box-shadow:
+      0 4px 8px rgba(0,0,0,0.2),
+      0 8px 16px rgba(0,0,0,0.25);
 }
 
 .btn-secondary:hover {
@@ -93,16 +85,7 @@ body.index-page .main-content {
 }
 
 .btn-danger {
-  display: inline-block;
   width: 200px;
-  padding: 10px;
-  background-color: #dc3545;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  transition: background-color .2s ease;
-  text-align: center;
   cursor: pointer;
 }
 .btn-danger:hover {
@@ -119,27 +102,6 @@ Utseende för card
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
-
-/* ------------------------------------------
-Formulärfält i card
------------------------------------------- */
-/* .card input[type="text"],
-.card input[type="password"],
-.card input[type="email"],
-.card input[type="number"] {
-  width: 400px;
-  padding: 10px 12px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 16px;
-  transition: border-color 0.3s ease;
-} */
-
-/* .card input:focus {
-  outline: none;
-  border-color: #007bff;
-} */
 
 /* ------------------------------------------
 Knappar i card
@@ -471,14 +433,6 @@ STYLING FÖR LOGIN CHOICE-SIDAN
 .login-card p 
 .register-card p {
   color: #555;
-}
-
-/* ------------------------------------------------------------------------------
-LOGGA-IN SIDAN
----------------------------------------------------------------------------------*/
-
-.card.login-card {
-  
 }
 
 /* -------------------------------------------------------------------------

@@ -4,18 +4,35 @@
 {% block title %}Verifiera kod{% endblock %}
 
 {% block content %}
-<div class="card">
-  <h2 class="mt-4">Tvåstegsverifiering</h2>
-  {% if error %}
-    <div class="alert alert-danger">{{ error }}</div>
-  {% endif %}
-  <p class="text-muted mt-3">Här fyller du i den koden du fått från authenticator appen i din mobiltelefon.</p>
-  <p class="text-muted">Koden är giltig i 30 sekunder.</p>
-  <form method="POST">
-    <input type="text" name="code" placeholder="Kod från app" required>
-    <div class="d-flex justify-content-center gap-3 mt-4">
-      <button type="submit" class="btn btn-primary">Verifiera</button>
+<div class="container py-5 d-flex justify-content-center">
+  <div class="card login-card w-100" style="max-width: 30rem; min-width: 24rem;">
+    <div class="card-body d-flex flex-column text-center">
+      <h2 class="card-title fw-bold mt-2 mb-4">Tvåstegsverifiering</h2>
+
+      {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+      {% endif %}
+
+      <p class="text-muted mb-5">
+        Här fyller du i den koden du fått från autentiseringsappen i din mobil. Koden är giltig i 30 sekunder.
+      </p>
+
+      <form method="POST" class="d-flex flex-column">
+        <div class="mb-3">
+          <input type="text"
+                 name="code"
+                 class="form-control"
+                 placeholder="Kod från app"
+                 autocomplete="one-time-code"
+                 required>
+        </div>
+
+        <button type="submit"
+                class="btn btn-primary w-100">
+          Verifiera
+        </button>
+      </form>
     </div>
-  </form>
+  </div>
 </div>
 {% endblock %}
