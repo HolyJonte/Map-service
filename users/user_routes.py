@@ -170,6 +170,11 @@ def forgot_password():
 # =====================================================================================================
 @user_routes.route('/profile')
 def profile():
+    # Visar min sidor endast för inloggade användare och inte för admin
+    if session.get('is_admin'):
+        flash("Admins har inte tillgång till Mina sidor.")
+        return redirect(url_for('serve_index'))
+
     user_id = session.get('user_id')
 
     subscriber = get_subscriber_by_user_id(user_id)

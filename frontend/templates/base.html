@@ -38,13 +38,13 @@
         <nav class="menu-items" id="menuItems">
           <a href="{{ url_for('serve_index') }}"><i class="bi bi-house"></i> Hem</a>
           <a href="{{ url_for('subscriptions.prenumerera_check') }}"><i class="bi bi-chat-dots"></i> Prenumerera</a>
-          {% if session.user_logged_in or session.admin_logged_in %}
-            {% if session.user_logged_in %}
+          {% if session.user_logged_in%}
               <a href="/users/logout"><i class="bi bi-box-arrow-right"></i> Logga ut</a>
-              <a href="/users/profile"><i class="bi bi-person-circle"></i> Mina sidor</a>
-            {% else %}
+              {% if not session.is_admin %}
+                <a href="/users/profile"><i class="bi bi-person-circle"></i> Mina sidor</a>
+              {% endif %}
+            {% elif session.admin_logged_in %}
               <a href="/admin/logout"><i class="bi bi-box-arrow-right"></i> Logga ut</a>
-            {% endif %}
           {% else %}
             <a href="/login"><i class="bi bi-box-arrow-in-right"></i> Logga in</a>
           {% endif %}
