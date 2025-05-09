@@ -26,13 +26,3 @@ def get_roadworks():
         return jsonify(get_cached_roadworks())
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-# ==============================================================================
-# Route för att hämta trafikolyckor
-# ==============================================================================
-@trafik_bp.route('/accidents')
-def get_accidents():
-    try:
-        return jsonify(get_cached_accidents())
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
