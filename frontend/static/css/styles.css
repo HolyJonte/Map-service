@@ -92,7 +92,6 @@ body.index-page .main-content {
   background-color: #5a6268;
 }
 
-
 .btn-danger {
   display: inline-block;
   width: 200px;
@@ -124,7 +123,7 @@ Utseende för card
 /* ------------------------------------------
 Formulärfält i card
 ------------------------------------------ */
-.card input[type="text"],
+/* .card input[type="text"],
 .card input[type="password"],
 .card input[type="email"],
 .card input[type="number"] {
@@ -135,12 +134,12 @@ Formulärfält i card
   border-radius: 6px;
   font-size: 16px;
   transition: border-color 0.3s ease;
-}
+} */
 
-.card input:focus {
+/* .card input:focus {
   outline: none;
   border-color: #007bff;
-}
+} */
 
 /* ------------------------------------------
 Knappar i card
@@ -151,7 +150,6 @@ Knappar i card
   display: block;
   margin-bottom: 15px;
 }
-
 
 /* -------------------------------------------------------------------------
 Styling för Kartans ikoner
@@ -439,7 +437,6 @@ HEADER & CONTAINER
   }
 }
 
-
 /* ---------------------------------------------------
 Styling för hitta min plats knapp
 --------------------------------------------------- */
@@ -460,7 +457,7 @@ Styling för hitta min plats knapp
 }
 
 /* -------------------------------------------------------------------------
-Styling för Login-choice-vy
+STYLING FÖR LOGIN CHOICE-SIDAN
  ------------------------------------------------------------------------ */
 
 /* Själva korten */
@@ -475,9 +472,17 @@ Styling för Login-choice-vy
 .register-card p {
   color: #555;
 }
+
+/* ------------------------------------------------------------------------------
+LOGGA-IN SIDAN
+---------------------------------------------------------------------------------*/
+
+.card.login-card {
+  
+}
+
 /* -------------------------------------------------------------------------
-Styling för Admin sida (när man är inloggad som admin)
- ------------------------------------------------------------------------ */
+STYLING FÖR ADMINSIDAN
 /* ---------------------------------------------------
 Utseende för admin dashboard
 --------------------------------------------------- */

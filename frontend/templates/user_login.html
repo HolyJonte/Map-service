@@ -4,17 +4,34 @@
 {% block title %}Användarinloggning{% endblock %}
 
 {% block content %}
-<div class="card">
-  <h2 class="mt-4">Logga in</h2>
-  {% if error %}
-    <div class="alert alert-danger">{{ error }}</div>
-  {% endif %}
-  <form method="POST">
-    <input type="email" name="email" placeholder="E-post" required>
-    <input type="password" name="password" placeholder="Lösenord" required>
-    <div class="d-flex justify-content-center mt-2">
-      <button type="submit" class="btn btn-primary">Logga in</button>
+<div class="container py-5 d-flex justify-content-center">
+  <div class="card login-card w-100" style="max-width: 30rem;">
+    <img src="{{ url_for('static', filename='sign-in.jpg') }}"
+         class="card-img-top"
+         alt="Logga in-dekoration">
+    <div class="card-body d-flex flex-column">
+      <h2 class="card-title text-center fw-bold mt-3 mb-5">Logga in</h2>
+
+      {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+      {% endif %}
+
+      <form method="POST" class="d-flex flex-column">
+        <div class="mb-3">
+          <input type="email" id="email" name="email"
+                class="form-control" placeholder="E-post" required>
+        </div>
+        
+        <div class="mb-3">
+          <input type="password" id="password" name="password" 
+                class="form-control" placeholder="Lösenord" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-auto w-100">
+          Logga in
+        </button>
+      </form>
     </div>
-  </form>
+  </div>
 </div>
 {% endblock %}
