@@ -7,7 +7,11 @@
  * - Visar order-sammanfattning och hanterar betalningssvar
  */
 
-// 1) Ladda tidningar
+/* ===================================================================================================
+  Ladda listan av tidningar från servern och fyll <select>
+=================================================================================================== */
+
+// Hämta tidningar från servern och fylla en <select> med dem
 async function loadNewspapers() {
   const select = document.getElementById("newspaper_id");
   try {
@@ -31,7 +35,11 @@ async function loadNewspapers() {
   }
 }
 
-// 2) Ladda län
+/* ===================================================================================================
+  Ladda listan av län från servern och fyll <select>
+=================================================================================================== */
+
+// Hämta län från servern och fylla en <select> med dem, utan dubbletter
 async function loadCounties() {
   const select = document.getElementById("counties");
   try {
@@ -58,8 +66,11 @@ async function loadCounties() {
     console.error("Kunde inte hämta länslista:", err);
   }
 }
-
+/* ===================================================================================================
 // 3) Initiera dropdowns + “Gå till Klarna”-knapp på sidan laddning
+=================================================================================================== */
+
+// Ladda tidningar och län när sidan är klar
 window.addEventListener("DOMContentLoaded", () => {
   loadCounties();
   loadNewspapers();
@@ -72,13 +83,13 @@ window.addEventListener("DOMContentLoaded", () => {
       const klarnaContainer = document.getElementById("klarna-checkout-container");
       klarnaContainer.scrollIntoView({ behavior: "smooth" });
 
-      // **Här kommer authorize-anropet:**
+      // Initiera Klarna-betalning, skicka session-id, hämta authorization-token
       Klarna.Payments.authorize(
         { payment_method_category: "pay_now" },
         {},
         function (authRes) {
           if (authRes.approved) {
-            // Skicka tillbaka till servern för bekräftelse
+            // Skicka tillbaka till servern för bekräftelse, skicka session-id och authorization-token
             const sessionId = localStorage.getItem("klarnaSessionId");
             fetch("/subscriptions/prenumeration-startad", {
               method: "POST",
@@ -87,6 +98,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 session_id: sessionId,
                 authorization_token: authRes.authorization_token,
               }),
+              // Skicka med session-id i headern, och skicka med Klarna-session-id i body för att bekräfta betalning
             }).then(conf => {
               if (conf.redirected) {
                 window.location.href = conf.url;
@@ -105,12 +117,17 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+/* ===================================================================================================
 // 4) Hantera formulärets submit
+=================================================================================================== */
+
+ // Lyssna på formulärets submit, skicka data till servern, initiera Klarna-betalning
 document
   .getElementById("subscription-form")
   .addEventListener("submit", async (event) => {
     event.preventDefault();
 
+    // Hämta formuläret och dess element
     const form = event.target;
     const startBtn = form.querySelector("#start-sub-btn");
     const responseDiv = document.getElementById("response");
@@ -165,13 +182,14 @@ document
       });
       const data = await res.json();
 
-      // FELHANTERING
+      // Felhantering, där det kastas ett felmeddelande om res.ok är falskt
       if (!res.ok) {
         if (data.error === "already_subscribed") {
           alert("Du är redan prenumerant med detta telefonnummer. Du dirigeras till din profil.");
           setTimeout(() => (window.location.href = "/users/profile"), 1000);
           return;
         }
+        // Om det är ett ogiltigt telefonnummer kas
         responseDiv.innerHTML = `<p class="error">${data.error || "Okänt fel"}</p>`;
         startBtn.disabled = false;
         startBtn.style.opacity = "1";
@@ -183,7 +201,7 @@ document
       localStorage.setItem("klarnaSessionId", data.session_id);
       localStorage.setItem("email", data.email);
 
-      // Visa order-sammanfattning
+      // Visa order-sammanfattning för prenumerationen
       const countyText =
         form.querySelector("#counties").selectedOptions[0].textContent;
       const summaryHtml = `
@@ -200,6 +218,7 @@ document
         client_id: data.client_id,
         client_token: data.client_token,
       });
+      // Ladda Klarna-widget
       Klarna.Payments.load(
         {
           container: "#klarna-checkout-container",
@@ -207,7 +226,7 @@ document
         },
         (payRes) => {
           if (payRes.show_form) {
-            // Visa “Gå till Klarna”
+            // Visa “Gå till Klarna” om Klarna-widgeten är laddad korrekt
             goToKlarnaContainer.style.display = "block";
           } else if (payRes.error) {
             responseDiv.innerHTML = `<p class="error">Fel vid laddning: ${payRes.error}</p>`;
@@ -220,14 +239,14 @@ document
         klarnaContainer.scrollIntoView({ behavior: "smooth" });
       }, 200);
 
-      // Ändra “Starta” → “Ändra” med återställningslogik
+      // Ändra “Starta” till “Ändra” med återställningslogik
       startBtn.textContent = "Ändra";
       startBtn.classList.replace("btn-primary", "btn-outline-primary");
       startBtn.disabled = false;
       startBtn.style.opacity = "1";
       startBtn.onclick = (e) => {
         e.preventDefault();
-        // Rensa UI
+        // Rensa order-sammanfattning
         document.getElementById("order-summary")?.remove();
         klarnaContainer.innerHTML = "";
         goToKlarnaContainer.style.display = "none";
@@ -238,6 +257,7 @@ document
         startBtn.classList.replace("btn-outline-primary", "btn-primary");
         startBtn.onclick = null;
       };
+      // Felhantering
     } catch (err) {
       console.error("Fetch error:", err);
       responseDiv.innerHTML = `<p class="error">Något gick fel: ${err.message}</p>`;
