@@ -166,6 +166,7 @@ def prenumeration_startad():
             session_id = data.get("session_id")
             authorization_token = data.get("authorization_token")
             mode = data.get("mode", "start")  # För förnyelse av prenumeration
+
             if not session_id or not authorization_token:
                 return jsonify({"error": "Missing session_id or Klarna token"}), 400
 

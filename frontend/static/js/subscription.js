@@ -72,7 +72,6 @@ async function loadCounties() {
 
 // Ladda tidningar och län när sidan är klar
 window.addEventListener("DOMContentLoaded", () => {
- 
     // Ladda counties & newspapers som vanligt...
     loadCounties().then(() => {
       // Efter counties är inlästa, applicera förifyll:
@@ -89,6 +88,10 @@ window.addEventListener("DOMContentLoaded", () => {
         document.getElementById("newspaper_id").value = prePaper;
       }
     });
+    // Hämta mode från HTML
+    const mode = document.getElementById("subscription-mode")?.value || "start";
+
+
   // Lyssna på Gå-till-Klarna
   document
     .getElementById("go-to-klarna-btn")
