@@ -112,12 +112,12 @@
                 <h5 class="card-title mb-4">Avsluta prenumeration</h5>
                 <p>Här kan du avsluta din prenumeration. OBS! När du klickat på <strong>Avsluta</strong> 
                   kan du inte ångra dig och måste skapa en prenumeration på nytt.</p>
-                <form id="unsubscribe-form" method="post">
-                  {% if csrf_token %}
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                  {% endif %}
-                  <button type="submit" class="mt-auto btn btn-danger w-100">Avsluta</button>
-                </form>
+                  <form id="unsubscribe-form">
+                    {% if csrf_token %}
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    {% endif %}
+                    <button type="button" class="mt-auto btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#unsubscribeModal">Avsluta</button>
+                  </div>
                 <div id="unsubscribe-response" class="mt-2"></div>
               </div>
             </div>
@@ -140,6 +140,25 @@
       </div>
     </div>
   {% endif %}
+
+  <!-- Bekräftelsemodal för avslut -->
+  <div class="modal fade" id="unsubscribeModal" tabindex="-1" aria-labelledby="unsubscribeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="unsubscribeModalLabel">Bekräfta avslut</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
+        </div>
+        <div class="modal-body">
+         Är du säker på att du vill avsluta prenumerationen? Detta går inte att ångra.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
+          <button id="confirm-unsubscribe" type="button" class="btn btn-danger">Avsluta</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </div>
 
