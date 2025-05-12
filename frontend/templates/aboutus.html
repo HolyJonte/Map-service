@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Om TrafikVida{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <!-- Rubrik och intro -->
+  <div class="text-center fs-1 mb-5">
+    <h1 class="fw-bold">Om oss</h1>
+    <p class="text-muted">Din personliga SMS-tjänst för viktiga trafikvarningar.</p>
+  </div>
+
+  <!-- Bild vänster, text höger -->
+  <div class="row align-items-center">
+    <!-- Bildkolumn -->
+    <div class="col-md-4 mb-4 mb-md-0">
+      <img src="{{ url_for('static', filename='trafiksverige.jpg') }}" 
+           alt="Illustration av trafik" 
+           class="img-fluid rounded shadow-sm">
+    </div>
+
+    <!-- Textkolumn -->
+    <div class="col-md-6">
+      <h5 class="fw-semibold mb-3">Varför TrafikVida?</h5>
+      <p>
+        TrafikVida är för dig som vill få snabba, relevanta trafikuppdateringar via SMS – 
+        utan att behöva scrolla i appar. Vi fokuserar på olyckor och vägarbeten 
+        med stor påverkan i just ditt län.
+      </p>
+
+      <h5 class="fw-semibold mt-4 mb-3">Så funkar det</h5>
+      <ul>
+        <li>1. Skapa ett konto</li>
+        <li>2. Logga in med säker 2FA</li>
+        <li>3. Starta en prenumeration – välj län och tidning</li>
+        <li>4. Betala tryggt med Klarna</li>
+        <li>5. Få SMS vid viktiga händelser</li>
+      </ul>
+
+      <h5 class="fw-semibold mt-4 mb-3">Vår filosofi</h5>
+      <p>
+        Vi tror på tillgänglighet, enkelhet och säkerhet. TrafikVida är byggd 
+        med öppen källkod och med integritet i fokus.
+      </p>
+
+      <div class="mt-4">
+        <a href="{{ url_for('subscriptions.show_subscription_page') }}" class="btn btn-primary">
+          Börja prenumerera
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

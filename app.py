@@ -69,6 +69,10 @@ def serve_static(filename):
 def login_choice():
     return render_template("login_choice.html")
 
+@app.route('/aboutus')
+def about():
+    return render_template("aboutus.html")
+
 # För att visa förhandsvisning av karta på webbsajt för kund
 @app.route('/embed/<path:filename>')
 def embed_files(filename):
