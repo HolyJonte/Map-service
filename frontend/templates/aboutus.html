@@ -3,11 +3,6 @@
 
 {% block content %}
 <div class="container py-5">
-  <!-- Rubrik och intro -->
-  <div class="text-center fs-1 mb-5">
-    <h1 class="fw-bold">Om oss</h1>
-    <p class="text-muted">Din personliga SMS-tjänst för viktiga trafikvarningar.</p>
-  </div>
 
   <!-- Bild vänster, text höger -->
   <div class="row align-items-center">
@@ -19,12 +14,12 @@
     </div>
 
     <!-- Textkolumn -->
-    <div class="col-md-6">
+    <div class="col-md-8">
       <h5 class="fw-semibold mb-3">Varför TrafikVida?</h5>
       <p>
         TrafikVida är för dig som vill få snabba, relevanta trafikuppdateringar via SMS – 
         utan att behöva scrolla i appar. Vi fokuserar på olyckor och vägarbeten 
-        med stor påverkan i just ditt län.
+        med stor påverkan i just ditt län för att erbjuda en tjänst som gör det enkelt att planera sina resor.
       </p>
 
       <h5 class="fw-semibold mt-4 mb-3">Så funkar det</h5>
@@ -43,7 +38,7 @@
       </p>
 
       <div class="mt-4">
-        <a href="{{ url_for('subscriptions.show_subscription_page') }}" class="btn btn-primary">
+        <a href="{{ url_for('login_choice') }}" class="btn btn-primary">
           Börja prenumerera
         </a>
       </div>
