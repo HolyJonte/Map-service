@@ -53,14 +53,14 @@ def add_subscriber(phone_number, email, user_id, county, newspaper_id, klarna_to
 # KANSKE ÖVERFLÖDIG???
 # Uppdaterar en befintlig prenumerants status och betalningsdatum
 #========================================================================================================================
-def update_subscriber(phone_number, klarna_token):
+def update_subscriber(phone_number, klarna_token, subscription_start):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('''
         UPDATE subscribers
-        SET last_payment = ?, active = 1, klarna_token = ?
+        SET last_payment = ?, subscription_start= ?, klarna_token = ?
         WHERE phone_number = ?
-    ''', (datetime.now(), klarna_token, phone_number))
+    ''', (datetime.now(), subscription_start.strftime('%Y-%m-%d %H:%M:%S'), klarna_token, phone_number))
     conn.commit()
     conn.close()
 
@@ -266,21 +266,10 @@ def update_inactive_subscriber(subscriber_id, phone_number, email, county, newsp
 #========================================================================================================================
 # Hämta prenumeranter med prenumeration som går ut om 14 dagar
 #========================================================================================================================
-def get_subscribers_expiring_in(days=14):
-    today = datetime.now().date()
-    warning_date = today + timedelta(days=days)
-
+def get_subscriptions_due_in_14_days():
     conn = get_db_connection()
     cursor = conn.cursor()
-
-    # SQLite-funktionen date() för att räkna 365 dagar från subscription_start:
-    cursor.execute('''
-        SELECT email
-        FROM subscribers
-        WHERE active = 1
-          AND date(subscription_start, '+365 days') = ?
-    ''', (warning_date.strftime('%Y-%m-%d'),))
-    
-    result = cursor.fetchall()
+    cursor.execute("SELECT * FROM subscribers WHERE date(subscription_start) = date('now', '-351 days')")
+    rows = cursor.fetchall()
     conn.close()
-    return result 
+    return [Subscriber(**dict(row)) for row in rows]

@@ -13,10 +13,11 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import time
 import json
+from flask import url_for, current_app
 from smsmodul.notification_service import send_sms, send_email
 from datetime import datetime, timedelta, timezone
 from api.logic import get_all_accidents, get_all_roadworks
-from database.crud.subscriber_crud import get_subscribers_by_county, get_subscribers_expiring_in
+from database.crud.subscriber_crud import get_subscribers_by_county, get_subscriptions_due_in_14_days
 from database.crud.sms_crud import log_sms
 
 # Fil för att lagra behandlade händelse-ID:n och deras tidsstämplar
@@ -272,16 +273,33 @@ def notify_accidents():
 
 # Funktion för att skicka notifieringar om prenumerationer som löper ut
 def check_expiring_subscriptions():
-    # 
-    expiring = get_subscribers_expiring_in(days=14)
-
-    #  
-    for email in expiring:
-        to = email
+    expiring = get_subscriptions_due_in_14_days()
+    base_url = "https://trafikvida.ddns.net"
+    sent_emails = []
+    for subscriber in expiring:
+        renewal_link = f"{base_url}/renew-subscription?mode=update&user_id={subscriber.user_id}"
+        to = subscriber.email
         subject = "Prenumerationspåminnelse"
-        message = "Hej! Din prenumeration löper ut om 14 dagar. Förnya gärna i tid!"
-    # create_notification(sub_id, message) - BEHÖVS KANSKE INTE, ÄR OM VI LOGGAR I DATABASEN ATT MAIL GÅTT UT.
-        send_email(to, subject, message)
+        message = (
+            f"Hej!\n\n"
+            f"Din SMS-prenumeration på trafikinformation löper ut om 14 dagar.\n"
+            f"Ditt telefonnummer: {subscriber.phone_number}\n"
+            f"Ditt län: {subscriber.county}\n"
+            f"Förnya din prenumeration här: {renewal_link}\n\n"
+            f"Vänliga hälsningar,\nTrafikViDa\n"
+        )
+        current_app.logger.debug(f"Sending email to {to} with subject: {subject}")
+        try:
+            send_email(to, subject, message)
+            sent_emails.append({
+                "email": to,
+                "phone_number": subscriber.phone_number,
+                "user_id": subscriber.user_id
+            })
+        except Exception as e:
+            current_app.logger.error(f"Failed to send email to {to}: {e}")
+    return sent_emails  # Returnera lista över skickade e-postadresser
+
 
 if __name__ == "__main__":
     notify_accidents()

@@ -11,7 +11,7 @@ from database.crud.newspaper_crud import get_all_newspaper_names
 from database.crud.subscriber_crud import (
     add_subscriber, update_subscriber, subscriber_exists,
     deactivate_subscriber, manual_add_subscriber, get_all_subscribers,
-    get_subscriber_klarna_token, remove_inactive_subscribers, get_subscriber_by_user_id, 
+    get_subscriber_klarna_token, remove_inactive_subscribers, get_subscriber_by_user_id, update_subscriber,
     update_inactive_subscriber
 )
 
@@ -21,6 +21,8 @@ from database.crud.pending_crud import (
 
 from database.crud.sms_crud import get_sms_count_for_newspaper
 
+# TA BORT - BARA FÖR TEST
+from prenumerationsmodul.notifications import check_expiring_subscriptions
 
 ### VI BEHÖVER: Lägga in admin inlogg och flask session hantering så att vi kan kräva inloigg
 ### ex komma åt rutter som /subscribers (alla prenumeranter)
@@ -29,17 +31,66 @@ subscription_routes = Blueprint('subscriptions', __name__)
 
 # Kör funktionen för att initiera databasen när modulen laddas
 initialize_database()
-
+# ==========================================================================================
+# Rutter för att förnya prenumeration
+# ==========================================================================================
+@subscription_routes.route('/renew-subscription', methods=['GET'])
+def renew_subscription():
+    mode = request.args.get('mode', 'start')
+    user_id = request.args.get('user_id')
+    if not session.get('user_logged_in'):
+        # Spara mål-URL för redirect efter inloggning
+        session['next'] = url_for('subscriptions.show_subscription_page', mode=mode, user_id=user_id)
+        return redirect(url_for('user_routes.login'))
+    return redirect(url_for('subscriptions.show_subscription_page', mode=mode, user_id=user_id))
 # ==========================================================================================
 # Rutter för prenumerationer
 # ==========================================================================================
 
 @subscription_routes.route('/subscription', methods=['GET'])
 def show_subscription_page():
+    # 1) Säkerställ att användaren är inloggad
     if not session.get('user_logged_in'):
-        return redirect(url_for('user_routes.login'))
-    return render_template('subscription.html')
+        return redirect(url_for('user_routes.login', next=request.path))
 
+    # 2) Hämta mode från query-string, default = start
+    mode = request.args.get('mode', None)
+    
+    # 3) Bestäm läge baserat på DB om mode inte skickades
+    current_user_id = session.get('user_id')
+    subscriber = get_subscriber_by_user_id(current_user_id)
+    if mode not in ('start', 'update'):
+        mode = 'update' if (subscriber and subscriber.active == 1) else 'start'
+
+    # 4) Sätt titel och vart formuläret ska POST:a
+    if mode == 'update':
+        page_title      = "Förnya prenumeration"
+        action_endpoint = url_for('subscriptions.update_subscription')
+    else:
+        page_title      = "Starta prenumeration"
+        action_endpoint = url_for('subscriptions.start_subscription')
+
+    # 5) Förifyll fälten med rena strängvärden
+    #    (ingen komplex JSON här)
+    subscriber_data = {
+        'phone_number':  subscriber.phone_number  or '',
+        'county':        subscriber.county.split(',')[0] if subscriber and subscriber.county else '',
+        'newspaper_id':  str(subscriber.newspaper_id) if subscriber else '',
+        'email':         subscriber.email         or ''
+    } if (mode=='update' and subscriber) else {
+        'phone_number': '',
+        'county':       '',
+        'newspaper_id': '',
+        'email':        ''
+    }
+
+    return render_template(
+        'subscription.html',
+        mode=mode,
+        page_title=page_title,
+        action_endpoint=action_endpoint,
+        subscriber_data=subscriber_data
+    )
 
 @subscription_routes.route('/prenumerera')
 def prenumerera_check():
@@ -107,13 +158,14 @@ def start_subscription():
 @subscription_routes.route('/prenumeration-startad', methods=['POST'])
 def prenumeration_startad():
     try:
+        # TEsta att ta bort if-satsen för POST (är redan definierad som post i rutten)
         if request.method == 'POST':
             data = request.get_json()
 
             # ✅ Läs in token från ny authorize-logik
             session_id = data.get("session_id")
             authorization_token = data.get("authorization_token")
-
+            mode = data.get("mode", "start")  # För förnyelse av prenumeration
             if not session_id or not authorization_token:
                 return jsonify({"error": "Missing session_id or Klarna token"}), 400
 
@@ -163,8 +215,24 @@ def prenumeration_startad():
 
             order_data = response.json()
             klarna_token = order_data.get( authorization_token)
+            if mode == "update":
+                # Förnyelse: Uppdatera befintlig prenumeration om mode=update
+                subscriber = get_subscriber_by_user_id(user_id)
+                if not subscriber:
+                    return jsonify({"error": "Subscriber not found for renewal"}), 404
+                
+                # Nytt startdatum blir när prenumerationen startades förra gången + 365 dagar
+                # Anta att subscriber.subscription_start är en sträng "YYYY-MM-DD HH:MM:SS"
+                old_start = datetime.fromisoformat(subscriber.subscription_start)
+                #Lägg på 365 dagar (eller använd relativedelta(years=1) för skottårstrygghet)
+                new_start = old_start + timedelta(days=365)
 
-            add_subscriber(phone_number, email, user_id, county, newspaper_id, klarna_token)
+                update_subscriber(phone_number=phone_number, klarna_token=klarna_token, subscription_start=new_start)
+            else:
+                success = add_subscriber(phone_number, email, user_id, county, newspaper_id, klarna_token)
+                if not success:
+                    return jsonify({"error": "Failed to add subscription"}), 500
+
             delete_pending_subscriber(session_id)
             subscriber_id = subscriber_exists(phone_number)
 
@@ -350,3 +418,24 @@ def get_sms_count(newspaper_id):
         return jsonify({"sms_count": count}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+# ==========================================================================================
+# OBS BARA FÖR TEST AV EMAIL
+# ==========================================================================================
+
+@subscription_routes.route('/check-expiring-subscriptions', methods=['POST'])
+def trigger_check_expiring_subscriptions():
+    try:
+        sent_emails = check_expiring_subscriptions()
+        if sent_emails:
+            return jsonify({
+                "message": "Checked expiring subscriptions successfully",
+                "sent_emails": sent_emails
+            }), 200
+        else:
+            return jsonify({
+                "message": "Checked expiring subscriptions, no expiring subscriptions found"
+            }), 200
+    except Exception as e:
+        current_app.logger.error(f"Error in check_expiring_subscriptions: {e}")
+        return jsonify({"error": f"Failed to check subscriptions: {str(e)}"}), 500

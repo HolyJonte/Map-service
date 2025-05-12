@@ -139,10 +139,10 @@ def initialize_database():
     user_id = user["id"]
 
     # Hårdkodar in en prenumerant för county = 1 (TA BORT SEDAN)
-    default_subscriber = (user_id, "+46701234567", 1, 1, "test_klarna_token")
+    default_subscriber = (user_id, "+46701234567", "madeleinethune@gmail.com", 1, 1, "2024-05-26 14:37:45", "test_klarna_token")
     cursor.execute('''
-        INSERT OR IGNORE INTO subscribers (user_id, phone_number, county, newspaper_id, klarna_token)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT OR IGNORE INTO subscribers (user_id, phone_number, email, county, newspaper_id, subscription_start, klarna_token)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     ''', default_subscriber)
 
     conn.commit()

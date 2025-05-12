@@ -72,9 +72,23 @@ async function loadCounties() {
 
 // Ladda tidningar och län när sidan är klar
 window.addEventListener("DOMContentLoaded", () => {
-  loadCounties();
-  loadNewspapers();
-
+ 
+    // Ladda counties & newspapers som vanligt...
+    loadCounties().then(() => {
+      // Efter counties är inlästa, applicera förifyll:
+      const preCounty = document.getElementById("county_prefill").value;
+      if (preCounty) {
+        Array.from(document.getElementById("counties").options)
+             .find(opt => opt.value === preCounty)
+             .selected = true;
+      }
+    });
+    loadNewspapers().then(() => {
+      const prePaper = document.getElementById("newspaper_prefill").value;
+      if (prePaper) {
+        document.getElementById("newspaper_id").value = prePaper;
+      }
+    });
   // Lyssna på Gå-till-Klarna
   document
     .getElementById("go-to-klarna-btn")
@@ -97,6 +111,7 @@ window.addEventListener("DOMContentLoaded", () => {
               body: JSON.stringify({
                 session_id: sessionId,
                 authorization_token: authRes.authorization_token,
+                mode: mode,
               }),
               // Skicka med session-id i headern, och skicka med Klarna-session-id i body för att bekräfta betalning
             }).then(conf => {
