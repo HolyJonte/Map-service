@@ -1,136 +1,173 @@
-{# admin_dashboard.html #}
 {% extends "base.html" %}
-
 {% block title %}Adminpanel{% endblock %}
 
 {% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <!-- SIDOPANEL -->
+    <div class="col-md-3 col-lg-2 bg-light border-end min-vh-100 py-4">
+      <h5 class="text-center mb-4">Adminpanel</h5>
+      <div class="nav flex-column nav-pills" id="admin-tabs" role="tablist">
+        <button class="nav-link active" id="tab-tidningar" data-bs-toggle="pill" data-bs-target="#content-tidningar" role="tab">📄 Tidningar</button>
+        <button class="nav-link" id="tab-ny" data-bs-toggle="pill" data-bs-target="#content-ny" role="tab">➕ Lägg till ny</button>
+        <button class="nav-link" id="tab-inst" data-bs-toggle="pill" data-bs-target="#content-inst" role="tab">⚙️ Inställningar</button>
+      </div>
+    </div>
 
-<div class="container dashboard">
-  <h2 class="mb-4">Tillagda dagstidningar</h2>
-
-  {% if newspapers %}
-    <div class="newspaper-list">
-      {% for paper in newspapers %}
-        <div class="newspaper-card justify-content-center">
-          <div>
-            <h5>{{ paper.name }}</h5>
-            {% if paper.contact_email %}
-              <p><strong>E-post:</strong> {{ paper.contact_email }}</p>
-            {% endif %}
-            {% if paper.sms_quota is not none %}
-              <p><strong>SMS-kvot:</strong> {{ paper.sms_quota }}</p>
-            {% endif %}
+    <!-- INNEHÅLL -->
+    <div class="col-md-9 col-lg-10 tab-content py-4">
+      <div class="tab-pane fade show active" id="content-tidningar" role="tabpanel">
+        <div class="card mb-4">
+          <div class="card-body row gx-3 align-items-center">
+            <div class="col-md-6">
+              <input type="text" id="newspaper-search" class="form-control" placeholder="Sök tidning...">
+            </div>
+            <div class="col-md-4">
+              <select id="sort-option" class="form-select">
+                <option value="az">Sortera A–Ö</option>
+                <option value="za">Sortera Ö–A</option>
+              </select>
+            </div>
           </div>
-          <form method="POST" class="delete-form">
-            <input type="hidden" name="id" value="{{ paper.id }}">
-            <button type="submit" name="action" value="delete" class="btn btn-danger">Ta bort</button>
-          </form>
         </div>
-      {% endfor %}
-    </div>
-  {% else %}
-    <p>Inga dagstidningar registrerade än.</p>
-  {% endif %}
-</div>
 
-<div class="card">
-  <h2 class="mt-4">Lägg till ny dagstidning</h2>
-
-  {% if error %}
-    <div class="alert alert-danger">{{ error }}</div>
-  {% endif %}
-
-  <form method="POST" class="mt-4">
-    <input type="hidden" name="action" value="add">
-    <input type="text" name="name" placeholder="Tidningens namn" required>
-    <input type="email" name="contact_email" placeholder="Kontaktmail (valfritt)">
-    <input type="number" name="sms_quota" placeholder="SMS-kvot (valfritt)">
-    <div class="d-flex justify-content-center">
-      <button type="submit" class="btn btn-primary">Lägg till</button>
-    </div>
-  </form>
-</div>
-
-<!--  Byta lösenord knappar -->
-<div class="card">
-  <h2 class="mt-4">Inställningar</h2>
-  <button id="toggle-password-form" class="btn btn-secondary mb-3 align-self-center">Byt lösenord</button>
-
-  <form method="POST" id="password-form" style="display: none;">
-    <input type="hidden" name="action" value="change_password">
-    <input type="password" name="new_password" placeholder="Nytt lösenord" required>
-    <input type="password" name="confirm_password" placeholder="Bekräfta nytt lösenord" required>
-    <div class="d-flex justify-content-center mt-2">
-      <button type="submit" class="btn btn-primary">Byt lösenord</button>
-    </div>
-  </form>
-</div>
-
-
-
-<!-- Modal för att visa SMS-data -->
-<div class="modal fade" id="smsModal" tabindex="-1" aria-labelledby="smsModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="smsModalLabel">SMS-Statistik</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
+        <h3 class="mb-4">Tillagda dagstidningar</h3>
+        {% if newspapers %}
+          <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3" id="newspaper-list">
+            {% for paper in newspapers %}
+              <div class="col" data-name="{{ paper.name|lower }}" data-county="{{ paper.contact_email|default('okänd')|lower }}">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h5 class="card-title">{{ paper.name }}</h5>
+                    {% if paper.contact_email %}
+                      <p class="card-text"><strong>E-post:</strong> {{ paper.contact_email }}</p>
+                    {% endif %}
+                    {% if paper.sms_quota is not none %}
+                      <p class="card-text"><strong>SMS-kvot:</strong> {{ paper.sms_quota }}</p>
+                    {% endif %}
+                    <form method="POST" class="mt-2">
+                      <input type="hidden" name="id" value="{{ paper.id }}">
+                      <button type="submit" name="action" value="delete" class="btn btn-danger btn-sm">Ta bort</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+          <nav>
+            <ul class="pagination justify-content-center mt-4" id="pagination"></ul>
+          </nav>
+        {% else %}
+          <p>Inga dagstidningar registrerade än.</p>
+        {% endif %}
       </div>
-      <div class="modal-body">
-        <p id="smsModalBody">Laddar...</p>
+
+      <div class="tab-pane fade" id="content-ny" role="tabpanel">
+        <h3 class="mb-4">Lägg till ny dagstidning</h3>
+        {% if error %}
+          <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+        <form method="POST" class="mt-3">
+          <input type="hidden" name="action" value="add">
+          <input type="text" name="name" class="form-control mb-2" placeholder="Tidningens namn" required>
+          <input type="email" name="contact_email" class="form-control mb-2" placeholder="Kontaktmail (valfritt)">
+          <input type="number" name="sms_quota" class="form-control mb-3" placeholder="SMS-kvot (valfritt)">
+          <button type="submit" class="btn btn-primary">Lägg till</button>
+        </form>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Stäng</button>
+
+      <div class="tab-pane fade" id="content-inst" role="tabpanel">
+        <h3 class="mb-4">Inställningar</h3>
+        <button class="btn btn-secondary mb-3" id="toggle-password-form">Byt lösenord</button>
+        <form method="POST" id="password-form" style="display:none;">
+          <input type="hidden" name="action" value="change_password">
+          <input type="password" name="new_password" class="form-control mb-2" placeholder="Nytt lösenord" required>
+          <input type="password" name="confirm_password" class="form-control mb-3" placeholder="Bekräfta nytt lösenord" required>
+          <button type="submit" class="btn btn-primary">Byt lösenord</button>
+        </form>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Javascript för styra olika knappar etc --> 
 <script>
-  // Vänta tills sidan laddats
-  document.addEventListener('DOMContentLoaded', function() {
-    const newspaperCards = document.querySelectorAll('.newspaper-card');
-
-    newspaperCards.forEach(card => {
-      const idInput = card.querySelector('input[name="id"]');
-      if (!idInput) return;
-
-      const newspaperId = idInput.value;
-
-      fetch(`/subscriptions/sms-count/${newspaperId}`)
-        .then(response => response.json())
-        .then(data => {
-          if (data.sms_count !== undefined) {
-            const smsInfo = document.createElement('p');
-            smsInfo.innerHTML = `<strong>Skickade SMS:</strong> ${data.sms_count}`;
-            card.querySelector('div').appendChild(smsInfo);
-          } else {
-            console.error('Kunde inte hämta SMS-data för tidning ID', newspaperId);
-          }
-        })
-        .catch(error => {
-          console.error('Fel vid hämtning av SMS-data:', error);
-        });
-    });
+  document.getElementById('toggle-password-form').addEventListener('click', () => {
+    const form = document.getElementById('password-form');
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
   });
-  </script>
 
-<script>
   document.addEventListener('DOMContentLoaded', function () {
-    const toggleBtn = document.getElementById('toggle-password-form');
-    const passwordForm = document.getElementById('password-form');
+    const searchInput = document.getElementById('newspaper-search');
+    const sortSelect = document.getElementById('sort-option');
+    const cards = Array.from(document.querySelectorAll('#newspaper-list .col'));
+    const pagination = document.getElementById('pagination');
+    const itemsPerPage = 9;
+    let currentPage = 1;
 
-    toggleBtn.addEventListener('click', function () {
-      if (passwordForm.style.display === 'none') {
-        passwordForm.style.display = 'block';
-        toggleBtn.textContent = 'Dölj formulär';
-      } else {
-        passwordForm.style.display = 'none';
-        toggleBtn.textContent = 'Byt lösenord';
+    function filterAndSort() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const sortType = sortSelect.value;
+
+      cards.forEach(card => {
+        const name = card.dataset.name;
+        const matches = name.includes(searchTerm);
+        card.style.display = matches ? '' : 'none';
+      });
+
+      const visibleCards = cards.filter(card => card.style.display !== 'none');
+      visibleCards.sort((a, b) => {
+        if (sortType === 'az') return a.dataset.name.localeCompare(b.dataset.name);
+        if (sortType === 'za') return b.dataset.name.localeCompare(a.dataset.name);
+      });
+
+      const parent = document.getElementById('newspaper-list');
+      visibleCards.forEach(card => parent.appendChild(card));
+
+      showPage(1);
+    }
+
+    function showPage(page) {
+      const visibleCards = cards.filter(card => card.style.display !== 'none');
+      const totalPages = Math.ceil(visibleCards.length / itemsPerPage);
+
+      visibleCards.forEach((card, index) => {
+        card.style.display = (index >= (page - 1) * itemsPerPage && index < page * itemsPerPage) ? '' : 'none';
+      });
+
+      renderPagination(totalPages, page);
+    }
+
+    function renderPagination(totalPages, activePage) {
+      pagination.innerHTML = '';
+
+      for (let i = 1; i <= totalPages; i++) {
+        const li = document.createElement('li');
+        li.className = 'page-item';
+        const button = document.createElement('button');
+        button.className = 'page-link';
+        button.textContent = i;
+        if (i === activePage) {
+          button.classList.add('fw-bold');
+        }
+        button.addEventListener('click', () => {
+          currentPage = i;
+          showPage(i);
+        });
+        li.appendChild(button);
+        pagination.appendChild(li);
+
+        li.addEventListener('click', () => {
+          currentPage = i;
+          showPage(i);
+        });
+        pagination.appendChild(li);
       }
-    });
+    }
+
+    searchInput.addEventListener('input', filterAndSort);
+    sortSelect.addEventListener('change', filterAndSort);
+
+    showPage(1);
   });
 </script>
-
 {% endblock %}
