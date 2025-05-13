@@ -277,7 +277,7 @@ def check_expiring_subscriptions():
     base_url = "https://trafikvida.ddns.net"
     sent_emails = []
     for subscriber in expiring:
-        renewal_link = f"{base_url}/renew-subscription?mode=update&user_id={subscriber.user_id}"
+        renewal_link = f"{base_url}/subscriptions/renew-subscription?mode=update&user_id={subscriber.user_id}"
         to = subscriber.email
         subject = "Prenumerationspåminnelse"
         message = (
