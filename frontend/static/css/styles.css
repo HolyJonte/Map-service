@@ -284,7 +284,7 @@ HEADER & CONTAINER
 .navbar {
   background-color: #222;
   color: white;
-  height: 70px;
+  height: 60px;
   display: flex;
   align-items: center;
   padding: 0 20px;
@@ -310,7 +310,7 @@ HEADER & CONTAINER
   position: relative;
 }
 
-/* Hamburgermenyn syns bara på lägre upplösning */
+/* === HAMBURGERMENY === */
 .menu-button {
   display: none;
   background: none;
@@ -347,13 +347,12 @@ HEADER & CONTAINER
 @media screen and (max-width: 768px) {
   .menu-button {
     display: block;
-    margin-right: 20px;
   }
 
   .menu-items {
     display: none;
     position: fixed;
-    top: 100px; /* precis under navbaren */
+    top: 60px; /* precis under navbaren */
     right: 0;
     margin-right: 0px;
     background-color: #222;
@@ -361,39 +360,13 @@ HEADER & CONTAINER
     align-items: flex-end;
     gap: 12px;
     padding: 15px 20px;
-    border-radius: 0 0 8px 8px;
+    border-radius: 0 0 2px 2px;
     z-index: 1000;
-    min-width: 180px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    min-width: 160px;
   }
 
   .menu-items.show {
     display: flex;
-  }
-}
-
-/* === MOBILLÄGE – max 450px === */
-@media screen and (max-width: 450px) {
-  .menu-button i {
-    margin-right: 0;
-  }
-
-  .menu-button {
-    font-size: 2em;
-  }
-
-  .menu-button::after {
-    content: "";
-  }
-
-  .menu-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .menu-button span {
-    display: none;
   }
 }
 
@@ -744,5 +717,14 @@ Styling för order-summary-card
   }
 }
 
-
-    
+/* ---------------------------------------------------------------------
+    Om oss sektion
+  ---------------------------------------------------------------------*/
+  
+  @media (max-width: 768px) {
+    .about-img {
+      max-height: 200px;
+      width: 100%;
+      object-fit: cover;
+    }
+  }
