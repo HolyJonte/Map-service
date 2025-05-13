@@ -55,6 +55,7 @@ def show_subscription_page():
 
     # 2) Hämta mode från query-string, default = start
     mode = request.args.get('mode', None)
+    print(f"Mode:", mode)
     
     # 3) Bestäm läge baserat på DB om mode inte skickades
     current_user_id = session.get('user_id')
@@ -83,7 +84,7 @@ def show_subscription_page():
         'newspaper_id': '',
         'email':        ''
     }
-
+    print(f"Mode:", mode)
     return render_template(
         'subscription.html',
         mode=mode,
@@ -123,14 +124,28 @@ def start_subscription():
   
         # Kontrollera om användaren redan har en aktiv prenumeration
         subscriber = get_subscriber_by_user_id(user_id)
+        # Kontrollera om prenumerationen går ut inom 14 dagar
+        is_due_soon = False
         if subscriber and subscriber.active == 1:
-            current_app.logger.info(f"Användare {user_id} försökte starta en ny prenumeration men har redan en aktiv.")
-            return jsonify({"error": "Du har redan en aktiv prenumeration."}), 400
-        
-        # Kontrollera om telefonnumret redan är registrerat
-        if subscriber_exists(phone_number):
-            current_app.logger.info(f"Telefonnummer {phone_number} används redan.")
-            return jsonify({"error": "Telefonnumret används redan."}), 400
+            subscription_start = datetime.strptime(subscriber.subscription_start, '%Y-%m-%d %H:%M:%S').date()
+            # Beräkna utgångsdatum (subscription_start + 365 dagar)
+            subscription_end = subscription_start + timedelta(days=365)
+            today = datetime.now().date()
+            fourteen_days_from_now = today + timedelta(days=14)
+            is_due_soon = today <= subscription_end <= fourteen_days_from_now
+
+        # Kör blockeringskontroller bara om prenumerationen INTE går ut inom 14 dagar
+        if not is_due_soon:
+            # Kontrollera om användaren redan har en aktiv prenumeration
+            if subscriber and subscriber.active == 1:
+                current_app.logger.info(f"Användare {user_id} försökte starta en ny prenumeration men har redan en aktiv.")
+                return jsonify({"error": "Du har redan en aktiv prenumeration."}), 400
+            
+            # Kontrollera om telefonnumret redan är registrerat
+            if subscriber_exists(phone_number):
+                current_app.logger.info(f"Telefonnummer {phone_number} används redan.")
+                return jsonify({"error": "Telefonnumret används redan."}), 400
+
 
         # Om du behöver passa county som EN sträng (kommaseparerad) till Klarna (eller databasen)
         counties_str = ",".join(str(c) for c in counties)
@@ -166,6 +181,7 @@ def prenumeration_startad():
             session_id = data.get("session_id")
             authorization_token = data.get("authorization_token")
             mode = data.get("mode", "start")  # För förnyelse av prenumeration
+            print(f"Mode:", mode)
 
             if not session_id or not authorization_token:
                 return jsonify({"error": "Missing session_id or Klarna token"}), 400
@@ -216,6 +232,7 @@ def prenumeration_startad():
 
             order_data = response.json()
             klarna_token = order_data.get( authorization_token)
+            
             if mode == "update":
                 # Förnyelse: Uppdatera befintlig prenumeration om mode=update
                 subscriber = get_subscriber_by_user_id(user_id)
@@ -223,11 +240,15 @@ def prenumeration_startad():
                     return jsonify({"error": "Subscriber not found for renewal"}), 404
                 
                 # Nytt startdatum blir när prenumerationen startades förra gången + 365 dagar
-                # Anta att subscriber.subscription_start är en sträng "YYYY-MM-DD HH:MM:SS"
-                old_start = datetime.fromisoformat(subscriber.subscription_start)
-                #Lägg på 365 dagar (eller använd relativedelta(years=1) för skottårstrygghet)
+        
+                    # Tolka subscription_start från sträng till datetime
+                try:
+                    old_start = datetime.strptime(subscriber.subscription_start, '%Y-%m-%d %H:%M:%S.%f')
+                except ValueError:
+                    old_start = datetime.strptime(subscriber.subscription_start, '%Y-%m-%d %H:%M:%S')
+                
+                # Lägg på 365 dagar (eller använd relativedelta(years=1) för skottårstrygghet)
                 new_start = old_start + timedelta(days=365)
-
                 update_subscriber(phone_number=phone_number, klarna_token=klarna_token, subscription_start=new_start)
             else:
                 success = add_subscriber(phone_number, email, user_id, county, newspaper_id, klarna_token)

@@ -125,7 +125,7 @@ def initialize_database():
         ''', (name, email, quota))
 
     # Hårdkodar in en användare (TA BORT SEDAN)
-    default_user = ("testuser@example.com", "hashed_password", "totp_secret_123")
+    default_user = ("test_user@exempel.com", "1234", "totp_secret_123")
     cursor.execute('''
         INSERT OR IGNORE INTO users (email, password, totp_secret)
         VALUES (?, ?, ?)
@@ -139,7 +139,7 @@ def initialize_database():
     user_id = user["id"]
 
     # Hårdkodar in en prenumerant för county = 1 (TA BORT SEDAN)
-    default_subscriber = (user_id, "+46701234567", "madeleinethune@gmail.com", 1, 1, "2024-05-26 14:37:45", "test_klarna_token")
+    default_subscriber = (user_id, "+46701234567", "test_user@example.com", 1, 1, "2024-05-27 14:37:45", "test_klarna_token")
     cursor.execute('''
         INSERT OR IGNORE INTO subscribers (user_id, phone_number, email, county, newspaper_id, subscription_start, klarna_token)
         VALUES (?, ?, ?, ?, ?, ?, ?)

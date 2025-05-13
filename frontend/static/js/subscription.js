@@ -89,7 +89,7 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     });
     // Hämta mode från HTML
-    const mode = document.getElementById("subscription-mode")?.value || "start";
+    const mode = document.getElementById("mode")?.value || "start";
 
 
   // Lyssna på Gå-till-Klarna
