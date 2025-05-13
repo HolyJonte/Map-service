@@ -53,7 +53,7 @@ def initialize_database():
             county INTEGER NOT NULL,
             newspaper_id INTEGER NOT NULL,
             active INTEGER DEFAULT 1,
-            subscription_start TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            subscription_start TIMESTAMP DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now')),
             last_payment TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             klarna_token TEXT,
             FOREIGN KEY (user_id) REFERENCES users(id),
@@ -70,7 +70,7 @@ def initialize_database():
             email TEXT UNIQUE NOT NULL,
             county INTEGER NOT NULL,
             newspaper_id INTEGER NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            created_at TIMESTAMP DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now')),
             FOREIGN KEY (user_id) REFERENCES users(id),
             FOREIGN KEY (newspaper_id) REFERENCES newspapers(id)
         )
