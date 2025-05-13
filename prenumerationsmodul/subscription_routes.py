@@ -65,7 +65,7 @@ def show_subscription_page():
     # 4) Sätt titel och vart formuläret ska POST:a
     if mode == 'update':
         page_title      = "Förnya prenumeration"
-        action_endpoint = url_for('subscriptions.update_subscription')
+        action_endpoint = url_for('subscriptions.renew_subscription')
     else:
         page_title      = "Starta prenumeration"
         action_endpoint = url_for('subscriptions.start_subscription')
@@ -74,7 +74,7 @@ def show_subscription_page():
     #    (ingen komplex JSON här)
     subscriber_data = {
         'phone_number':  subscriber.phone_number  or '',
-        'county':        subscriber.county.split(',')[0] if subscriber and subscriber.county else '',
+        'county':        str(subscriber.county) if subscriber and subscriber.county else '',
         'newspaper_id':  str(subscriber.newspaper_id) if subscriber else '',
         'email':         subscriber.email         or ''
     } if (mode=='update' and subscriber) else {
