@@ -24,48 +24,41 @@ notification_bp = Blueprint('notification', __name__)
 #----------------------------------------------------------------------------------------
 
 def send_sms(to, message, testMode=True, shortLinks=None):
-    # Ange rätt endpoint-URL från HelloSMS-dokumentationen
-    url = os.getenv("SMS_API_URL")  # OBS: Ändra till den korrekta API-URL:en beroende på om det är test eller äkta
-    api_username = os.getenv("SMS_API_USER")  # Byt ut mot ditt användarnamn
-    api_password = os.getenv("SMS_API_PASS")  # Byt ut mot ditt lösenord
+    url = os.getenv("SMS_API_URL")
+    api_key = os.getenv("SMS_API_KEY")
+    api_username = os.getenv("SMS_API_USER")
+    api_password = os.getenv("SMS_API_PASS")
 
-    # Exempelpayload för testning: verifiera integration och kostnadsuppdelning
     payload = {
         "to": [to] if isinstance(to, list) else to,
         "from": "TrafikViDa",
         "message": message,
-        "testMode": testMode  # Viktigt! Detta säkerställer att inga riktiga SMS skickas
+        "testMode": testMode
     }
 
-    # Om kortlänkar ska användas, lägg till dem i payload
-    if shortLinks is not None:
+    if shortLinks:
         payload["shortLinks"] = shortLinks
 
-    # Ange de nödvändiga headers, inklusive autentisering (exempel med Bearer-token)
-    headers = {
-        "Content-Type": "application/json",
-    }
+    # Välj autentisering beroende på URL
+    headers = {"Content-Type": "application/json"}
+    if "hellosms" in url:
+        auth = HTTPBasicAuth(api_username, api_password)
+    else:
+        auth = None
+        headers["Authorization"] = f"Bearer {api_key}"
 
     try:
-        # Skicka POST-anropet
-        response = requests.post(url, json=payload, headers=headers
-                                 , auth=HTTPBasicAuth(api_username, api_password))
-        response.raise_for_status()  # Om statuskod inte är 2xx, höjs ett fel.
+        response = requests.post(url, json=payload, headers=headers, auth=auth)
+        response.raise_for_status()
         response_data = response.json()
-
-        # Skriv ut svar för att se hur det ser ut (t.ex. antal SMS-segment etc.)
-        print("Statuskod:", response.status_code)
-        print("Response:", json.dumps(response.json(), indent=2))
-
         return True, {
             "status": "success",
             "statusText": "SMS skickat framgångsrikt",
             "messageIds": response_data.get("messageIds", [])
         }
-
     except requests.exceptions.RequestException as e:
         print("Något gick fel:", e)
-        return False
+        return False, {"status": "error", "statusText": str(e)}
     
 #----------------------------------------------------------------------------------------
 # Funktion för att skicka e-post via SMTP
