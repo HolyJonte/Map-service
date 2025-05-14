@@ -23,7 +23,7 @@ notification_bp = Blueprint('notification', __name__)
 # Funktion för att skicka SMS via HelloSMS API
 #----------------------------------------------------------------------------------------
 
-def send_sms(to, message, testMode=True):
+def send_sms(to, message, testMode=True, shortLinks=None):
     # Ange rätt endpoint-URL från HelloSMS-dokumentationen
     url = os.getenv("SMS_API_URL")  # OBS: Ändra till den korrekta API-URL:en beroende på om det är test eller äkta
     api_username = os.getenv("SMS_API_USER")  # Byt ut mot ditt användarnamn
@@ -34,9 +34,12 @@ def send_sms(to, message, testMode=True):
         "to": [to] if isinstance(to, list) else to,
         "from": "TrafikViDa",
         "message": message,
-        "shortLinks": True,
         "testMode": testMode  # Viktigt! Detta säkerställer att inga riktiga SMS skickas
     }
+
+    # Om kortlänkar ska användas, lägg till dem i payload
+    if shortLinks is not None:
+        payload["shortLinks"] = shortLinks
 
     # Ange de nödvändiga headers, inklusive autentisering (exempel med Bearer-token)
     headers = {
