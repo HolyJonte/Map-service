@@ -235,7 +235,7 @@ def notify_accidents():
                         sms_sent += 1
 
                         if sms_sent >= MAX_SMS:
-                            print("🛑 Maxgräns för SMS nådd. Avslutar.")
+                            print("Maxgräns för SMS nådd. Avslutar.")
                             return
                         else:
                             try:
