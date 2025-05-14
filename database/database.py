@@ -124,27 +124,40 @@ def initialize_database():
             VALUES (?, ?, ?)
         ''', (name, email, quota))
 
-    # Hårdkodar in en användare (TA BORT SEDAN)
-    default_user = ("test_user@exempel.com", "1234", "totp_secret_123")
-    cursor.execute('''
-        INSERT OR IGNORE INTO users (email, password, totp_secret)
-        VALUES (?, ?, ?)
-    ''', default_user)
 
-    # Hämta user_id för default-användaren (TA BORT SEDAN)
-    cursor.execute("SELECT id FROM users WHERE email = ?", (default_user[0],))
-    user = cursor.fetchone()
-    if not user:
-        raise Exception("Kunde inte skapa eller hitta default-användaren!")
-    user_id = user["id"]
+    # ===============================================
+    # Skapar fem testanvändare (TA BORT SEDAN)
+    # ===============================================
+    test_users = [
+        ("test_stockholm@example.com", "1234", "secret1"),
+        ("test_goteborg@example.com", "1234", "secret2"),
+        ("test_malmo@example.com", "1234", "secret3"),
+        ("test_jonkoping@example.com", "1234", "secret4"),
+        ("test_dalarna@example.com", "1234", "secret5")
+    ]
 
-    # Hårdkodar in flera prenumerant för county Stockholm, Göteborg, Malmö, Jönköping och Dalarna (TA BORT SEDAN)
+    for user in test_users:
+        cursor.execute('''
+            INSERT OR IGNORE INTO users (email, password, totp_secret)
+            VALUES (?, ?, ?)
+        ''', user)
+
+    # Hämta deras user_id:n i samma ordning
+    cursor.execute("SELECT id FROM users WHERE email IN (?, ?, ?, ?, ?) ORDER BY email ASC", 
+                tuple(user[0] for user in test_users))
+    user_ids = [row["id"] for row in cursor.fetchall()]
+    if len(user_ids) != 5:
+        raise Exception("Misslyckades att hämta fem testanvändare.")
+
+    # ===============================================
+    # Skapar en testprenumerant för varje användare (TA BORT SEDAN)
+    # ===============================================
     test_subscribers = [
-        (user_id, "+46700001001", "test_stockholm@example.com", 1, 1, "2024-05-27 14:37:45", "test_token_1"),
-        (user_id, "+46700001002", "test_goteborg@example.com", 14, 1, "2024-05-27 14:37:45", "test_token_2"),
-        (user_id, "+46700001003", "test_malmo@example.com", 12, 1, "2024-05-27 14:37:45", "test_token_3"),
-        (user_id, "+46700001004", "test_jonkoping@example.com", 6, 1, "2024-05-27 14:37:45", "test_token_4"),
-        (user_id, "+46700001005", "test_dalarna@example.com", 20, 1, "2024-05-27 14:37:45", "test_token_5")
+        (user_ids[0], "+46700001001", "test_stockholm@example.com", 1, 1, "2024-05-27 14:37:45", "token_1"),
+        (user_ids[1], "+46700001002", "test_goteborg@example.com", 14, 1, "2024-05-27 14:37:45", "token_2"),
+        (user_ids[2], "+46700001003", "test_malmo@example.com", 12, 1, "2024-05-27 14:37:45", "token_3"),
+        (user_ids[3], "+46700001004", "test_jonkoping@example.com", 6, 1, "2024-05-27 14:37:45", "token_4"),
+        (user_ids[4], "+46700001005", "test_dalarna@example.com", 20, 1, "2024-05-27 14:37:45", "token_5")
     ]
 
     for subscriber in test_subscribers:
@@ -154,6 +167,7 @@ def initialize_database():
                 subscription_start, klarna_token
             ) VALUES (?, ?, ?, ?, ?, ?, ?)
         ''', subscriber)
+
 
 
     conn.commit()
