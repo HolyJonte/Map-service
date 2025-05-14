@@ -36,7 +36,7 @@
         <button class="menu-button" id="menuToggle"><i class="bi bi-list"></i><span></span></button>
         <nav class="menu-items" id="menuItems">
           <a href="{{ url_for('serve_index') }}"><i class="bi bi-house"></i> Hem</a>
-          <a href="{{ url_for('about') }}">Om oss</a>
+          <a href="{{ url_for('about') }}"><i class="bi bi-info-circle"></i> Om oss</a>
           <a href="{{ url_for('subscriptions.prenumerera_check') }}"><i class="bi bi-chat-dots"></i> Prenumerera</a>
 
           {% if session.get('user_logged_in') %}
