@@ -152,6 +152,7 @@ def initialize_database():
     # ===============================================
     # Skapar en testprenumerant för varje användare (TA BORT SEDAN)
     # ===============================================
+    """
     test_subscribers = [
         (user_ids[0], "+46700001001", "test_stockholm@example.com", 1, 1, "2024-05-27 14:37:45", "token_1"),
         (user_ids[1], "+46700001002", "test_goteborg@example.com", 14, 1, "2024-05-27 14:37:45", "token_2"),
@@ -167,7 +168,7 @@ def initialize_database():
                 subscription_start, klarna_token
             ) VALUES (?, ?, ?, ?, ?, ?, ?)
         ''', subscriber)
-
+    """
 
 
     conn.commit()

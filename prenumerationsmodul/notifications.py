@@ -20,6 +20,11 @@ from api.logic import get_all_accidents, get_all_roadworks
 from database.crud.subscriber_crud import get_subscribers_by_county, get_subscriptions_due_in_14_days
 from database.crud.sms_crud import log_sms
 
+
+MAX_SMS = 1
+sms_sent = 0
+
+
 # Fil för att lagra behandlade händelse-ID:n och deras tidsstämplar
 PROCESSED_EVENTS_FILE = "processed_events.json"
 
@@ -221,35 +226,41 @@ def notify_accidents():
                 # Om telefonnumret inte är giltigt, skriv ut meddelande och hoppa över
                 try:
                     # Om sucess, skicka SMS med parametrarna to, message
-                    success = send_sms(to=phone, message=message)
+                    success, _ = send_sms(to=phone, message=message, testMode=False)
                     if success:
                         # Om SMS skickas, skriv ut meddelande
                         print(f"SMS skickat till {phone} om händelse {event_id} ({event_type})")
                         # Logga SMS i databasen
-                        sms_count += 1 
-                        try:
-                            log_sms(
-                                # Skapa en loggpost för SMS i databasen
-                                newspaper_id=subscriber["newspaper_id"],
-                                subscriber_id=subscriber["id"],
-                                recipient=phone,
-                                message=message
-                            )
+                        sms_count += 1
+                        sms_sent += 1
 
-                            print(f"SMS loggat för subscriber_id={subscriber['id']}, newspaper_id={subscriber['newspaper_id']}")
+                        if sms_sent >= MAX_SMS:
+                            print("🛑 Maxgräns för SMS nådd. Avslutar.")
+                            return
+                        else:
+                            try:
+                                log_sms(
+                                    # Skapa en loggpost för SMS i databasen
+                                    newspaper_id=subscriber["newspaper_id"],
+                                    subscriber_id=subscriber["id"],
+                                    recipient=phone,
+                                    message=message
+                                )
 
-                        # Om det uppstår ett fel vid loggning, skriv ut meddelande
-                        except Exception as e:
-                            print(f"Fel vid loggning av SMS för {phone}: {e}")
-                        # Lägg till och spara direkt efter lyckat SMS
-                        processed_events.append({
-                            "id": event_id,
-                            "processed_at": datetime.now(timezone.utc).isoformat()
-                        })
-                        save_processed_events(processed_events)
+                                print(f"SMS loggat för subscriber_id={subscriber['id']}, newspaper_id={subscriber['newspaper_id']}")
 
-                        # Vänta en sekund mellan SMS för att undvika överbelastning av API:et
-                        time.sleep(10)
+                            # Om det uppstår ett fel vid loggning, skriv ut meddelande
+                            except Exception as e:
+                                print(f"Fel vid loggning av SMS för {phone}: {e}")
+                            # Lägg till och spara direkt efter lyckat SMS
+                            processed_events.append({
+                                "id": event_id,
+                                "processed_at": datetime.now(timezone.utc).isoformat()
+                            })
+                            save_processed_events(processed_events)
+
+                            # Vänta en sekund mellan SMS för att undvika överbelastning av API:et
+                            time.sleep(10)
 
                     # Om SMS inte skickas, skriv ut meddelande
                     else:
