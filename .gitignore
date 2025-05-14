@@ -3,4 +3,5 @@ __pycache__/
 .vscode/
 trafikvida.db
 *.db
+processed_events.json
 # lägg till .env här sen!
