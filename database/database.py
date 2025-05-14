@@ -138,12 +138,23 @@ def initialize_database():
         raise Exception("Kunde inte skapa eller hitta default-användaren!")
     user_id = user["id"]
 
-    # Hårdkodar in en prenumerant för county = 1 (TA BORT SEDAN)
-    default_subscriber = (user_id, "+46701234567", "test_user@example.com", 1, 1, "2024-05-27 14:37:45", "test_klarna_token")
-    cursor.execute('''
-        INSERT OR IGNORE INTO subscribers (user_id, phone_number, email, county, newspaper_id, subscription_start, klarna_token)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    ''', default_subscriber)
+    # Hårdkodar in flera prenumerant för county Stockholm, Göteborg, Malmö, Jönköping och Dalarna (TA BORT SEDAN)
+    test_subscribers = [
+        (user_id, "+46700001001", "test_stockholm@example.com", 1, 1, "2024-05-27 14:37:45", "test_token_1"),
+        (user_id, "+46700001002", "test_goteborg@example.com", 14, 1, "2024-05-27 14:37:45", "test_token_2"),
+        (user_id, "+46700001003", "test_malmo@example.com", 12, 1, "2024-05-27 14:37:45", "test_token_3"),
+        (user_id, "+46700001004", "test_jonkoping@example.com", 6, 1, "2024-05-27 14:37:45", "test_token_4"),
+        (user_id, "+46700001005", "test_dalarna@example.com", 20, 1, "2024-05-27 14:37:45", "test_token_5")
+    ]
+
+    for subscriber in test_subscribers:
+        cursor.execute('''
+            INSERT OR IGNORE INTO subscribers (
+                user_id, phone_number, email, county, newspaper_id,
+                subscription_start, klarna_token
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', subscriber)
+
 
     conn.commit()
     conn.close()
