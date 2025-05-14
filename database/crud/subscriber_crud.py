@@ -37,7 +37,7 @@ def add_subscriber(phone_number, email, user_id, county, newspaper_id, klarna_to
     cursor = conn.cursor()
     try:
         cursor.execute('''
-            INSERT INTO subscribers (phone_number, email, user_id, county, newspaper_id, active, klarna_token) 
+            INSERT INTO subscribers (phone_number, email, user_id, county, newspaper_id, active, klarna_token)
             VALUES (?, ?, ?, ?, ?, 1, ?)
         ''', (phone_number, email, user_id, county, newspaper_id, klarna_token))
         conn.commit()
