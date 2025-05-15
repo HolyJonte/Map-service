@@ -107,14 +107,3 @@ def initiate_payment(_phone_number, _county, tokenize=True, payment_method='cred
 
 
 
-def cancel_token(klarna_token):
-    #Avslutar en kundtoken i Playground
-    headers = {
-        "Authorization": auth_header
-    }
-    response = requests.delete(
-        f"{KLARNA_API_URL}/payments/v1/customer-tokens/{klarna_token}",
-        headers=headers,
-        timeout=10  # Timeput för begäran 10 sekunder
-    )
-    return response.status_code == 204

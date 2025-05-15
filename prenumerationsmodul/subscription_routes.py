@@ -3,7 +3,7 @@ import json
 from flask import Blueprint, request, jsonify, render_template, current_app, session, redirect, url_for
 from datetime import datetime, timedelta
 
-from betalningsmodul.klarna_integration import initiate_payment, cancel_token, auth_header
+from betalningsmodul.klarna_integration import initiate_payment, auth_header
 from database.database import initialize_database
 from database.county_utils import get_counties
 from database.crud.newspaper_crud import get_all_newspaper_names
