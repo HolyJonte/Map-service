@@ -79,19 +79,6 @@ def get_subscriber_klarna_token(subscriber_id, phone_number):
     conn.close()
     return result[0] if result else None
 
-#==========================================================================================================================
-# Avaktiverar en prenumerant manuellt att sätta status till inaktiv, använder subscriber_id och telefonnummer
-#==========================================================================================================================
-def deactivate_subscriber(subscriber_id, phone_number):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('''
-        UPDATE subscribers
-        SET active = 0
-        WHERE id = ? AND phone_number = ?
-    ''', (subscriber_id, phone_number))
-    conn.commit()
-    conn.close()
 
 #==========================================================================================================================
 # Avaktiverar en prenumerant automatiskt om den har varit inaktiv i mer än ett år, använder tid och last_payment

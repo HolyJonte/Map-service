@@ -10,7 +10,7 @@ from database.crud.newspaper_crud import get_all_newspaper_names
 
 from database.crud.subscriber_crud import (
     add_subscriber, update_subscriber, subscriber_exists,
-    deactivate_subscriber, manual_add_subscriber, get_all_subscribers,
+    manual_add_subscriber, get_all_subscribers,
     get_subscriber_klarna_token, remove_inactive_subscribers, get_subscriber_by_user_id, update_subscriber)
 
 from database.crud.pending_crud import (
@@ -253,33 +253,7 @@ def prenumeration_startad():
 
 
 
-# ==========================================================================================
-# Rutt för att avbryta prenumeration manuellt (Alltså klickar på "Avbryt prenumeration" knappen)
-# ==========================================================================================
-@subscription_routes.route('/cancel-subscription', methods=['POST'])
-def cancel_subscription():
-    data = request.json
-    subscriber_id = data.get('id')
-    phone_number = data.get('phone_number')
 
-    if not subscriber_id or not phone_number:
-        return jsonify({"error": "Subscriber ID and phone number are required"}), 400
-
-    klarna_token = get_subscriber_klarna_token(subscriber_id, phone_number)
-    if not klarna_token:
-        return jsonify({"error": "Subscriber not found or invalid credentials"}), 404
-
-    try:
-        success = cancel_token(klarna_token)
-    except Exception as e:
-        return jsonify({"error": f"Failed to cancel subscription with Klarna: {str(e)}"}), 500
-
-    if not success:
-        return jsonify({"error": "Failed to cancel subscription with Klarna"}), 500
-
-    deactivate_subscriber(subscriber_id, phone_number)
-
-    return jsonify({"message": f"Subscription for {phone_number} cancelled"}), 200
 
 
 # ==========================================================================================
