@@ -107,51 +107,7 @@ def initiate_payment(_phone_number, _county, tokenize=True, payment_method='cred
 
     return session_id, client_token
 
-def verify_payment(data):
-    #Verifierar betalningsstatus från callback
-    session_id = data.get("session_id")
-    payment_status = data.get("status")
-    klarna_token = data.get("klarna_token")
-    # Verifierar att betalningen är slutförd
-    if payment_status == "completed" and klarna_token:
-        return True, session_id, klarna_token
-    return False, None, None
 
-
-def create_recurring_order(klarna_token, amount):
-    #Skapar en återkommande betalning i Playground
-    headers = {
-        "Authorization": auth_header,
-        "Content-Type": "application/json"
-        #Lägg till "Klarna-Idempotency-Key": str(uuid.uuid1())
-    }
-    order_data = {
-        "purchase_country": "SE",
-        "purchase_currency": "SEK",
-        "order_amount": amount,
-        "order_tax_amount": 0,
-        "order_lines": [
-            {
-                #"auto_capture": true,
-                "type": "digital",
-                "name": "SMS-prenumeration förnyelse",
-                "quantity": 1,
-                "unit_price": amount,
-                "tax_rate": 0,
-                "total_amount": amount,
-                "total_tax_amount": 0
-            }
-        ]
-    }
-
-    response = requests.post(
-        f"{KLARNA_API_URL}/payments/v1/customer-tokens/{klarna_token}/orders",
-        json=order_data,
-        headers=headers,
-        timeout=10
-    )
-
-    return response.status_code == 200
 
 def cancel_token(klarna_token):
     #Avslutar en kundtoken i Playground
