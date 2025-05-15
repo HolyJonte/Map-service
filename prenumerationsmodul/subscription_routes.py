@@ -11,7 +11,7 @@ from database.crud.newspaper_crud import get_all_newspaper_names
 from database.crud.subscriber_crud import (
     add_subscriber, update_subscriber, subscriber_exists,
     manual_add_subscriber, get_all_subscribers,
-    get_subscriber_klarna_token, remove_inactive_subscribers, get_subscriber_by_user_id, update_subscriber)
+    remove_inactive_subscribers, get_subscriber_by_user_id, update_subscriber)
 
 from database.crud.pending_crud import (
     add_pending_subscriber, get_pending_subscriber, delete_pending_subscriber, get_all_pending_subscribers
@@ -36,6 +36,7 @@ def renew_subscription():
         session['next'] = url_for('subscriptions.show_subscription_page', mode=mode, user_id=user_id)
         return redirect(url_for('user_routes.login'))
     return redirect(url_for('subscriptions.show_subscription_page', mode=mode, user_id=user_id))
+
 # ==========================================================================================
 # Rutter för prenumerationer
 # ==========================================================================================

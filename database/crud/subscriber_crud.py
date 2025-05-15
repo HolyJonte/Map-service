@@ -65,21 +65,6 @@ def update_subscriber(phone_number, klarna_token, subscription_start):
 
 
 
-#========================================================================================================================
-# Hämtar en prenumerants Klarna-token baserat på subscriber_id och telefonnummer
-#========================================================================================================================
-def get_subscriber_klarna_token(subscriber_id, phone_number):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('''
-        SELECT klarna_token FROM subscribers
-        WHERE id = ? AND phone_number = ?
-    ''', (subscriber_id, phone_number))
-    result = cursor.fetchone()
-    conn.close()
-    return result[0] if result else None
-
-
 #==========================================================================================================================
 # Avaktiverar en prenumerant automatiskt om den har varit inaktiv i mer än ett år, använder tid och last_payment
 #==========================================================================================================================
