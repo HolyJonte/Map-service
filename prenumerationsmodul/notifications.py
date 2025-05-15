@@ -10,7 +10,7 @@
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from flask import url_for, current_app
+
 import time
 import json
 from smsmodul.notification_service import send_sms, send_email
