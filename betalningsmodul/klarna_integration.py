@@ -1,4 +1,5 @@
-# klarna_integration.py
+# # Denna modul innehåller funktioner för att hantera betalningar mot Klarna API
+
 import requests
 import base64
 import os
@@ -17,11 +18,10 @@ BASE_URL = "https://trafikvida.ddns.net"
 auth_string = f"{KLARNA_API_KEY}:{KLARNA_API_SECRET}"
 auth_header = "Basic " + base64.b64encode(auth_string.encode()).decode("ascii")
 
-# Funktioner för att hantera betalningar.
+
 # Denna funktion anropas från subscription_routes.py för att skapa en betalningssession hos Klarna
-#Tar emot parametrar från subscription_routes.py, parametrarna används inte
-# men behöver tas emot här ändå eftersom de kommer från formuläret. Ev kan vi ta bort senare?
-## MÅSTE VI TA EMOT newspaper_id OCKSÅ??
+# Tar emot parametrar från subscription_routes.py, county används inte
+# men behöver tas emot här ändå eftersom de kommer från formuläret. 
 def initiate_payment(_phone_number, _county, tokenize=True, payment_method='credit_card'):
     headers = {
         "Authorization": auth_header,
@@ -102,8 +102,6 @@ def initiate_payment(_phone_number, _county, tokenize=True, payment_method='cred
     session_data = response.json()
     session_id = session_data["session_id"]
     client_token = session_data["client_token"]
-    
-    print("FULLT SVAR FRÅN KLARNA:", session_data)
 
     return session_id, client_token
 

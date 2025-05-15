@@ -19,11 +19,6 @@ from database.crud.pending_crud import (
 
 from database.crud.sms_crud import get_sms_count_for_newspaper
 
-# TA BORT - BARA FÖR TEST
-from prenumerationsmodul.notifications import check_expiring_subscriptions
-
-### VI BEHÖVER: Lägga in admin inlogg och flask session hantering så att vi kan kräva inloigg
-### ex komma åt rutter som /subscribers (alla prenumeranter)
 
 subscription_routes = Blueprint('subscriptions', __name__)
 
@@ -430,22 +425,3 @@ def get_sms_count(newspaper_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# ==========================================================================================
-# OBS BARA FÖR TEST AV EMAIL
-# ==========================================================================================
-
-@subscription_routes.route('/check-expiring-subscriptions', methods=['POST'])
-def trigger_check_expiring_subscriptions():
-    try:
-        sent_emails = check_expiring_subscriptions()
-        if sent_emails:
-            return jsonify({
-                "message": "Checked expiring subscriptions successfully",
-                "sent_emails": sent_emails
-            }), 200
-        else:
-            return jsonify({
-                "message": "Checked expiring subscriptions, no expiring subscriptions found"
-            }), 200
-    except Exception as e:
-        return jsonify({"error": f"Failed to check subscriptions: {str(e)}"}), 500

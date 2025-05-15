@@ -10,10 +10,9 @@
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
+from flask import url_for, current_app
 import time
 import json
-from flask import url_for, current_app
 from smsmodul.notification_service import send_sms, send_email
 from datetime import datetime, timedelta, timezone
 from api.logic import get_all_accidents, get_all_roadworks
@@ -293,7 +292,6 @@ def check_expiring_subscriptions():
             f"Hej!\n\n"
             f"Din SMS-prenumeration på trafikinformation löper ut om 14 dagar.\n"
             f"Ditt telefonnummer: {subscriber.phone_number}\n"
-            f"Ditt län: {subscriber.county}\n"
             f"Förnya din prenumeration här: {renewal_link}\n\n"
             f"Vänliga hälsningar,\nTrafikViDa\n"
         )
