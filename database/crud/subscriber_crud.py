@@ -80,30 +80,6 @@ def deactivate_expired_subscribers():
     conn.commit()
     conn.close()
 
-#============================================================================================================================
-# Lägger till en prenumerant manuellt för t.ex. test eller backup
-#============================================================================================================================
-def manual_add_subscriber(phone_number, email, user_id, county, newspaper_id, active=1, subscription_start=None, last_payment=None, klarna_token=None):
-    if subscription_start is None:
-        subscription_start = datetime.now().isoformat()
-    if last_payment is None:
-        last_payment = datetime.now().isoformat()
-
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    try:
-        cursor.execute('''
-            INSERT INTO subscribers (phone_number, email, user_id, county, newspaper_id, active, subscription_start, last_payment, klarna_token)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (phone_number, email, user_id, county, newspaper_id, active, subscription_start, last_payment, klarna_token))
-        conn.commit()
-        return True
-    except sqlite3.IntegrityError:
-        conn.rollback()
-        return False
-    finally:
-        conn.close()
-
 
 #===========================================================================================================================
 # Hämtar alla prenumeranter

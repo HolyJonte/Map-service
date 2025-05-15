@@ -10,7 +10,7 @@ from database.crud.newspaper_crud import get_all_newspaper_names
 
 from database.crud.subscriber_crud import (
     add_subscriber, update_subscriber, subscriber_exists,
-    manual_add_subscriber, get_all_subscribers,
+    get_all_subscribers,
     remove_inactive_subscribers, get_subscriber_by_user_id, update_subscriber)
 
 from database.crud.pending_crud import (
@@ -283,35 +283,6 @@ def get_newspaper_names():
     except Exception as e:
         # Returnera ett felmeddelande om något går fel
         return jsonify({"error": f"Failed to fetch newspapers: {str(e)}"}), 500
-
-
-### KRÄVA INLOGG
-# ==========================================================================================
-# Rutt för manuellt lägga till en prenumerant
-# ==========================================================================================
-    ###OBS! LÄGGTILL NEWSPAPER
-@subscription_routes.route('/man-add-subscriber', methods=['POST'])
-def man_add_subscriber():
-    data = request.json
-    phone_number = data.get('phone_number')
-    email = data.get('email')
-    county = data.get('county')
-    newspaper_id = data.get('newspaper_id')
-    active = data.get('active', 1)
-    subscription_start = data.get('subscription_start')
-    last_payment = data.get('last_payment')
-    klarna_token = data.get('klarna_token')
-
-    if not phone_number or not county:
-        return jsonify({"error": "Phone number and county are required"}), 400
-    # Kolla att active är 0 eller 1
-    if active not in (0, 1):
-        return jsonify({"error": "Active must be 0 or 1"}), 400
-
-    if manual_add_subscriber(phone_number, email, county, newspaper_id, active, subscription_start, last_payment, klarna_token):
-        return jsonify({"message": f"Subscriber {phone_number} added successfully"}), 201
-    else:
-        return jsonify({"error": "Phone number already exists"}), 400
 
 
 ### KRÄVA INLOGG
