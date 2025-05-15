@@ -242,27 +242,7 @@ def delete_subscriber(subscriber_id):
         print(f"Fel i delete_subscriber: {str(e)}")
         return False
     
-#========================================================================================================================
-# Uppdater inaktiv prenumerant till aktiv
-#========================================================================================================================
-def update_inactive_subscriber(subscriber_id, phone_number, email, county, newspaper_id, klarna_token):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    try:
-        cursor.execute('''
-            UPDATE subscribers
-            SET phone_number = ?, email = ?, county = ?, newspaper_id = ?, active = 1, 
-                subscription_start = ?, last_payment = ?, klarna_token = ?
-            WHERE id = ?
-        ''', (phone_number, email, county, newspaper_id, datetime.now(), datetime.now(), klarna_token, subscriber_id))
-        conn.commit()
-        return cursor.rowcount > 0
-    except sqlite3.IntegrityError:
-        conn.rollback()
-        return False
-    finally:
-        conn.close()
-        
+
 #========================================================================================================================
 # Hämta prenumeranter med prenumeration som går ut om 14 dagar
 #========================================================================================================================
