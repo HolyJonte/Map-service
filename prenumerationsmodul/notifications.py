@@ -28,7 +28,16 @@ from database.crud.sms_crud import log_sms
 PROCESSED_EVENTS_FILE = "processed_events.json"
 
 # Lista för att lagra SMS-meddelanden som ska skickas
-sms_to_send = []  
+sms_to_send = []
+
+# Funktion för att formatera tidsstämpel för SMS
+def format_sms_time(iso_string):
+    try:
+        dt = datetime.fromisoformat(iso_string.replace("Z", "+00:00"))
+        return dt.strftime("%Y-%m-%d kl. %H:%M")
+    except Exception:
+        return iso_string
+
 
 # Funktion för att ladda tidigare behandlade händelse-ID:n
 def load_processed_events():
@@ -193,12 +202,13 @@ def notify_accidents():
             continue
 
         # Skapa meddelande för SMS
+        original_link = event.get('link')
         message = (
             f"{label} i ditt län:\n"
             f"Plats: {event.get('location')}\n"
             f"Beskrivning: {event.get('message')}\n"
-            f"Start: {event.get('start')}\n"
-            f"Se mer information här: {event.get('link')}"
+            f"Start: {format_sms_time(event.get('start'))}\n"
+            f"#shortlink#"
         )
 
         # Hämta prenumeranter för länet
@@ -228,7 +238,7 @@ def notify_accidents():
             # Skicka ETT SMS till alla i länet
             try:
                 # Om sucess, skicka SMS med alla nummer
-                success, _ = send_sms(to=phone_numbers, message=message, testMode=True)
+                success, _ = send_sms(to=phone_numbers, message=message, testMode=True, shortLinks=[original_link])
                 if success:
                     # Om SMS skickas, skriv ut meddelande
                     print(f"Ett SMS skickades till {len(phone_numbers)} prenumeranter i län {county}")
