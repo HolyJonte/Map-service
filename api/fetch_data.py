@@ -3,9 +3,13 @@
 
 # Importerar requests för att kunna göra HTTP-anrop
 import requests
+from dotenv import load_dotenv
+import os
 
-# Vår API-nyckel från Trafikverket
-API_KEY = "a8f74965f0784d1297d38c4fc295120c"
+load_dotenv()
+
+# Vår API-nyckel från Trafikverket (finns i .env-filen)
+API_KEY = os.getenv("TRAFIKVERKET_API_KEY")
 
 # Grund-URL till Trafikverkets API
 BASE_URL = "https://api.trafikinfo.trafikverket.se/v2/data.json"
