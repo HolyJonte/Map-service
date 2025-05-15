@@ -16,9 +16,13 @@ from api.routes import trafik_bp
 from prenumerationsmodul.subscription_routes import subscription_routes
 #Importerar admin_routes
 from admin.admin_routes import admin_routes
+from dotenv import load_dotenv
+import os
 
 from users.user_routes import user_routes
 from smsmodul.notification_service import notification_bp
+
+load_dotenv()
 
 # Importerar APScheduler för schemaläggning
 
@@ -43,7 +47,7 @@ app = Flask(
 # Aktiverar CORS för alla domäner och alla endpoints
 CORS(app, resources={r"/notification/*": {"origins": "*"}})
 
-app.secret_key = "byt-ut-till-något-säkert"
+app.secret_key = os.getenv("FLASK_SECRET_KEY")
 
 # Registrerar trafik_bp (kameror-endpointen) som en blueprint i Flask-applikationen
 app.register_blueprint(trafik_bp)

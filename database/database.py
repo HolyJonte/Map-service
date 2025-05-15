@@ -94,7 +94,7 @@ def initialize_database():
 # Skapar en admin och lägger in den i databasen (ska vara kvar i slutversionen)
 # =========================================================================================
 
-    # Lägger in en adminanvändare med hashat lösenord för 'hemligt123'
+    # Lägger in en adminanvändare med hashat lösenord
     admin_user = (
         "admin@trafikvida.se",
         "scrypt:32768:8:1$uXeUgDr1LfYWGC8l$05f8c449a9d7b48aea4e0dfd30de987969406a591abc7323372c1c81bdbdd9483c6dc384a5644671a7af923750039932cfbbc4ebc033a8b6834263048f59e472",
