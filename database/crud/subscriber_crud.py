@@ -50,7 +50,6 @@ def add_subscriber(phone_number, email, user_id, county, newspaper_id, klarna_to
 
 
 #========================================================================================================================
-# KANSKE ÖVERFLÖDIG???
 # Uppdaterar en befintlig prenumerants status och betalningsdatum
 #========================================================================================================================
 def update_subscriber(phone_number, klarna_token, subscription_start):
@@ -173,7 +172,6 @@ def get_subscribers_by_county(county):
 
     return [dict(row) for row in rows]
 
-
 #===============================================================================================================================
 # Tar bort prenumeranter som redan är inaktiva och inte betalat på mer än två år
 #===============================================================================================================================
@@ -216,7 +214,7 @@ def update_subscriber_county(subscriber_id, phone_number, new_county):
     return success
 
 #========================================================================================================================
-# Ta bort prenumerant (KANSKE INTE ANVÄNDS?)
+# Ta bort prenumerant
 #========================================================================================================================
 def delete_subscriber(subscriber_id):
     try:
@@ -241,7 +239,7 @@ def delete_subscriber(subscriber_id):
     except Exception as e:
         print(f"Fel i delete_subscriber: {str(e)}")
         return False
-    
+
 
 #========================================================================================================================
 # Hämta prenumeranter med prenumeration som går ut om 14 dagar
