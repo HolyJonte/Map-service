@@ -11,9 +11,7 @@ from database.crud.newspaper_crud import get_all_newspaper_names
 from database.crud.subscriber_crud import (
     add_subscriber, update_subscriber, subscriber_exists,
     deactivate_subscriber, manual_add_subscriber, get_all_subscribers,
-    get_subscriber_klarna_token, remove_inactive_subscribers, get_subscriber_by_user_id, update_subscriber,
-    update_inactive_subscriber
-)
+    get_subscriber_klarna_token, remove_inactive_subscribers, get_subscriber_by_user_id, update_subscriber)
 
 from database.crud.pending_crud import (
     add_pending_subscriber, get_pending_subscriber, delete_pending_subscriber, get_all_pending_subscribers
@@ -55,7 +53,7 @@ def show_subscription_page():
 
     # 2) Hämta mode från query-string, default = start
     mode = request.args.get('mode', None)
-    print(f"Mode:", mode)
+    
     
     # 3) Bestäm läge baserat på DB om mode inte skickades
     current_user_id = session.get('user_id')
@@ -138,12 +136,10 @@ def start_subscription():
         if not is_due_soon:
             # Kontrollera om användaren redan har en aktiv prenumeration
             if subscriber and subscriber.active == 1:
-                current_app.logger.info(f"Användare {user_id} försökte starta en ny prenumeration men har redan en aktiv.")
                 return jsonify({"error": "Du har redan en aktiv prenumeration."}), 400
             
             # Kontrollera om telefonnumret redan är registrerat
             if subscriber_exists(phone_number):
-                current_app.logger.info(f"Telefonnummer {phone_number} används redan.")
                 return jsonify({"error": "Telefonnumret används redan."}), 400
 
 
@@ -163,7 +159,6 @@ def start_subscription():
         }), 200
 
     except Exception as e:
-        current_app.logger.error(f"Fel i start_subscription: {e}")
         return jsonify({"error": f"Serverfel: {str(e)}"}), 500
 
 
@@ -181,14 +176,14 @@ def prenumeration_startad():
             session_id = data.get("session_id")
             authorization_token = data.get("authorization_token")
             mode = data.get("mode", "start")  # För förnyelse av prenumeration
-            print(f"Mode:", mode)
+           
 
             if not session_id or not authorization_token:
                 return jsonify({"error": "Missing session_id or Klarna token"}), 400
 
             # Kontrollera pending subscriber
             result = get_pending_subscriber(session_id)
-            current_app.logger.debug(f"Pending subscriber dir: {dir(result)}")
+            
 
             if not result:
                 return jsonify({"error": "Session ID not found"}), 404
@@ -223,8 +218,6 @@ def prenumeration_startad():
                 "merchant_reference1": f"sub-{user_id}",
                 "merchant_data": json.dumps({"county": str(county)})
             }
-            current_app.logger.debug("Payload som skickas till Klarna:")
-            current_app.logger.debug(json.dumps(payload, indent=2))
             
             response = requests.post(url, json=payload, headers=headers)
             if response.status_code not in [200, 201]:
@@ -261,7 +254,6 @@ def prenumeration_startad():
             return render_template("confirmation.html", subscriber_id=subscriber_id)
         
     except Exception as e:
-        current_app.logger.error(f"Fel i prenumeration_startad: {e}")
         return jsonify({"error": f"Serverfel: {str(e)}"}), 500
 
 
@@ -344,7 +336,6 @@ def man_add_subscriber():
         return jsonify({"error": "Phone number and county are required"}), 400
     # Kolla att active är 0 eller 1
     if active not in (0, 1):
-        current_app.logger.error(f"Ogiltigt active-värde: {active}")
         return jsonify({"error": "Active must be 0 or 1"}), 400
 
     if manual_add_subscriber(phone_number, email, county, newspaper_id, active, subscription_start, last_payment, klarna_token):
@@ -386,7 +377,6 @@ def handle_klarna_push():
             timeout=10 # Timeout för att undvika hängande anrop
         )
         if response.status_code != 200:
-            current_app.logger.error(f"Failed to fetch order details: {response.text}")
             return jsonify({"error": "Failed to fetch order details"}), 500
 
         order_data = response.json()
@@ -426,7 +416,6 @@ def handle_klarna_push():
 
         return jsonify({"message": "Push notification received"}), 200
     except Exception as e:
-        current_app.logger.error(f"Fel i handle_klarna_push: {e}")
         return jsonify({"error": f"Serverfel: {str(e)}"}), 500
 
 # ==========================================================================================
@@ -459,5 +448,4 @@ def trigger_check_expiring_subscriptions():
                 "message": "Checked expiring subscriptions, no expiring subscriptions found"
             }), 200
     except Exception as e:
-        current_app.logger.error(f"Error in check_expiring_subscriptions: {e}")
         return jsonify({"error": f"Failed to check subscriptions: {str(e)}"}), 500
