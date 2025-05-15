@@ -47,7 +47,7 @@ def send_sms(to, message, testMode=True, shortLinks=None):
         auth = None
         headers["Authorization"] = f"Bearer {api_key}"
 
-    print("📦 Payload som skickas till HelloSMS:")
+    print("Payload som skickas till HelloSMS:")
     print(json.dumps(payload, indent=2))
 
     try:
@@ -60,15 +60,15 @@ def send_sms(to, message, testMode=True, shortLinks=None):
             "messageIds": response_data.get("messageIds", [])
         }
     except requests.exceptions.HTTPError as http_err:
-        print("❌ HTTPError från HelloSMS:", http_err)
+        print("HTTPError från HelloSMS:", http_err)
         try:
-            print("📨 Fullt svar från HelloSMS:", response.text)
+            print("Fullt svar från HelloSMS:", response.text)
         except:
-            print("⚠️ Kunde inte hämta felmeddelande från HelloSMS.")
+            print("Kunde inte hämta felmeddelande från HelloSMS.")
         return False, {"status": "error", "statusText": str(http_err)}
 
     except Exception as e:
-        print("❌ Annat fel vid SMS-sändning:", e)
+        print("Annat fel vid SMS-sändning:", e)
         return False, {"status": "error", "statusText": str(e)}
 
 #----------------------------------------------------------------------------------------
