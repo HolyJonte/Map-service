@@ -30,7 +30,7 @@ def send_sms(to, message, testMode=True, shortLinks=None):
     api_password = os.getenv("SMS_API_PASS")
 
     payload = {
-        "to": [to] if isinstance(to, list) else to,
+        "to": to if isinstance(to, list) else [to],
         "from": "TrafikViDa",
         "message": message,
         "testMode": testMode
@@ -47,6 +47,9 @@ def send_sms(to, message, testMode=True, shortLinks=None):
         auth = None
         headers["Authorization"] = f"Bearer {api_key}"
 
+    print("📦 Payload som skickas till HelloSMS:")
+    print(json.dumps(payload, indent=2))
+
     try:
         response = requests.post(url, json=payload, headers=headers, auth=auth)
         response.raise_for_status()
@@ -56,10 +59,18 @@ def send_sms(to, message, testMode=True, shortLinks=None):
             "statusText": "SMS skickat framgångsrikt",
             "messageIds": response_data.get("messageIds", [])
         }
-    except requests.exceptions.RequestException as e:
-        print("Något gick fel:", e)
+    except requests.exceptions.HTTPError as http_err:
+        print("❌ HTTPError från HelloSMS:", http_err)
+        try:
+            print("📨 Fullt svar från HelloSMS:", response.text)
+        except:
+            print("⚠️ Kunde inte hämta felmeddelande från HelloSMS.")
+        return False, {"status": "error", "statusText": str(http_err)}
+
+    except Exception as e:
+        print("❌ Annat fel vid SMS-sändning:", e)
         return False, {"status": "error", "statusText": str(e)}
-    
+
 #----------------------------------------------------------------------------------------
 # Funktion för att skicka e-post via SMTP
 #----------------------------------------------------------------------------------------

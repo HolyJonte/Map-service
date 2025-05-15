@@ -21,8 +21,7 @@ from database.crud.subscriber_crud import get_subscribers_by_county, get_subscri
 from database.crud.sms_crud import log_sms
 
 
-MAX_SMS = 1
-sms_sent = 0
+
 
 
 # Fil för att lagra behandlade händelse-ID:n och deras tidsstämplar
@@ -114,11 +113,11 @@ def notify_accidents():
     new_events = []
     # Loopa igenom alla händelser och filtrera ut de som ska behandlas idag
     for event in all_events:
-          # Hämta händelse-ID (viktigt för att avgöra om det redan behandlats)
+        # Hämta händelse-ID (viktigt för att avgöra om det redan behandlats)
         event_id = event.get("id")
         if not event_id:
             continue
-        
+
         # Kontrollera om händelsen redan har behandlats tidigare
         # (baserat på att ID finns i processed_events.json)
         if event_id in processed_ids:
@@ -155,7 +154,7 @@ def notify_accidents():
     # Om nya händelser hittas, skriv ut meddelande
     new_events_found = False
     # För att räkna antalet skickade SMS
-    sms_count = 0   
+    sms_count = 0
 
     # Loopa igenom nya händelser och skicka SMS till prenumeranter
     for event in new_events:
@@ -201,13 +200,11 @@ def notify_accidents():
             f"Start: {event.get('start')}\n"
             f"Se mer information här: {event.get('link')}"
         )
-        
 
         # Hämta prenumeranter för länet
         new_events_found = True
-        # Hämta prenumeranter för länet
         for county_id in county_ids:
-            county = str(county_id)  
+            county = str(county_id)
             # Om länet inte är giltigt, skriv ut meddelande och hoppa över
             print(f"Hämtar prenumeranter för county ID: {county}")
             subscribers = get_subscribers_by_county(county)
@@ -218,69 +215,60 @@ def notify_accidents():
 
             print(f"Hittade {len(subscribers)} prenumeranter för county ID {county}")
 
-            # Loopa igenom prenumeranter och skicka SMS
+            # Samla telefonnummer och prenumerantdata
+            phone_numbers = []
+            subscriber_info = []
+
             for subscriber in subscribers:
-                # Om prenumeranten inte har ett giltigt telefonnummer, skriv ut meddelande och hoppa över
                 phone = subscriber['phone_number']
+                if phone:
+                    phone_numbers.append(phone)
+                    subscriber_info.append(subscriber)
 
-                # Om telefonnumret inte är giltigt, skriv ut meddelande och hoppa över
-                try:
-                    # Om sucess, skicka SMS med parametrarna to, message
-                    success, _ = send_sms(to=phone, message=message, testMode=False)
-                    if success:
-                        # Om SMS skickas, skriv ut meddelande
-                        print(f"SMS skickat till {phone} om händelse {event_id} ({event_type})")
-                        # Logga SMS i databasen
-                        sms_count += 1
-                        sms_sent += 1
+            # Skicka ETT SMS till alla i länet
+            try:
+                # Om sucess, skicka SMS med alla nummer
+                success, _ = send_sms(to=phone_numbers, message=message, testMode=True)
+                if success:
+                    # Om SMS skickas, skriv ut meddelande
+                    print(f"Ett SMS skickades till {len(phone_numbers)} prenumeranter i län {county}")
 
-                        if sms_sent >= MAX_SMS:
-                            print("Maxgräns för SMS nådd. Avslutar.")
-                            return
-                        else:
-                            try:
-                                log_sms(
-                                    # Skapa en loggpost för SMS i databasen
-                                    newspaper_id=subscriber["newspaper_id"],
-                                    subscriber_id=subscriber["id"],
-                                    recipient=phone,
-                                    message=message
-                                )
+                    # Logga varje SMS individuellt
+                    for subscriber in subscriber_info:
+                        try:
+                            log_sms(
+                                newspaper_id=subscriber["newspaper_id"],
+                                subscriber_id=subscriber["id"],
+                                recipient=subscriber["phone_number"],
+                                message=message
+                            )
+                        # Om det uppstår ett fel vid loggning, skriv ut meddelande
+                        except Exception as e:
+                            print(f"Fel vid loggning av SMS för {subscriber['phone_number']}: {e}")
 
-                                print(f"SMS loggat för subscriber_id={subscriber['id']}, newspaper_id={subscriber['newspaper_id']}")
+                    # Lägg till och spara direkt efter lyckad sändning
+                    processed_events.append({
+                        "id": event_id,
+                        "processed_at": datetime.now(timezone.utc).isoformat()
+                    })
+                    save_processed_events(processed_events)
 
-                            # Om det uppstår ett fel vid loggning, skriv ut meddelande
-                            except Exception as e:
-                                print(f"Fel vid loggning av SMS för {phone}: {e}")
-                            # Lägg till och spara direkt efter lyckat SMS
-                            processed_events.append({
-                                "id": event_id,
-                                "processed_at": datetime.now(timezone.utc).isoformat()
-                            })
-                            save_processed_events(processed_events)
+                    # Vänta en stund för att undvika API-blockering
+                    time.sleep(10)
+                # Om SMS inte skickas, skriv ut meddelande
+                else:
+                    print(f"Misslyckades att skicka SMS till län {county}")
+            # Om det uppstår ett fel vid SMS-sändning, skriv ut meddelande
+            except Exception as e:
+                print(f"Fel vid SMS-sändning till län {county}: {e}")
 
-                            # Vänta en sekund mellan SMS för att undvika överbelastning av API:et
-                            time.sleep(10)
-
-                    # Om SMS inte skickas, skriv ut meddelande
-                    else:
-                        print(f"Misslyckades att skicka SMS till {phone}")
-                # Om det uppstår ett fel vid SMS-sändning, skriv ut meddelande
-                except Exception as e:
-                    print(f"Fel vid SMS-sändning för {phone}: {e}")
-
-    # Jag tar hem det här för att spara tid
-    if sms_count > 0:
-        print(f"Totalt skickade {sms_count} SMS.")
-    else:
-        print("Inga SMS skickades.")
-
-    # Om inga nya händelser hittas, skriv ut meddelande och avsluta
+    # Om inga nya händelser hittades
     if not new_events_found:
         print("Inga nya händelser hittades för idag.")
-    # Rensa gamla händelser och sparar de behandlade händelserna
+    # Rensa gamla händelser och spara
     processed_events = clean_old_events(processed_events, days_to_keep=30)
     save_processed_events(processed_events)
+
 
 # Funktion för att skicka notifieringar om prenumerationer som löper ut
 def check_expiring_subscriptions():
