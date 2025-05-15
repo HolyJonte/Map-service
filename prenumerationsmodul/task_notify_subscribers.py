@@ -24,4 +24,4 @@ if __name__ == "__main__":
             log("✔ Notifieringar körda klart")
         except Exception as e:
             log(f"❌ Fel vid notifiering: {str(e)}")
-        time.sleep(300)  # kör var 5:e minut
+        time.sleep(600)  # kör var 10:e minut
