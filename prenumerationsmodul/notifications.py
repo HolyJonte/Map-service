@@ -299,7 +299,7 @@ def check_expiring_subscriptions():
             f"Förnya din prenumeration här: {renewal_link}\n\n"
             f"Vänliga hälsningar,\nTrafikViDa\n"
         )
-        current_app.logger.debug(f"Sending email to {to} with subject: {subject}")
+        
         try:
             send_email(to, subject, message)
             sent_emails.append({
@@ -308,7 +308,8 @@ def check_expiring_subscriptions():
                 "user_id": subscriber.user_id
             })
         except Exception as e:
-            current_app.logger.error(f"Failed to send email to {to}: {e}")
+            print(f"Fel vid skickande av e-post till {to}: {e}")
+            continue
     return sent_emails  # Returnera lista över skickade e-postadresser
 
 
