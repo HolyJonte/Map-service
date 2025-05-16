@@ -11,6 +11,10 @@
         <button class="nav-link active" id="tab-tidningar" data-bs-toggle="pill" data-bs-target="#content-tidningar" role="tab">📄 Tidningar</button>
         <button class="nav-link" id="tab-ny" data-bs-toggle="pill" data-bs-target="#content-ny" role="tab">➕ Lägg till ny</button>
         <button class="nav-link" id="tab-inst" data-bs-toggle="pill" data-bs-target="#content-inst" role="tab">⚙️ Inställningar</button>
+        <!-- Knapp för att adda ner PDF -->
+        <a href="{{ url_for('static', filename='instructions.pdf') }}" class="nav-link" download>
+          📄 Ladda ner instruktioner
+        </a>
       </div>
     </div>
 
