@@ -9,7 +9,6 @@
       <p class="form-description text-muted mb-4">
         Ange ditt telefonnummer och välj län nedan för att aktivera din SMS-prenumeration.
         Du får trafikvarningar om olyckor och vägarbeten med stor trafikpåverkan direkt i mobilen.
-        Glöm inte att ange telefonnummer med formatet +467xxxxxxxx.
       </p>
 
       <form id="subscription-form"
@@ -73,7 +72,32 @@
       </div>
     </div>
   </div>
+  <!-- Bekräftelsemodal för Klarna -->
+  <div class="modal fade" id="klarnaConfirmModal" tabindex="-1" aria-labelledby="klarnaConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="klarnaConfirmModalLabel">Bekräfta</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
+        </div>
+        <div class="modal-body">
+         <strong> Viktig information om ångerrätt:</strong>
+          <p class="mt-3">När du köper denna tjänst samtycker du till att leveransen påbörjas omedelbart efter köpet.
+          <p class="fst-italic">Du godkänner därmed att ångerrätten upphör i samband med att köpet genomförs, i enlighet med Distansavtalslagen (2005:59), 2 kap. 11 § punkt 1.
+          </p>
+           <p class="mb-0">
+             Det innebär att du <strong>inte har någon ångerrätt efter köpet.</strong>
+            </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
+          <button type="button" id="confirm-klarna-btn" class="btn btn-primary">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
 
 
 <script src="{{ url_for('static', filename='js/subscription.js') }}"></script>

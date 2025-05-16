@@ -82,13 +82,13 @@
           <div class="col-12">
             <div class="card change-card h-100">
               <div class="card-body">
-                <h5 class="card-title mb-4">Välj län för SMS-prenumeration</h5>
+                <h5 class="card-title mb-4">Ändra valt län för SMS-prenumeration</h5>
                 <form id="change-county-form" method="post">
                   {% if csrf_token %}
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                   {% endif %}
                   <div class="mb-4">
-                    <label for="new_county" class="form-label">Här anger du det län för vilket du vill ha SMS-uppdatering från.</label>
+                    <label for="new_county" class="form-label">Här kan du byta län för vilket du vill ha SMS-uppdatering från.</label>
                     <select class="form-select" name="new_county" id="new_county" required>
                       <option value="" disabled selected>Välj län</option>
                     </select>

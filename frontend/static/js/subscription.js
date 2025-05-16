@@ -92,10 +92,24 @@ window.addEventListener("DOMContentLoaded", () => {
     const mode = document.getElementById("mode")?.value || "start";
 
 
-  // Lyssna på Gå-till-Klarna
+// ÄNDRING: Ersatt ursprunglig go-to-klarna-btn-händelsehanterare för att visa modal
   document
     .getElementById("go-to-klarna-btn")
     .addEventListener("click", () => {
+      // Visa bekräftelsemodalen
+      const modal = new bootstrap.Modal(document.getElementById("klarnaConfirmModal"));
+      modal.show();
+    });
+  // SLUT ÄNDRING
+
+  // NY KOD: Lägg till händelsehanterare för "OK"-knappen i modalen
+  document
+    .getElementById("confirm-klarna-btn")
+    .addEventListener("click", () => {
+      // Stäng modalen
+      const modal = bootstrap.Modal.getInstance(document.getElementById("klarnaConfirmModal"));
+      modal.hide();
+
       // Scrolla ner till widgeten
       const klarnaContainer = document.getElementById("klarna-checkout-container");
       klarnaContainer.scrollIntoView({ behavior: "smooth" });
@@ -106,7 +120,7 @@ window.addEventListener("DOMContentLoaded", () => {
         {},
         function (authRes) {
           if (authRes.approved) {
-            // Skicka tillbaka till servern för bekräftelse, skicka session-id och authorization-token
+            // Skicka tillbaka till servern för bekräftelse
             const sessionId = localStorage.getItem("klarnaSessionId");
             fetch("/subscriptions/prenumeration-startad", {
               method: "POST",
@@ -116,7 +130,6 @@ window.addEventListener("DOMContentLoaded", () => {
                 authorization_token: authRes.authorization_token,
                 mode: mode,
               }),
-              // Skicka med session-id i headern, och skicka med Klarna-session-id i body för att bekräfta betalning
             }).then(conf => {
               if (conf.redirected) {
                 window.location.href = conf.url;
@@ -133,6 +146,7 @@ window.addEventListener("DOMContentLoaded", () => {
         }
       );
     });
+  // SLUT NY KOD
 });
 
 /* ===================================================================================================
