@@ -35,7 +35,7 @@ Flask-Cors==5.0.1
 
 # För att visa förhandsgranskning av en inbäddad karta, kör följande kommando i terminalen:
 # python app.py och surfa sedan in på länken nedan
-# http://localhost:8000/embed-preview
+# http://127.0.0.1:5000/embed-preview om appen är öppen på port 5000
 
 
 #===========================================================

@@ -27,11 +27,18 @@ class MapComponent extends HTMLElement {
 
   // Denna metod anropas när komponenten läggs till i DOM
   connectedCallback() {
-    this.innerHTML = `<div id="map"></div>`;
-    this.initMap();
+    console.log("✅ MapComponent connectedCallback körs!");
+    
+    const mapContainer = document.createElement('div');
+      mapContainer.style.width = '100%';
+      mapContainer.style.height = '100%';
+      this.appendChild(mapContainer);
+      this.initMap(mapContainer);
+
   }
 
   // Denna metod initierar Leaflet-kartan och lägger till fartkameralagret
+<<<<<<< Updated upstream
   initMap() {
     // 1. Läs först från URL-parametrar (om vi kör i en iframe)
     const params = new URLSearchParams(window.location.search);
@@ -48,6 +55,18 @@ class MapComponent extends HTMLElement {
       center: [lat, lng],
       zoom: zoom
     });
+=======
+  initMap(container) {
+    // ⇓ läs av data-attribut från själva <map-component>:
+    const lat  = parseFloat(this.dataset.lat)  || 62.0;
+    const lng  = parseFloat(this.dataset.lng)  || 15.0;
+    const zoom = parseInt(this.dataset.zoom, 10) || 6;
+  
+    this.map = L.map(container, {
+      center: [lat, lng],      // ⇑ använd dynamiskt
+      zoom: zoom               // ⇑ använd dynamiskt
+    });  
+>>>>>>> Stashed changes
 
     // Lägg till OpenStreetMap som bakgrundskarta
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -85,7 +104,7 @@ locateButton.addTo(this.map);
 // Väntar en kort stund så att kanppen hinner laddas innan vi lägger till eventlyssnaren
 setTimeout(() => {
   // Hämtar knappen med id "locateMeBtn" och lägger till en eventlyssnare för klick
-  const btn = document.getElementById('locateMeBtn');
+  const btn = this.querySelector('#locateMeBtn');
 
   // Om knappen finns, lägg till en eventlyssnare för att hämta användarens plats
   if (btn) {

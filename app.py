@@ -7,7 +7,7 @@ import sys
 # Importerar os-modulen för att hantera filsystemet
 import os
 # Importerar Flask och render_template
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template, send_from_directory, request
 from flask_cors import CORS
 from apscheduler.schedulers.background import BackgroundScheduler
 # Importerar trafik_bp från routes-modulen, som innehåller kameror-endpointen
@@ -90,9 +90,18 @@ def embed_files(filename):
 def embed_preview():
     return render_template('embed_preview.html')
 
+<<<<<<< Updated upstream
 @app.route('/embed-map')
 def embed_map_only():
     return render_template('embed_map_only.html')
+=======
+@app.route("/embed-map")
+def embed_map():
+    lat = request.args.get("lat", default=62.0)
+    lng = request.args.get("lng", default=15.0)
+    zoom = request.args.get("zoom", default=6)
+    return render_template("embed_map.html", lat=lat, lng=lng, zoom=zoom)
+>>>>>>> Stashed changes
 
 
 if __name__ == '__main__':
