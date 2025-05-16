@@ -7,7 +7,7 @@
 
 # Flask-importer
 from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify, flash
-
+from datetime import datetime, timedelta
 # Importerar funktioner från lokigen i user_logic.py
 from users.user_logic import (
     find_user_by_email,
@@ -184,13 +184,28 @@ def profile():
     county_map = get_counties()
     county_text = county_map.get(subscriber.county, "Okänt län") if subscriber else None
 
+    # Konvertera sträng till datetime om behövs
+    start = None
+    end = None
+    if subscriber and subscriber.subscription_start:
+        try:
+            start_dt = datetime.strptime(subscriber.subscription_start, '%Y-%m-%d %H:%M:%S')
+            start = start_dt.strftime('%Y-%m-%d')
+            end = (start_dt + timedelta(days=365)).strftime('%Y-%m-%d')
+        except ValueError:
+            start = subscriber.subscription_start
+            end = "Okänt"
+
     subscriber_data = {
         'is_active_subscriber': is_active_subscriber,
         'subscriber_id': subscriber.id if subscriber else None,
         'phone_number': subscriber.phone_number if subscriber else None,
         'email': subscriber.email if subscriber else None,
-        'county': county_text  # Skicka text istället för siffra
+        'county': county_text,
+        'subscription_start': start,
+        'subscription_end': end
     }
+
     return render_template('user_profile.html', **subscriber_data)
 
 # =====================================================================================================
