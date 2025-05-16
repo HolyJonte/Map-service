@@ -45,6 +45,13 @@
                     {% if paper.sms_quota is not none %}
                       <p class="card-text"><strong>SMS-kvot:</strong> {{ paper.sms_quota }}</p>
                     {% endif %}
+                    {% if paper.sms_sent is not none %}
+                      <p class="card-text"><strong>SMS skickade:</strong> {{ paper.sms_sent }}</p>
+                    {% endif %}
+                    {% if paper.sms_quota is not none and paper.sms_sent is not none %}
+                      <p class="card-text"><strong>SMS kvar:</strong> {{ paper.sms_quota - paper.sms_sent }}</p>
+                    {% endif %}
+
                     <form method="POST" class="mt-2">
                       <input type="hidden" name="id" value="{{ paper.id }}">
                       <button type="submit" name="action" value="delete" class="btn btn-danger btn-sm">Ta bort</button>

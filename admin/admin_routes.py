@@ -6,6 +6,8 @@
 
 # Flask-importer
 from flask import Blueprint, render_template, request, redirect, url_for, session
+from database.crud.sms_crud import get_sms_count_for_newspaper
+
 
 # Importerar funktioner från admin_logic
 from admin.admin_logic import (
@@ -55,7 +57,12 @@ def admin_dashboard():
 
     # Hämtar alla tidningar
     newspapers = get_all_newspapers()
+
+    # Lägg till antal SMS skickade per tidning
+    for paper in newspapers:
+        paper.sms_sent = get_sms_count_for_newspaper(paper.id)
     return render_template('admin_dashboard.html', newspapers=newspapers)
+
 
 # =================================================================================================
 # Logga ut

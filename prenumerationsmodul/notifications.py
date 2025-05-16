@@ -207,7 +207,7 @@ def notify_accidents():
             f"Plats: {event.get('location')}\n"
             f"Beskrivning: {event.get('message')}\n"
             f"Start: {format_sms_time(event.get('start'))}\n"
-            f"#shortlink#"
+            f"{original_link}"
         )
 
         # Hämta prenumeranter för länet
