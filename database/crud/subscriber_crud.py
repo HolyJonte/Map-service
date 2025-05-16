@@ -66,7 +66,7 @@ def update_subscriber(phone_number, klarna_token, subscription_start):
 
 
 #==========================================================================================================================
-# Avaktiverar en prenumerant automatiskt om den har varit inaktiv i mer än ett år, använder tid och last_payment
+# Sätter en prenumerant till inaktiv om ett år gått och ej förnyat, använder tid och last_payment. Körs som Task i bakgrunden
 #==========================================================================================================================
 def deactivate_expired_subscribers():
     cutoff = datetime.now() - timedelta(days=365)
