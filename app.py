@@ -90,11 +90,6 @@ def embed_files(filename):
 def embed_preview():
     return render_template('embed_preview.html')
 
-@app.route('/embed-map')
-def embed_map_only():
-    return render_template('embed_map_only.html')
-
-
 if __name__ == '__main__':
 
     try:
