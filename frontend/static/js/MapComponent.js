@@ -33,15 +33,21 @@ class MapComponent extends HTMLElement {
 
   // Denna metod initierar Leaflet-kartan och lägger till fartkameralagret
   initMap() {
-    // ⇓ läs av data-attribut från själva <map-component>:
-    const lat  = parseFloat(this.dataset.lat)  || 62.0;
-    const lng  = parseFloat(this.dataset.lng)  || 15.0;
-    const zoom = parseInt(this.dataset.zoom, 10) || 6;
-  
+    // 1. Läs först från URL-parametrar (om vi kör i en iframe)
+    const params = new URLSearchParams(window.location.search);
+    const latParam = parseFloat(params.get('lat'));
+    const lngParam = parseFloat(params.get('lng'));
+    const zoomParam = parseInt(params.get('zoom'), 10);
+
+    // 2. Fall tillbaka till <map-component data-*> om inte definierat i URL
+    const lat  = !isNaN(latParam) ? latParam : (parseFloat(this.dataset.lat) || 62.0);
+    const lng  = !isNaN(lngParam) ? lngParam : (parseFloat(this.dataset.lng) || 15.0);
+    const zoom = !isNaN(zoomParam) ? zoomParam : (parseInt(this.dataset.zoom, 10) || 6);
+
     this.map = L.map('map', {
-      center: [lat, lng],      // ⇑ använd dynamiskt
-      zoom: zoom               // ⇑ använd dynamiskt
-    });  
+      center: [lat, lng],
+      zoom: zoom
+    });
 
     // Lägg till OpenStreetMap som bakgrundskarta
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

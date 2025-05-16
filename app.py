@@ -44,6 +44,7 @@ app = Flask(
     static_folder='frontend/static',
     template_folder='frontend/templates'
     )
+
 # Aktiverar CORS för alla domäner och alla endpoints
 CORS(app, resources={r"/notification/*": {"origins": "*"}})
 
@@ -88,21 +89,6 @@ def embed_files(filename):
 @app.route('/embed-preview')
 def embed_preview():
     return render_template('embed_preview.html')
-
-
-
-
-
-"""""
-# Skapa en scheduler för att köra notify_accidents var 5:e minut
-scheduler = BackgroundScheduler()
-
-# ÄNDRA DETTA TILL 5 MIN  OCH MAX_INSTANCES TILL 1!!!
-scheduler.add_job(notify_accidents, 'interval', minutes=5, max_instances=1)
-# Starta scheduler innan servern startar
-scheduler.start()
-# Om detta skript körs direkt, starta Flask-servern
-"""
 
 if __name__ == '__main__':
 
