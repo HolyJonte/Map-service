@@ -23,7 +23,7 @@ body.index-page html {
 body.index-page .main-content,
 body.index-page map-component,
 body.index-page #map {
-  height : calc(100vh - 100px); /* Höjd minus headerns storlek */
+  height : calc(100vh - 60px); /* Höjd minus headerns storlek */
   width: 100%;
   margin: 0;
   padding: 0;

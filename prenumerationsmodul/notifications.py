@@ -201,7 +201,7 @@ def notify_accidents():
             continue
 
         # Skapa meddelande för SMS
-        original_link = event.get('link')
+        original_link = event.get("link")
         message = (
             f"{label} i ditt län:\n"
             f"Plats: {event.get('location')}\n"

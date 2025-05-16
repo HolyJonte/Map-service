@@ -23,7 +23,7 @@ notification_bp = Blueprint('notification', __name__)
 # Funktion för att skicka SMS via HelloSMS API
 #----------------------------------------------------------------------------------------
 
-def send_sms(to, message, testMode=True, shortLinks=None):
+def send_sms(to, message, testMode=True, shortLinks=True):
     url = os.getenv("SMS_API_URL")
     api_key = os.getenv("SMS_API_KEY")
     api_username = os.getenv("SMS_API_USER")
@@ -34,7 +34,7 @@ def send_sms(to, message, testMode=True, shortLinks=None):
         "from": "TrafikViDa",
         "message": message,
         "testMode": testMode
-    }
+        }
 
     if shortLinks:
         payload["shortLinks"] = shortLinks
