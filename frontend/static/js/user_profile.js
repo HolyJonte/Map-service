@@ -90,46 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  /* -----------------------------------------------------------------------------------------------
-  Hanterar avslut av prenumeration via Bootstrap-modal
-  --------------------------------------------------------------------------------------------------*/
 
-  // Hämta element för modalens bekräftelseknapp och svarsruta
-  const confirmBtn = document.getElementById("confirm-unsubscribe");
-  const unsubscribeResponseDiv = document.getElementById("unsubscribe-response");
-
-  // Lyssna på klick på "Avsluta" i modalen
-  confirmBtn.addEventListener("click", async () => {
-    // Bygg headers
-    const headers = { 'Content-Type': 'application/json' };
-    if (csrfToken) {
-      headers['X-CSRF-Token'] = csrfToken;
-    }
-
-    try {
-      // Skicka begäran för att avregistrera användaren
-      const response = await fetch('/users/profile/unsubscribe', {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify({}) // Ingen extra data behövs
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        // Visa framgångsmeddelande och stäng modal
-        unsubscribeResponseDiv.innerHTML = `<p class="success">${data.message}</p>`;
-        const modalEl = document.getElementById('unsubscribeModal');
-        const modalInstance = bootstrap.Modal.getInstance(modalEl);
-        modalInstance.hide();
-        setTimeout(() => window.location.reload(), 1000);
-      } else {
-        // Visa felmeddelande
-        unsubscribeResponseDiv.innerHTML = `<p class="error">Fel: ${data.error || "Okänt fel"}</p>`;
-      }
-    } catch (error) {
-      unsubscribeResponseDiv.innerHTML = `<p class="error">Något gick fel: ${error.message}</p>`;
-    }
-  });
 
   // Ladda län för användarens profil när sidan laddas
   loadCountiesForProfile();
