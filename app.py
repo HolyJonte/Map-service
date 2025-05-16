@@ -90,18 +90,12 @@ def embed_files(filename):
 def embed_preview():
     return render_template('embed_preview.html')
 
-<<<<<<< Updated upstream
-@app.route('/embed-map')
-def embed_map_only():
-    return render_template('embed_map_only.html')
-=======
 @app.route("/embed-map")
 def embed_map():
     lat = request.args.get("lat", default=62.0)
     lng = request.args.get("lng", default=15.0)
     zoom = request.args.get("zoom", default=6)
     return render_template("embed_map.html", lat=lat, lng=lng, zoom=zoom)
->>>>>>> Stashed changes
 
 
 if __name__ == '__main__':
