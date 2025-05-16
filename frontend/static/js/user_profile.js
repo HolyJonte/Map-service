@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (response.ok) {
         // Visa framgångsmeddelande
         countyResponseDiv.innerHTML = `<p class="success">Län uppdaterat till ${data.county_name}!</p>`;
-        document.querySelector('.info-card li:nth-child(3)').innerHTML = `<strong>Län:</strong> ${data.county_name}`;
+        document.querySelector('.info-card li:nth-child(4)').innerHTML = `Valt län: <strong>${data.county_name}</strong>`;
       } else {
         // Visa felmeddelande
         countyResponseDiv.innerHTML = `<p class="error">Fel: ${data.error || "Okänt fel"}</p>`;

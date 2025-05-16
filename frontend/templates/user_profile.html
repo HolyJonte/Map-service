@@ -8,7 +8,7 @@
       <div class="card profile-header-card">
         <div class="card-body">
           <h1 class="card-title">Mina sidor</h1>
-          <p class="card-text">Här kan du hantera din prenumeration, byta län eller avsluta när du vill.</p>
+          <p class="card-text">Här kan du se prenumerationsdetaljer och byta län.</p>
         </div>
       </div>
     </div>
@@ -27,19 +27,13 @@
             <ul class="mb-3">
               <li>Omedelbara trafikvarningar vid olyckor och vägarbeten med stor trafikpåverkan.</li>
               <li>Möjlighet att snabbt byta län och få uppdateringar där du befinner dig.</li>
-              <li>Möjlighet att byta län eller avbryta prenumerationen när du vill.</li>
             </ul>
             <hr>
             <h6 class="small text-muted mb-4">Du kan när som helst:</h6>
             <ul class="small mb-2">
-              <li><strong>Byta län:</strong> Klicka på “Byt län” i högerkolumnen</li>
-              <li><strong>Avsluta:</strong> Klicka “Avsluta” för att säga upp din prenumeration</li>
+              <li><strong>Byta län:</strong> Klicka på “Byt län”</li>
               <li><strong>Kontakta oss:</strong> <a href="/support">mamajovidaab@gmail.com</a></li>
             </ul>
-            <a href="{{ url_for('subscriptions.show_subscription_page') }}" 
-               class="mt-auto btn btn-outline-primary w-100">
-              Se fler inställningar
-            </a>
           </div>
         </div>
       </div>
@@ -109,16 +103,9 @@
           <div class="col-12">
             <div class="card cancel-card h-100">
               <div class="card-body">
-                <h5 class="card-title mb-4">Avsluta prenumeration</h5>
-                <p>Här kan du avsluta din prenumeration. OBS! När du klickat på <strong>Avsluta</strong> 
-                  kan du inte ångra dig och måste skapa en prenumeration på nytt.</p>
-                  <form id="unsubscribe-form">
-                    {% if csrf_token %}
-                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    {% endif %}
-                    <button type="button" class="mt-auto btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#unsubscribeModal">Avsluta</button>
-                  </div>
-                <div id="unsubscribe-response" class="mt-2"></div>
+                <h5 class="card-title mb-4">Avslut av prenumeration</h5>
+                <p> Din prenumeration gäller till och med <strong>{{ subscription_end }}</strong> och avslutas automatiskt om ingen ny betalning görs. 
+                  Du får en påminnels 14 dagar innan avslut och kan då välja att förnya prenumerationen.</p>
               </div>
             </div>
           </div>
@@ -141,24 +128,8 @@
     </div>
   {% endif %}
 
-  <!-- Bekräftelsemodal för avslut -->
-  <div class="modal fade" id="unsubscribeModal" tabindex="-1" aria-labelledby="unsubscribeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="unsubscribeModalLabel">Bekräfta avslut</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Stäng"></button>
-        </div>
-        <div class="modal-body">
-         Är du säker på att du vill avsluta prenumerationen? Detta går inte att ångra.
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
-          <button id="confirm-unsubscribe" type="button" class="btn btn-danger">Avsluta</button>
-        </div>
-      </div>
-    </div>
-  </div>
+
+
 
 </div>
 
