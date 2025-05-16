@@ -40,9 +40,10 @@ class MapComponent extends HTMLElement {
   // Denna metod initierar Leaflet-kartan och lägger till fartkameralagret
   initMap(container) {
     // ⇓ läs av data-attribut från själva <map-component>:
-    const lat  = parseFloat(this.dataset.lat)  || 62.0;
-    const lng  = parseFloat(this.dataset.lng)  || 15.0;
-    const zoom = parseInt(this.dataset.zoom, 10) || 6;
+    const lat  = parseFloat(this.getAttribute("data-lat"))  || 62.0;
+    const lng  = parseFloat(this.getAttribute("data-lng"))  || 15.0;
+    const zoom = parseInt(this.getAttribute("data-zoom"), 10) || 6;
+
   
     this.map = L.map(container, {
       center: [lat, lng],      // ⇑ använd dynamiskt
