@@ -33,6 +33,10 @@
                  data-zoom="{{ request.args.get('zoom', 6) }}">
   </map-component>
 
+  <!-- Ladda Leaflet och markercluster INNAN modulen -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+
   <script type="module" src="{{ url_for('static', filename='js/MapComponent.js') }}"></script>
 </body>
 </html>
