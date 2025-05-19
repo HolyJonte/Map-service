@@ -57,7 +57,6 @@ app.register_blueprint(subscription_routes, url_prefix='/subscriptions')
 app.register_blueprint(admin_routes)
 
 app.register_blueprint(user_routes, url_prefix='/users')
-app.register_blueprint(notification_bp, url_prefix='/notification')
 
 # Definierar en route för att servera index.html-filen från frontend-mappen
 @app.route('/')
