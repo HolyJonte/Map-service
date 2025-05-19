@@ -152,20 +152,6 @@ def verify_user_2fa():
     return render_template('user_two_factor.html')
 
 # =====================================================================================================
-# Glömt lösenord
-# =====================================================================================================
-
-@user_routes.route('/forgot-password', methods=['GET', 'POST'])
-def forgot_password():
-    if request.method == 'POST':
-        email = request.form['email']
-        # Här skickar du återställningsmejl...
-        flash('Återställningslänk skickad till din e-post.')
-        return redirect(url_for('user_routes.login'))
-    return render_template('forgot_password.html')
-
-
-# =====================================================================================================
 # Mina sidor
 # =====================================================================================================
 @user_routes.route('/profile')
