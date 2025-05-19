@@ -13,15 +13,12 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import time
 import json
-from smsmodul.notification_service import send_sms, send_email
+#from smsmodul.notification_service import send_sms, send_email
+import requests
 from datetime import datetime, timedelta, timezone
 from api.logic import get_all_accidents, get_all_roadworks
 from database.crud.subscriber_crud import get_subscribers_by_county, get_subscriptions_due_in_14_days
 from database.crud.sms_crud import log_sms
-
-
-
-
 
 # Fil för att lagra behandlade händelse-ID:n och deras tidsstämplar
 PROCESSED_EVENTS_FILE = "processed_events.json"
@@ -40,7 +37,7 @@ def format_sms_time(iso_string):
 
 # Funktion för att ladda tidigare behandlade händelse-ID:n
 def load_processed_events():
-    """Laddar tidigare behandlade händelse-ID:n och deras tidsstämplar från JSON-fil."""
+    #Laddar tidigare behandlade händelse-ID:n och deras tidsstämplar från JSON-fil.
     try:
         # Kontrollera om filen finns och har innehåll
         with open(PROCESSED_EVENTS_FILE, 'r') as f:
@@ -57,19 +54,17 @@ def load_processed_events():
 
 # Funktion för att spara behandlade händelse-ID:n
 def save_processed_events(processed_events):
-    """Sparar behandlade händelse-ID:n och deras tidsstämplar till JSON-fil."""
+    #Sparar behandlade händelse-ID:n och deras tidsstämplar till JSON-fil.
     with open(PROCESSED_EVENTS_FILE, 'w') as f:
         json.dump(processed_events, f, indent=2)
-    # TA BORT SEN, till för debugging
-    print(f"DEBUG: Sparade {len(processed_events)} poster till {PROCESSED_EVENTS_FILE}")
 
 # Funktion för att rensa gamla händelse-ID:n
 def clean_old_events(processed_events, days_to_keep=30):
-    """Rensa händelse-ID:n som är äldre än det angivna antalet dagar."""
+    #Rensa händelse-ID:n som är äldre än det angivna antalet dagar.
     cutoff_time = datetime.now(timezone.utc) - timedelta(days=days_to_keep)
     # Filtrera bort händelser som är äldre än cutoff_time
     cleaned_events = []
-    
+
     # Loopa igenom de behandlade händelserna och behåll endast de som är nyare än cutoff_time
     for entry in processed_events:
         try:
@@ -82,17 +77,16 @@ def clean_old_events(processed_events, days_to_keep=30):
         except (ValueError, KeyError) as e:
             print(f"Fel vid parsning av tidsstämpel för post: {entry}, hoppar över: {e}")
             continue
-    
+
     # Spara de rensade händelserna tillbaka till filen
     return cleaned_events
 
 # Funktion för att skicka notifieringar om olyckor och vägarbeten
 def notify_accidents():
-    """
-    Hämtar händelser från dagens datum, identifierar nya händelser (accident eller roadwork)
-    genom att jämföra ID:n mot processed_events.json, lägger till nya ID:n och skickar SMS.
-    """
-    # Ladda tidigare behandlade händelse-ID:n och deras tidsstämplar
+    #Hämtar händelser från dagens datum, identifierar nya händelser (accident eller roadwork)
+    #Genom att jämföra ID:n mot processed_events.json, lägger till nya ID:n och skickar SMS.
+
+    #Ladda tidigare behandlade händelse-ID:n och deras tidsstämplar
     processed_events = load_processed_events()
     processed_ids = {entry["id"] for entry in processed_events if "id" in entry}
     print(f"Antal tidigare behandlade händelse-ID:n: {len(processed_ids)}")
@@ -295,7 +289,7 @@ def check_expiring_subscriptions():
             f"Förnya din prenumeration här: {renewal_link}\n\n"
             f"Vänliga hälsningar,\nTrafikViDa\n"
         )
-        
+
         try:
             send_email(to, subject, message)
             sent_emails.append({
@@ -307,6 +301,53 @@ def check_expiring_subscriptions():
             print(f"Fel vid skickande av e-post till {to}: {e}")
             continue
     return sent_emails  # Returnera lista över skickade e-postadresser
+
+#====================================================================================
+# FUNKTIONER FÖR ATT SKICKA SMS OCH E-POST VIA TJÄNST UTANFÖR DENNA SITE
+#====================================================================================
+# Funktion för att skicka SMS via vår externa tjänst
+def send_sms(to, message, testMode=True, shortLinks=True):
+    url = "https://mamajovida.pythonanywhere.com/notification/send-sms"
+    headers = {
+        "Content-Type": "application/json",
+        "X-API-Key": os.getenv("NOTIFICATION_KEY")
+    }
+    payload = {
+        "to": to if isinstance(to, list) else [to],
+        "message": message,
+        "testMode": testMode
+    }
+    if shortLinks:
+        payload["shortLinks"] = shortLinks
+
+    try:
+        response = requests.post(url, json=payload, headers=headers, timeout=10)
+        response.raise_for_status()
+        return True, response.json()
+    except Exception as e:
+        print(f"[SMS-fel] Kunde inte skicka SMS: {e}")
+        return False, {"status": "error", "statusText": str(e)}
+
+# Funktion för att skicka e-postmeddelanden via vår externa tjänst
+def send_email(to, subject, message):
+    url = "https://mamajovida.pythonanywhere.com/notification/send-email"
+    headers = {
+        "Content-Type": "application/json",
+        "X-API-Key": os.getenv("NOTIFICATION_KEY")
+    }
+    payload = {
+        "to": to,
+        "subject": subject,
+        "message": message
+    }
+
+    try:
+        response = requests.post(url, json=payload, headers=headers, timeout=10)
+        response.raise_for_status()
+        return True, response.json()
+    except Exception as e:
+        print(f"[E-post-fel] Kunde inte skicka e-post: {e}")
+        return False, {"status": "error", "statusText": str(e)}
 
 
 if __name__ == "__main__":
