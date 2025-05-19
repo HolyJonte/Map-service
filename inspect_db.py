@@ -1,7 +1,5 @@
-"""
-För att titta vad som finns i databasen, kör:
-python inspect_db.py
-"""
+#För att titta vad som finns i databasen, kör detta i terminalen antingen lokalt eller i PA:
+#python inspect_db.py
 
 import sqlite3
 
@@ -34,10 +32,4 @@ tables = [
 for table in tables:
     inspect_table(table)
 
-# Förklaring vad alla kolumner betyder
-print("")
-print("Subscribers har de här kolumnerna:")
-print("id, user_id, phone_number, county, newspaper_id, active, subscription_start, last_payment, klarna_token")
-print("Pednding Subscribers har de här kolumnerna:")
-print("session_id, user_id, phone_number, county, newspaper_id, created_at")
 conn.close()

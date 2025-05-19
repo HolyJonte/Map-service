@@ -9,44 +9,13 @@ python-dotenv==1.1.0
 Flask-Cors==5.0.1
 
 #===========================================================
-#Dessa är safe to use:
-#===========================================================
-#För att installera alla beroenden, kör följande kommando i terminalen:
+#För att installera alla beroenden, kör följande kommando i terminalen i Python Anywhere:
+
+#För att hamna i rätt mapp i terminalen, kör:
 #cd ~/Map-service
 
-# För installation på Python Anywhere:
+# För installation av alla requirments koden är beroende av, kör:
 #python3.12 -m pip install --user -r requirements.txt
 
-# För installation på lokal dator:
+# För samma requirments fast på lokal dator:
 #py -3.12 -m pip install --user -r requirements.txt
-
-#För att hämta de senaste ändringarna från GitHub, kör följande kommando i terminalen:
-#git pull
-
-#VIKTIGT!!!
-#Varje gång man har gjort en uppdatering i CSS koden måste man ändra versionsnummer.
-#Detta görs i base.html på den raden där CSS filen laddas in, skriv v=+1 från tidigare nr.
-
-#För att titta vad som finns i databasen, kör:
-#python inspect_db.py
-
-#Ska man köra detta via Python Anywhere så behöver man först öppna en bash och skriva:
-#sqlite3 trafikvida.db
-
-# För att visa förhandsgranskning av en inbäddad karta, kör följande kommando i terminalen:
-# python app.py och surfa sedan in på länken nedan
-# http://127.0.0.1:5000/embed-preview om appen är öppen på port 5000
-
-
-#===========================================================
-#Dessa används sparsamt:
-#===========================================================
-#För att lösa fel med lokala ändringar i tex databasen, kör följande kommando i terminalen:
-#git reset --hard HEAD
-#git clean -fd
-
-#För att tömma databasen på gammal data som redan är borttagen, kör:
-#import sqlite3
-#conn = sqlite3.connect("trafikvida.db")
-#conn.execute("VACUUM")
-#conn.close()

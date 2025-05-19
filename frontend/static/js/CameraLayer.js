@@ -74,7 +74,6 @@ export class CameraLayer {
         // Lägg till markörklustret på kartan
         this.map.addLayer(this.clusterGroup);
 
-        // Flytta kartan så att den visar hela Sverige
       } catch (error) {
         console.error("Kunde inte hämta kameradata:", error); // Logga eventuella fel vid hämtning av data
       }

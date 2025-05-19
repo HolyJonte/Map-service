@@ -1,7 +1,6 @@
+# Denna fil används för att bestämma vart appen finns och hur den ska köras.
 import sys
 import os
-
-
 
 # Lägg till din projektmapp i systemets sökväg
 project_home = '/home/MaMaJoViDa/Map-service'
@@ -10,14 +9,6 @@ if project_home not in sys.path:
 
 # Sätt rätt miljövariabler om du vill (valfritt)
 os.environ['FLASK_ENV'] = 'production'
-
-# =====================================================
-# Valfritt: Uppdatera automatiskt från GitHub vid reload
-# =====================================================
-try:
-    exec(open("/home/MaMaJoViDa/Map-service/post_reload.py").read())
-except Exception as e:
-    print(f"Fel vid GitHub-pull: {e}")
 
 # Importera din app från app.py
 from app import app as application
