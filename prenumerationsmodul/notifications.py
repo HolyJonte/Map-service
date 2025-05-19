@@ -358,7 +358,5 @@ if __name__ == "__main__":
     print("SMS RESULTAT:", sms_result)
 
     # Testa e-post
-    email_result = send_email("jonatan.cairenius@gmail.se", "Testämne", "Detta är ett testmeddelande från PA.")
+    email_result = send_email("jonatan.cairenius@gmail.com", "Testämne", "Detta är ett testmeddelande från PA.")
     print("EMAIL RESULTAT:", email_result)
-
-    notify_accidents()

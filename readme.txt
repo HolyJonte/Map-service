@@ -26,6 +26,15 @@ python inspect_db.py
 För att visa förhandsgranskning av en inbäddad karta gå in på följande länk:
 https://h23vicno.pythonanywhere.com/
 
+===========================================================
+För att testa sms och email på sidan:
+===========================================================
+cd ~/map-service
+python3 prenumerationsmodul/notifications.py
+
+
+
+
 
 ===========================================================
 Dessa används sparsamt:
