@@ -52,7 +52,7 @@ def initiate_payment(_phone_number, _county, tokenize=True, payment_method='cred
                 "tax_rate": 0,
                 "total_amount": 9900,
                 "total_tax_amount": 0,
-                
+
             }
 
         ],

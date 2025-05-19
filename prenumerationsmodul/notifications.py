@@ -14,7 +14,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from dotenv import load_dotenv
 import time
 import json
-#from smsmodul.notification_service import send_sms, send_email
 import requests
 from datetime import datetime, timedelta, timezone
 from api.logic import get_all_accidents, get_all_roadworks

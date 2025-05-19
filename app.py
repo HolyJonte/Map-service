@@ -20,7 +20,6 @@ from dotenv import load_dotenv
 import os
 
 from users.user_routes import user_routes
-from smsmodul.notification_service import notification_bp
 
 load_dotenv()
 
