@@ -11,6 +11,7 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+from dotenv import load_dotenv
 import time
 import json
 #from smsmodul.notification_service import send_sms, send_email
@@ -19,6 +20,7 @@ from datetime import datetime, timedelta, timezone
 from api.logic import get_all_accidents, get_all_roadworks
 from database.crud.subscriber_crud import get_subscribers_by_county, get_subscriptions_due_in_14_days
 from database.crud.sms_crud import log_sms
+load_dotenv()
 
 # Fil för att lagra behandlade händelse-ID:n och deras tidsstämplar
 PROCESSED_EVENTS_FILE = "processed_events.json"
