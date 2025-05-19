@@ -353,4 +353,12 @@ def send_email(to, subject, message):
 
 
 if __name__ == "__main__":
+    # Testa SMS
+    sms_result = send_sms(["+46703634184"], "Testmeddelande från PA!", testMode=True)
+    print("SMS RESULTAT:", sms_result)
+
+    # Testa e-post
+    email_result = send_email("jonatan.cairenius@gmail.se", "Testämne", "Detta är ett testmeddelande från PA.")
+    print("EMAIL RESULTAT:", email_result)
+
     notify_accidents()
