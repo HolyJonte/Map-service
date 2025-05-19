@@ -75,8 +75,6 @@ export class CameraLayer {
         this.map.addLayer(this.clusterGroup);
 
         // Flytta kartan så att den visar hela Sverige
-        this.map.setView([62.0, 15.0], 6);  // Centrerad på Sverige med zoomnivå 6
-
       } catch (error) {
         console.error("Kunde inte hämta kameradata:", error); // Logga eventuella fel vid hämtning av data
       }

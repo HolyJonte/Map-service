@@ -6,6 +6,11 @@
 
 
 {% block content %}
-  <map-component></map-component>
-  <script type="module" src="{{ url_for('static', filename='js/MapComponent.js') }}"></script>
+<map-component
+  data-lat="62.0"
+  data-lng="15.0"
+  data-zoom="6">
+</map-component>
+
+<script type="module" src="{{ url_for('static', filename='js/MapComponent.js') }}"></script>
 {% endblock %}
