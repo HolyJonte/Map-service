@@ -16,7 +16,7 @@
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
-  
+
   <!-- Choices.js CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 
@@ -30,6 +30,10 @@
       <a href="{{ url_for('serve_index') }}">
         <img src="{{ url_for('static', filename='logo3.png') }}" alt="Logotyp" style="cursor: pointer;">
       </a>
+    <!-- Text som visas om inte webbläsaren stödjer HTML5 -->
+    <div id="unsupported-message" style="display:none; background:#ffdddd; padding:1em; text-align:center; color:#900;">
+      Din webbläsare verkar inte stödja HTML5 fullt ut.
+    </div>
 
       <!-- Huvudmeny -->
       <div class="menu-wrapper">
@@ -69,10 +73,9 @@
     </div>
   </noscript>
 
-  <div id="unsupported-message" style="display:none; background:#ffdddd; padding:1em; text-align:center; color:#900;">
-    Din webbläsare verkar inte stödja HTML5 fullt ut.
-  </div>
 
+
+  <!-- Kontroll av hamburgarmenyn -->
   <script>
     const menuToggle = document.getElementById('menuToggle');
     const menuItems = document.getElementById('menuItems');
@@ -84,7 +87,6 @@
   </script>
 
 <!-- Kontroll för att kolla om Klarna SDK (Widget) ens laddas -->
-
   <script>
     if (typeof Klarna !== 'undefined' && Klarna.Payments) {
       console.log("Klarna SDK is loaded successfully.");
@@ -102,6 +104,20 @@
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+
+
+  <!-- Kontroll för HTML5-stöd -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const testEl = document.createElement('section');
+      const supportsHtml5 = ('hidden' in testEl);
+
+      if (!supportsHtml5) {
+        const msg = document.getElementById('unsupported-message');
+        if (msg) msg.style.display = 'block';
+      }
+    });
+  </script>
 
 </body>
 </html>
