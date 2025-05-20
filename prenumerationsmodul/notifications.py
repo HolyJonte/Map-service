@@ -90,7 +90,7 @@ def notify_accidents():
     #Ladda tidigare behandlade händelse-ID:n och deras tidsstämplar
     processed_events = load_processed_events()
     processed_ids = {entry["id"] for entry in processed_events if "id" in entry}
-    print(f"Antal tidigare behandlade händelse-ID:n: {len(processed_ids)}")
+    
 
     # Hämta olyckor och vägarbeten
     accidents = get_all_accidents()

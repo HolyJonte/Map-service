@@ -66,7 +66,6 @@ def show_subscription_page():
         action_endpoint = url_for('subscriptions.start_subscription')
 
     # 5) Förifyll fälten med rena strängvärden
-    #    (ingen komplex JSON här)
     subscriber_data = {
         'phone_number':  subscriber.phone_number  or '',
         'county':        str(subscriber.county) if subscriber and subscriber.county else '',
@@ -78,7 +77,6 @@ def show_subscription_page():
         'newspaper_id': '',
         'email':        ''
     }
-    print(f"Mode:", mode)
     return render_template(
         'subscription.html',
         mode=mode,
@@ -87,11 +85,16 @@ def show_subscription_page():
         subscriber_data=subscriber_data
     )
 
+# ==========================================================================================
+# Rutt för att kontrollera om användaren är inloggad innan prenumeration
+# ==========================================================================================
+
 @subscription_routes.route('/prenumerera')
 def prenumerera_check():
     if session.get('user_logged_in'):
         return redirect(url_for('subscriptions.show_subscription_page'))
     else:
+        # Om användaren inte är inloggad, spara målet för att kunna återgå dit efter inloggning
         session['next'] = url_for('subscriptions.show_subscription_page')
         return redirect(url_for('user_routes.serve_login_choice'))
 
