@@ -6,18 +6,21 @@ from datetime import datetime
 import sys
 import os
 
+# Lägger till sökvägen till projektet så att vi kan importera moduler
 sys.path.append("/home/MaMaJoViDa/Map-service")
 from api.logic import update_cache
 
+# Definierar sökvägen till loggfilen
 LOG_FILE = "/home/MaMaJoViDa/Map-service/cache_log.txt"
 
+# Funktion för att uppdatera cachen och logga resultatet
 def log(message):
     with open(LOG_FILE, "a") as f:
         f.write(f"[{datetime.now()}] {message}\n")
 
+# Kör cacheuppdatering och loggar resultatet
 if __name__ == "__main__":
     while True:
-        log("▶ Kör cacheuppdatering...")
         try:
             update_cache()
             log("✔ Cache uppdaterad")

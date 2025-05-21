@@ -5,6 +5,9 @@
 // Om flera olyckor är nära varandra, visas de som en större ikon med antal inuti.
 // ---------------------------------------------
 
+
+
+// Exporterar klassen AccidentLayer så att den kan användas i andra moduler
 export class AccidentLayer {
   constructor(map) {
     this.map = map;
@@ -14,6 +17,7 @@ export class AccidentLayer {
       iconCreateFunction: function (cluster) {
         const count = cluster.getChildCount();
 
+        // Skapar en anpassad ikon för klustret
         return L.divIcon({
           html: `
             <div class="custom-accident-cluster">
@@ -48,6 +52,7 @@ export class AccidentLayer {
       // Rensar gamla markörer
       this.clusterGroup.clearLayers();
 
+      // Skapar en anpassad ikon för olyckor
       const accidentIcon = L.divIcon({
         className: 'custom-accident-icon',
         html: '<i class="bi bi-exclamation-triangle-fill"></i>',

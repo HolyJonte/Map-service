@@ -1,5 +1,5 @@
 # notifications.py
-# Som en del av prenumerationsmodulen, ansvarar denna fil för att hantera 
+# Som en del av prenumerationsmodulen, ansvarar denna fil för att hantera
 # notifieringar till prenumeranter om olyckor och vägarbeten.
 # Den skickar SMS till prenumeranter baserat på deras
 # registrerade län och händelser som inträffar i deras område.
@@ -91,7 +91,7 @@ def notify_accidents():
     #Ladda tidigare behandlade händelse-ID:n och deras tidsstämplar
     processed_events = load_processed_events()
     processed_ids = {entry["id"] for entry in processed_events if "id" in entry}
-    
+
 
     # Hämta olyckor och vägarbeten
     accidents = get_all_accidents()
@@ -125,7 +125,6 @@ def notify_accidents():
         # Kontrollera om händelsen redan har behandlats tidigare
         # (baserat på att ID finns i processed_events.json)
         if event_id in processed_ids:
-            #print(f"Händelse ID {event_id} redan behandlad, hoppar över")
             continue
 
         # Hämta starttiden för händelsen

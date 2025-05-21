@@ -6,6 +6,7 @@ import requests
 from dotenv import load_dotenv
 import os
 
+# Laddar miljövariabler från .env-filen
 load_dotenv()
 
 # Vår API-nyckel från Trafikverket (finns i .env-filen)

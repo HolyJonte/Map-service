@@ -6,6 +6,8 @@
 
 import sys
 import os
+
+# Lägg till sökvägen till prenumerationsmodulen
 sys.path.append("/home/MaMaJoViDa/Map-service")
 os.chdir("/home/MaMaJoViDa/Map-service")
 
@@ -16,6 +18,7 @@ from database.crud.subscriber_crud import (
     remove_inactive_subscribers
     )
 
+# Kör funktionen check_expiring_subscriptions för att påminna användare om att deras prenumerationer snart går ut
 if __name__ == "__main__":
     check_expiring_subscriptions()
     deactivate_expired_subscribers()

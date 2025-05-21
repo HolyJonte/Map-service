@@ -34,9 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const addedCounties = new Set();
       select.innerHTML = '<option value="" disabled selected>Välj län</option>';
       Object.entries(counties).forEach(([code, name]) => {
-        if (!addedCounties.has(name)) { 
+        if (!addedCounties.has(name)) {
           // Lägg till länet i listan om det inte redan finns
-          addedCounties.add(name); 
+          addedCounties.add(name);
           // Skapa ett nytt alternativ för länet
           const option = document.createElement("option");
           option.value = code;

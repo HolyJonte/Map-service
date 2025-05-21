@@ -53,8 +53,8 @@ def show_subscription_page():
 
     # 2) Hämta mode från query-string, default = start
     mode = request.args.get('mode', None)
-    
-    
+
+
     # 3) Bestäm läge baserat på DB om mode inte skickades
     current_user_id = session.get('user_id')
     subscriber = get_subscriber_by_user_id(current_user_id)
@@ -108,11 +108,11 @@ def prenumerera_check():
 # ==========================================================================================
 @subscription_routes.route('/start-subscription', methods=['POST'])
 def start_subscription():
-    
+
     try:
         data = request.get_json(force=True)
         phone_number = data.get('phone_number')
-        counties = data.get('counties') 
+        counties = data.get('counties')
         newspaper_id = data.get('newspaper_id')
         email = session.get('user_email')
 
@@ -122,8 +122,8 @@ def start_subscription():
         user_id = session.get('user_id')
         if not user_id:
             return jsonify({"error": "User not logged in"}), 401
-        
-  
+
+
         # Kontrollera om användaren redan har en aktiv prenumeration
         subscriber = get_subscriber_by_user_id(user_id)
         # Kontrollera om prenumerationen går ut inom 14 dagar
@@ -141,7 +141,7 @@ def start_subscription():
             # Kontrollera om användaren redan har en aktiv prenumeration
             if subscriber and subscriber.active == 1:
                 return jsonify({"error": "Du har redan en aktiv prenumeration."}), 400
-            
+
             # Kontrollera om telefonnumret redan är registrerat
             if subscriber_exists(phone_number):
                 return jsonify({"error": "Telefonnumret används redan."}), 400
@@ -176,18 +176,18 @@ def prenumeration_startad():
         if request.method == 'POST':
             data = request.get_json()
 
-            # ✅ Läs in token från ny authorize-logik
+            # Läs in token från ny authorize-logik
             session_id = data.get("session_id")
             authorization_token = data.get("authorization_token")
             mode = data.get("mode", "start")  # För förnyelse av prenumeration
-           
+
 
             if not session_id or not authorization_token:
                 return jsonify({"error": "Missing session_id or Klarna token"}), 400
 
             # Kontrollera pending subscriber
             result = get_pending_subscriber(session_id)
-            
+
 
             if not result:
                 return jsonify({"error": "Session ID not found"}), 404
@@ -200,7 +200,7 @@ def prenumeration_startad():
             email = result.email
             county = result.county
             newspaper_id = result.newspaper_id
-            
+
             url = f"https://api.playground.klarna.com/payments/v1/authorizations/{authorization_token}/order"
             headers = {"Authorization": auth_header, "Content-Type": "application/json"}
             payload = {
@@ -222,20 +222,20 @@ def prenumeration_startad():
                 "merchant_reference1": f"sub-{user_id}",
                 "merchant_data": json.dumps({"county": str(county)})
             }
-            
+
             response = requests.post(url, json=payload, headers=headers)
             if response.status_code not in [200, 201]:
                 return jsonify({"error": "Failed to create order: " + response.text}), 500
 
             order_data = response.json()
             klarna_token = order_data.get( authorization_token)
-            
+
             if mode == "update":
                 # Förnyelse: Uppdatera befintlig prenumeration om mode=update
                 subscriber = get_subscriber_by_user_id(user_id)
                 if not subscriber:
                     return jsonify({"error": "Subscriber not found for renewal"}), 404
-        
+
                     # Tolka subscription_start från sträng till datetime
                 try:
                     old_start = datetime.strptime(subscriber.subscription_start, '%Y-%m-%d %H:%M:%S.%f')
@@ -255,7 +255,7 @@ def prenumeration_startad():
             subscriber_id = subscriber_exists(phone_number)
 
             return render_template("confirmation.html", subscriber_id=subscriber_id)
-        
+
     except Exception as e:
         return jsonify({"error": f"Serverfel: {str(e)}"}), 500
 

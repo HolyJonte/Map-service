@@ -93,16 +93,20 @@ def get_all_accidents():
     # Lista för att lagra olyckor
     accidents = []
 
+    # Loopar genom varje situation i datan
     for situation in data["RESPONSE"]["RESULT"][0]["Situation"]:
+        # Varje situation kan ha flera "Deviation"-objekt
         for deviation in situation.get("Deviation", []):
+            # Filtrerar för att endast få olyckor
             if deviation.get("MessageType") != "Olycka":
                 continue
-            # print("Deviation data:", deviation)
 
+            # Hämta geometrin (lat/lng) från deviation
             geom = deviation.get("Geometry", {}).get("Point", {}).get("WGS84")
             if not geom:
                 continue
 
+            # Försöker konvertera strängformatet till latitud och longitud
             try:
                 lat, lng = map(float, geom.replace("POINT (", "").replace(")", "").split())
             except ValueError:
@@ -118,7 +122,7 @@ def get_all_accidents():
                 except Exception:
                     pass  # Fortsätter om datum inte kunde tolkas
 
-
+            # Lägger till olyckan i listan med nödvändig information
             accidents.append({
                 "lat": lat,
                 "lng": lng,
@@ -138,6 +142,7 @@ def get_all_accidents():
 # Hämtar alla kameror, vägarbeten och olyckor från Trafikverket och lagrar dem i en cache
 #===========================================================================================================
 
+# Cache för att lagra kameror, vägarbeten och olyckor
 cache = {
     "active": {
         "cameras": [],
@@ -149,11 +154,13 @@ cache = {
     "updating": False
 }
 
+# Funktion för att uppdatera cachen med ny data
 def update_cache():
     # Undvik parallella uppdateringar
     if cache["updating"]:
         return
 
+# Om en uppdatering redan pågår, vänta tills den är klar
     cache["updating"] = True
     try:
         # Hämta ny data
@@ -167,23 +174,31 @@ def update_cache():
             "accidents": new_accidents,
             "last_updated": datetime.now()
         }
+
+    # Skriv ut loggmeddelande
     finally:
         cache["updating"] = False
 
+# Funktion för att hämta kameror, vägarbeten och olyckor från cachen
 def get_cached_cameras():
+    # Om cachen inte har uppdaterats på mer än 60 sekunder, starta en ny tråd för att uppdatera den
     if not cache["active"]["last_updated"] or datetime.now() - cache["active"]["last_updated"] > timedelta(seconds=60):
+        # Starta en ny tråd för att uppdatera cachen
         threading.Thread(target=update_cache).start()
+    # Om cachen har uppdaterats nyligen, returnera den cachade datan
     return cache["active"]["cameras"]
 
+# Funktion för att hämta vägarbeten och olyckor från cachen
 def get_cached_roadworks():
     get_cached_cameras()
     return cache["active"]["roadworks"]
 
+# Funktion för att hämta olyckor från cachen
 def get_cached_accidents():
     get_cached_cameras()
     return cache["active"]["accidents"]
 
-# Starta med en direkt cacheuppdatering när servern startas om
+# Funktion för att hämta senaste uppdateringstid från cachen
 def preload_cache():
     # Kör detta om sidan körs på PythonAnywhere
     if "PYTHONANYWHERE_DOMAIN" in os.environ:

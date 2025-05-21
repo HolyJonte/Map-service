@@ -1,5 +1,5 @@
 # Denna fil är huvudfilen för Flask-applikationen.
-# Den startar servern, registrerar blueprints och hanterar statiska filer från 
+# Den startar servern, registrerar blueprints och hanterar statiska filer från
 # frontend-delen (HTML, JS, CSS).
 
 # Importerar systemmodulen för att hantera sökvägar
@@ -21,9 +21,8 @@ import os
 
 from users.user_routes import user_routes
 
+# Importerar dotenv för att läsa in miljövariabler från en .env-fil
 load_dotenv()
-
-# Importerar APScheduler för schemaläggning
 
 # Importerar notify_accidents för att schemalägga SMS-notifikationer
 from prenumerationsmodul.notifications import notify_accidents
@@ -34,7 +33,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 # Anger sökvägen till frontend-mappen där statiska filer finns (tex index, JS och CSS)
 frontend_path = os.path.join(os.path.dirname(__file__), '../frontend/static')
 
-### KANSKE BEHÖVER ÄNDRA FÖR DE LIGGER UNDER FRONTEND
+# Anger sökvägen till templates-mappen där HTML-mallar finns
 templates_path = os.path.join(os.path.dirname(__file__), 'templates')
 
 # Skapar en Flask-applikation och anger sökvägen till frontend-mappen som statisk mapp
@@ -68,10 +67,12 @@ def serve_index():
 def serve_static(filename):
     return send_from_directory(frontend_path, filename)
 
+# Definierar en route för att visa login.html-mallen
 @app.route('/login')
 def login_choice():
     return render_template("login_choice.html")
 
+# Definierar en route för att visa aboutus.html-mallen
 @app.route('/aboutus')
 def about():
     return render_template("aboutus.html")
@@ -83,11 +84,7 @@ def embed_files(filename):
     embed_dir = os.path.join(app.static_folder, 'embed')
     return send_from_directory(embed_dir, filename)
 
-# För att visa förhandsvisning av karta på webbsajt för kund
-@app.route('/embed-preview')
-def embed_preview():
-    return render_template('embed_preview.html')
-
+# Definierar en route för att visa embed_map.html-mallen
 @app.route("/embed-map")
 def embed_map():
     lat = request.args.get("lat", default=62.0)
@@ -96,12 +93,12 @@ def embed_map():
     return render_template("embed_map.html", lat=lat, lng=lng, zoom=zoom)
 
 
+# Kör appen
 if __name__ == '__main__':
 
     try:
         app.run(debug=True)
 
     except (KeyboardInterrupt, SystemExit):
-        # Stäng av scheduler vid avbrott
-        #scheduler.shutdown()
-        print("Scheduler shut down.")
+        # Vid fel skrivs följande meddelande ut
+        print("Lyckades inte starta appen.")

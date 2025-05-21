@@ -82,6 +82,7 @@ window.addEventListener("DOMContentLoaded", () => {
              .selected = true;
       }
     });
+    // Ladda tidningar
     loadNewspapers().then(() => {
       const prePaper = document.getElementById("newspaper_prefill").value;
       if (prePaper) {
@@ -92,7 +93,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const mode = document.getElementById("mode")?.value || "start";
 
 
-// ÄNDRING: Ersatt ursprunglig go-to-klarna-btn-händelsehanterare för att visa modal
+// Lägg till händelsehanterare för "Gå till Klarna"-knappen
   document
     .getElementById("go-to-klarna-btn")
     .addEventListener("click", () => {
@@ -100,9 +101,9 @@ window.addEventListener("DOMContentLoaded", () => {
       const modal = new bootstrap.Modal(document.getElementById("klarnaConfirmModal"));
       modal.show();
     });
-  // SLUT ÄNDRING
 
-  // NY KOD: Lägg till händelsehanterare för "OK"-knappen i modalen
+
+  // Lägg till händelsehanterare för "OK"-knappen i modalen
   document
     .getElementById("confirm-klarna-btn")
     .addEventListener("click", () => {
@@ -146,7 +147,6 @@ window.addEventListener("DOMContentLoaded", () => {
         }
       );
     });
-  // SLUT NY KOD
 });
 
 /* ===================================================================================================

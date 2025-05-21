@@ -5,4 +5,4 @@ trafikvida.db
 *.db
 processed_events.json
 cache_log.txt
-# lägg till .env här sen!
+*.env

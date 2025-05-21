@@ -5,6 +5,8 @@
 // Om flera vägarbeten är nära varandra, visas de som en större ikon med antal inuti.
 // ---------------------------------------------
 
+
+// Exporterar klassen RoadworkLayer så att den kan användas i andra moduler
 export class RoadworkLayer {
   constructor(map) {
     this.map = map;

@@ -1,6 +1,4 @@
 # Denna fil styr hur databasen skapas upp och hur tabellerna som finns i den ska se ut.
-# Efter att tabellerna har skapats upp eller om de redan finns så kommer den att
-# hårdkoda in 3 tidningar och en användare i databasen. Detta är endast för testning.
 # När allt är klart så kommer den att stänga ner databasen.
 # =========================================================================================
 import sqlite3

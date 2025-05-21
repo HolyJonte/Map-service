@@ -224,7 +224,7 @@ def update_county():
         return jsonify({"message": "Län uppdaterat", "county_name": county_map[new_county_int]}), 200
     else:
         return jsonify({"error": "Kunde inte uppdatera län"}), 500
-    
+
 #=====================================================================================================
 # Avsluta prenumeration
 # =====================================================================================================

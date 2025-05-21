@@ -5,6 +5,8 @@
 // Om flera kameror är nära varandra, visas de som en större ikon med antal inuti.
 // ---------------------------------------------
 
+
+// Exporterar klassen för användning i andra moduler
 export class CameraLayer {
     constructor(map) {
       this.map = map;       // Referens till Leaflet-kartan
@@ -63,9 +65,9 @@ export class CameraLayer {
                 <p>Vägnummer: ${camera.road}</p>
               </div>
             `);
-            
 
-            this.clusterGroup.addLayer(marker);                   // Lägg till markören i klustret
+            // Lägg till markören i klustret
+            this.clusterGroup.addLayer(marker);
           } else {
             // Om koordinater saknas eller är ogiltiga, logga ett fel
             console.error(`Ogiltig latitud eller longitud för kamera: ${camera.name}`);
@@ -74,8 +76,9 @@ export class CameraLayer {
         // Lägg till markörklustret på kartan
         this.map.addLayer(this.clusterGroup);
 
+      // Logga eventuella fel vid hämtning av data
       } catch (error) {
-        console.error("Kunde inte hämta kameradata:", error); // Logga eventuella fel vid hämtning av data
+        console.error("Kunde inte hämta kameradata:", error);
       }
     }
   }

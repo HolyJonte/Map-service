@@ -27,8 +27,6 @@ class MapComponent extends HTMLElement {
 
   // Denna metod anropas när komponenten läggs till i DOM
   connectedCallback() {
-    console.log("✅ MapComponent connectedCallback körs!");
-    
     const mapContainer = document.createElement('div');
       mapContainer.style.width = '100%';
       mapContainer.style.height = '100%';
@@ -44,11 +42,12 @@ class MapComponent extends HTMLElement {
     const lng  = parseFloat(this.getAttribute("data-lng"))  || 15.0;
     const zoom = parseInt(this.getAttribute("data-zoom"), 10) || 6;
 
-  
+
+    // Skapar en Leaflet-karta och centrerar den över Sverige
     this.map = L.map(container, {
-      center: [lat, lng],      // ⇑ använd dynamiskt
-      zoom: zoom               // ⇑ använd dynamiskt
-    });  
+      center: [lat, lng],
+      zoom: zoom
+    });
 
     // Lägg till OpenStreetMap som bakgrundskarta
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -83,8 +82,9 @@ locateButton.onAdd = function () {
 // Lägg till knappen i kartan
 locateButton.addTo(this.map);
 
-// Väntar en kort stund så att kanppen hinner laddas innan vi lägger till eventlyssnaren
+// Väntar en kort stund så att knappen hinner laddas innan vi lägger till eventlyssnaren
 setTimeout(() => {
+
   // Hämtar knappen med id "locateMeBtn" och lägger till en eventlyssnare för klick
   const btn = this.querySelector('#locateMeBtn');
 
