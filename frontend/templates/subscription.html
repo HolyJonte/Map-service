@@ -6,7 +6,7 @@
   <div class="card login-card w-100" style="max-width: 38rem; min-width: 24rem;">
     <div class="card-body d-flex flex-column">
       <h5 class="card-title fw-bold mb-4">{{ 'Förnya prenumeration' if mode == 'update' else 'Starta prenumeration' }}</h5>
-      <p><strong>Prenumerationen kostar 99 kr och gäller i ett år</strong></p>
+      <p><strong>Prenumerationen kostar {{ price }} kr och gäller i ett år</strong></p>
       <p class="form-description text-muted mb-4">
         Ange ditt telefonnummer och välj län nedan för att aktivera din SMS-prenumeration.
         Du får trafikvarningar om olyckor och vägarbeten med stor trafikpåverkan direkt i mobilen.
@@ -14,6 +14,7 @@
 
       <form id="subscription-form"
       action="{{ action_endpoint }}"
+      data-price="{{ price }}"
       method="post"
       class="d-flex flex-column">
         <!-- Telefonnr -->

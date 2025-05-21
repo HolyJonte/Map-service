@@ -10,7 +10,8 @@ KLARNA_API_URL = os.getenv("KLARNA_API_URL")  # Playground API-bas-URL
 KLARNA_API_KEY = os.getenv("KLARNA_API_KEY")
 KLARNA_API_SECRET = os.getenv("KLARNA_API_SECRET")
 KLARNA_CLIENT_ID = os.getenv("KLARNA_CLIENT_ID")
-
+SUBSCRIPTION_PRICE = os.getenv("SUBSCRIPTION_PRICE")  # Prenumerationspriset i kr
+PRICE_ORE = int(SUBSCRIPTION_PRICE) * 100  # Omvandla till öre
 # Bas-URL för appen (används för callbacks)
 BASE_URL = "https://trafikvida.ddns.net"
 
@@ -41,16 +42,16 @@ def initiate_payment(_phone_number, _county, tokenize=True, payment_method='cred
         "purchase_country": "SE",
         "purchase_currency": "SEK",
         "locale": "sv-SE",
-        "order_amount": 9900,  # 99 SEK i öre
+        "order_amount": PRICE_ORE,
         "order_tax_amount": 0,
         "order_lines": [
             {
                 "type": "digital",
                 "name": "SMS-prenumeration",
                 "quantity": 1,
-                "unit_price": 9900,
+                "unit_price": PRICE_ORE,
                 "tax_rate": 0,
-                "total_amount": 9900,
+                "total_amount": PRICE_ORE,
                 "total_tax_amount": 0,
 
             }

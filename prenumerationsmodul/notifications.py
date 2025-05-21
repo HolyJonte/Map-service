@@ -1,8 +1,9 @@
 # notifications.py
 # Som en del av prenumerationsmodulen, ansvarar denna fil för att hantera 
 # notifieringar till prenumeranter om olyckor och vägarbeten.
-# Den skickar SMS och e-postmeddelanden till prenumeranter baserat på deras
+# Den skickar SMS till prenumeranter baserat på deras
 # registrerade län och händelser som inträffar i deras område.
+# Skickar även e-postmeddelanden till prenumeranter vars prenumerationer löper ut om 14 dagar
 # Denna modul är en del av ett större system för att hantera prenumerationer
 # och notifieringar för en tidning eller nyhetstjänst.
 

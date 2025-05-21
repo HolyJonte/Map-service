@@ -1,3 +1,4 @@
+import os
 import requests
 import json
 from flask import Blueprint, request, jsonify, render_template, current_app, session, redirect, url_for
@@ -21,6 +22,9 @@ from database.crud.sms_crud import get_sms_count_for_newspaper
 
 
 subscription_routes = Blueprint('subscriptions', __name__)
+
+SUBSCRIPTION_PRICE = os.getenv("SUBSCRIPTION_PRICE")  # Prenumerationspriset i kr
+PRICE_ORE = int(SUBSCRIPTION_PRICE) * 100  # Omvandla till öre
 
 # Kör funktionen för att initiera databasen när modulen laddas
 initialize_database()
@@ -82,7 +86,8 @@ def show_subscription_page():
         mode=mode,
         page_title=page_title,
         action_endpoint=action_endpoint,
-        subscriber_data=subscriber_data
+        subscriber_data=subscriber_data,
+        price = SUBSCRIPTION_PRICE
     )
 
 # ==========================================================================================
@@ -167,7 +172,7 @@ def start_subscription():
 @subscription_routes.route('/prenumeration-startad', methods=['POST'])
 def prenumeration_startad():
     try:
-        # TEsta att ta bort if-satsen för POST (är redan definierad som post i rutten)
+        # Testa att ta bort if-satsen för POST (är redan definierad som post i rutten)
         if request.method == 'POST':
             data = request.get_json()
 
@@ -201,16 +206,16 @@ def prenumeration_startad():
             payload = {
                 "purchase_country": "SE",
                 "purchase_currency": "SEK",
-                "order_amount": 9900,
+                "order_amount": PRICE_ORE,
                 "order_tax_amount": 0,
                 "order_lines": [
                     {
                         "type": "digital",
                         "name": "SMS-Prenumeration",
                         "quantity": 1,
-                        "unit_price": 9900,
+                        "unit_price": PRICE_ORE,
                         "tax_rate": 0,
-                        "total_amount": 9900,
+                        "total_amount": PRICE_ORE,
                         "total_tax_amount": 0
                     }
                 ],
@@ -230,15 +235,14 @@ def prenumeration_startad():
                 subscriber = get_subscriber_by_user_id(user_id)
                 if not subscriber:
                     return jsonify({"error": "Subscriber not found for renewal"}), 404
-                
-                # Nytt startdatum blir när prenumerationen startades förra gången + 365 dagar
         
                     # Tolka subscription_start från sträng till datetime
                 try:
                     old_start = datetime.strptime(subscriber.subscription_start, '%Y-%m-%d %H:%M:%S.%f')
                 except ValueError:
                     old_start = datetime.strptime(subscriber.subscription_start, '%Y-%m-%d %H:%M:%S')
-                
+
+                # Nytt startdatum blir när prenumerationen startades förra gången + 365 dagar
                 # Lägg på 365 dagar (eller använd relativedelta(years=1) för skottårstrygghet)
                 new_start = old_start + timedelta(days=365)
                 update_subscriber(phone_number=phone_number, klarna_token=klarna_token, subscription_start=new_start)
@@ -284,7 +288,7 @@ def get_newspaper_names():
         return jsonify({"error": f"Failed to fetch newspapers: {str(e)}"}), 500
 
 
-### KRÄVA INLOGG
+
 # ==========================================================================================
 # Rutt för att hämta alla prenumeranter
 # ==========================================================================================
@@ -297,7 +301,7 @@ def check_subscriptions():
     remove_inactive_subscribers()
 
 # ==========================================================================================
-# Rutt för att hantera push från klarna och hämta klarna_order_id
+# Rutt för att hantera Klarnas push-notifikationer asynkront efter godkänd betalning (backup till det synkrona flödet)
 # ==========================================================================================
 @subscription_routes.route('/klarna-push', methods=['POST'])
 def handle_klarna_push():

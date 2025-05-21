@@ -165,6 +165,7 @@ document
     const responseDiv = document.getElementById("response");
     const klarnaContainer = document.getElementById("klarna-checkout-container");
     const goToKlarnaContainer = document.getElementById("go-to-klarna-container");
+    const price = parseFloat(form.dataset.price);
 
     // Dölj “Gå till Klarna” tills load är klar
     goToKlarnaContainer.style.display = "none";
@@ -239,7 +240,7 @@ document
       const summaryHtml = `
         <div id="order-summary" class="order-summary-card mt-4">
           <h3>Din prenumeration</h3>
-          <p>Du tecknar en SMS-prenumeration för 99 SEK i <strong>${countyText}</strong> för att få uppdateringar om trafikläget i ditt län.</p>
+          <p>Du tecknar en SMS-prenumeration för ${price} SEK i <strong>${countyText}</strong> för att få uppdateringar om trafikläget i ditt län.</p>
           <p>När du klickar på <em>"Gå till Klarna"</em> kommer du att dirigeras till Klarna för att slutföra betalningen.</p>
         </div>
       `;
