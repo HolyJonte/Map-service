@@ -308,7 +308,7 @@ def check_expiring_subscriptions():
 # FUNKTIONER FÖR ATT SKICKA SMS OCH E-POST VIA TJÄNST UTANFÖR DENNA SITE
 #====================================================================================
 # Funktion för att skicka SMS via vår externa tjänst
-def send_sms(to, message, testMode=False, shortLinks=True):
+def send_sms(to, message, testMode=True, shortLinks=True):
     url = "https://mamajovida.pythonanywhere.com/notification/send-sms"
     headers = {
         "Content-Type": "application/json",
@@ -354,7 +354,7 @@ def send_email(to, subject, message):
 
 if __name__ == "__main__":
     # Testa SMS
-    sms_result = send_sms(["+46703634184"], "Testmeddelande från PA!", testMode=False)
+    sms_result = send_sms(["+46703634184"], "Testmeddelande från PA!", testMode=True)
     print("SMS RESULTAT:", sms_result)
 
     # Testa e-post
