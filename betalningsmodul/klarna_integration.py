@@ -11,7 +11,7 @@ KLARNA_API_KEY = os.getenv("KLARNA_API_KEY")
 KLARNA_API_SECRET = os.getenv("KLARNA_API_SECRET")
 KLARNA_CLIENT_ID = os.getenv("KLARNA_CLIENT_ID")
 SUBSCRIPTION_PRICE = os.getenv("SUBSCRIPTION_PRICE")  # Prenumerationspriset i kr
-PRICE_ORE = int(SUBSCRIPTION_PRICE) * 100  # Omvandla till öre
+PRICE_ORE = SUBSCRIPTION_PRICE * 100  # Omvandla till öre
 # Bas-URL för appen (används för callbacks)
 BASE_URL = "https://trafikvida.ddns.net"
 
