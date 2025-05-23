@@ -5,4 +5,3 @@ trafikvida.db
 *.db
 processed_events.json
 cache_log.txt
-*.env
